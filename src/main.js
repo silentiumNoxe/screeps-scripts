@@ -1,4 +1,4 @@
-const SPAWN_NAMES = "Spawn1";
+const SPAWN_NAME = "Spawn1";
 const ROOM_ADDRESS = "W33S24";
 
 const JOB_HARVEST = "harvest";
@@ -7,7 +7,7 @@ const JOB_UPGRADE_CONTROLLER = "upgrade_controller";
 
 Creep.prototype.setJob = function(name, options){
     this.memory.job = {name: name, options: options};
-}
+};
 
 Creep.prototype.work = function(){
     console.log(this.name, "job => "+JSON.stringify(this.memory.job));
@@ -36,13 +36,14 @@ Creep.prototype.work = function(){
                 this.moveTo(Game.spawns[SPAWN_NAME]);
             }
     }
-}
+};
 
 module.exports.loop = function () {
     with(Game){
-        if(Object.keys(creeps).length < 1){
-            console.log("new creeper", spawns[SPAWN_NAME].spawnCreep([MOVE, WORK, CARRY], "mwc"+Math.floor(Math.random()*100, {memory: {job: {}}})));
+        if(Object.keys(creeps).length < 5){
+            console.log("new creeper", spawns[SPAWN_NAME].spawnCreep([MOVE, WORK, CARRY], ("mwc"+Math.floor(Math.random()*100)), {job: {}}));
         }
+
         for(const i in creeps){
             let creep = creeps[i];
             if(creep.memory.job == null){
@@ -55,12 +56,12 @@ module.exports.loop = function () {
 
             if(creep.store[RESOURCE_ENERGY] < creep.store.getCapacity() && creep.memory.job.name !== JOB_UPGRADE_CONTROLLER){
                 creep.setJob(JOB_HARVEST, {targetId: "5bbcab2c9099fc012e63305a"});
-            }else if(creep.store[RESOURCE_ENERGY] == creep.store.getCapacity()){
+            }else if(creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()){
                 creep.setJob(JOB_UPGRADE_CONTROLLER, {targetId: "5bbcab2c9099fc012e63305b"});
             }
 
             creep.work();
         }
     }
-}
+};
 
