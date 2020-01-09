@@ -5,7 +5,7 @@ var missionFactory = require("missionFactory");
 module.exports.loop = function () {
     /*Миссия хранит в себе информацию необходимую для её выполнения*/
     let missions = [
-        missionFactory.create("A", {targetId: "5bbcab2c9099fc012e63305b", requiredCreeps: 5})
+        missionFactory.create("A", {targetId: "5bbcab2c9099fc012e63305b", id: 1, requiredCreeps: 5})
     ];
 
     missions.forEach(mission => mission.execute());
