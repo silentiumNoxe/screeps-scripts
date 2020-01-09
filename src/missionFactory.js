@@ -3,7 +3,7 @@
  * @description upgrade controller
  * */
 function MissionA(options){
-    this.namePrefix = "uc";
+    this.namePrefix = "A";
     this.options = options;
     this.quantityCreeps = 0;
 }
@@ -34,10 +34,12 @@ MissionA.prototype.execute = function () {
         spawnerRoom.spawnCreep([MOVE, WORK, CARRY], (this.namePrefix+"-"+this.options.id+"-"+Math.floor(Math.random()*100)), {});
     }
 
+    let quantity = 0;
     for(let i in Game.creeps){
         let creep = Game.creeps[i];
         let name = creep.name.split("-");
         if(name[0] === this.namePrefix && name[1] === String(this.options.id)){
+            quantity++;
             if(creep.memory.canUpgrade){
                 let status = creep.upgradeController(target);
                 if(status === ERR_NOT_IN_RANGE){
@@ -58,6 +60,7 @@ MissionA.prototype.execute = function () {
             }
         }
     }
+    this.quantityCreeps = quantity;
 };
 
 module.exports = {
