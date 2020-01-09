@@ -4,7 +4,7 @@
  * */
 function MissionA(options){
     this.namePrefix = "uc";
-    this.id = Math.random()*100;
+    this.id = Math.floor(Math.random()*100);
     this.options = options;
     this.quantityCreeps = 0;
 }
@@ -32,7 +32,7 @@ MissionA.prototype.execute = function () {
     }
 
     if(this.quantityCreeps < this.options.requiredCreeps){
-        spawnerRoom.spawnCreep([MOVE, WORK, CARRY], (this.namePrefix+"-"+this.id+"-"+Math.random()*100), {});
+        spawnerRoom.spawnCreep([MOVE, WORK, CARRY], (this.namePrefix+"-"+this.id+"-"+Math.floor(Math.random()*100)), {});
     }
 
     for(let i in Game.creeps){
