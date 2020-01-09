@@ -1,10 +1,10 @@
 /**
- * @param {{targetId: string, requiredCreeps: number}} options
+ * @param {{targetId: string, id: number, requiredCreeps: number}} options
  * @description upgrade controller
  * */
 function MissionA(options){
     this.namePrefix = "uc";
-    this.id = Math.floor(Math.random()*100);
+    this.id = options.id;
     this.options = options;
     this.quantityCreeps = 0;
 }
@@ -64,7 +64,7 @@ MissionA.prototype.execute = function () {
 module.exports = {
     create(name, options){
         switch (name) {
-            case MissionA.name:
+            case "A":
                 return new MissionA(options);
         }
     }
