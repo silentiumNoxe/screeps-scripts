@@ -37,7 +37,7 @@ MissionA.prototype.execute = function () {
     for(let i in Game.creeps){
         let creep = Game.creeps[i];
         let name = creep.name.split("-");
-        if(name[0] === this.namePrefix && name[1] === this.options.id){
+        if(name[0] === this.namePrefix && name[1] === String(this.options.id)){
             if(creep.memory.canUpgrade){
                 let status = creep.upgradeController(target);
                 if(status === ERR_NOT_IN_RANGE){
