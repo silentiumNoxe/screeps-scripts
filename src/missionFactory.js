@@ -82,10 +82,11 @@ module.exports = {
                 if(args.targetId == null){
                     throw "targetId is not defined";
                 }
-                let id = Math.floor(Math.random()*100);
+                let id = args.id | Math.floor(Math.random()*100);
                 let mission = {};
                 mission.targetId = args.targetId;
                 mission.requiredCreeps = args.requiredCreeps | 1;
+                mission.nameMission = args.nameMission;
                 Memory.missions[id] = mission;
                 return new MissionUpdateController(id);
         }
