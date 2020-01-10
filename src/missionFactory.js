@@ -5,7 +5,9 @@
 function MissionUpdateController(id){
     this.namePrefix = "uc";
     this.id = id;
-    Memory.missions[id].processData = {};
+    if(Memory.missions[id].processData == null){
+        Memory.missions[id].processData = {};
+    }
 }
 
 MissionUpdateController.name = "uc";
@@ -39,37 +41,37 @@ MissionUpdateController.prototype.execute = function () {
             Game.notify("Spawner not found in " + target.room.name);
             return;
         }
+    }
 
 
-        if (missionParams.processData.quantityCreeps < missionParams.requiredCreeps) {
-            spawnerRoom.spawnCreep([MOVE, WORK, CARRY], (this.namePrefix + "-" + this.id + "-" + Math.floor(Math.random() * 100)), {});
-        }
+    if (missionParams.processData.quantityCreeps < missionParams.requiredCreeps) {
+        spawnerRoom.spawnCreep([MOVE, WORK, CARRY], (this.namePrefix + "-" + this.id + "-" + Math.floor(Math.random() * 100)), {});
+    }
 
-        missionParams.processData.quantityCreeps = 0;
-        for (let i in Game.creeps) {
-            let creep = Game.creeps[i];
-            let name = creep.name.split("-");
-            if (name[0] === this.namePrefix && name[1] === String(this.options.id)) {
-                missionParams.processData.quantityCreeps++;
+    missionParams.processData.quantityCreeps = 0;
+    for (let i in Game.creeps) {
+        let creep = Game.creeps[i];
+        let name = creep.name.split("-");
+        if (name[0] === this.namePrefix && name[1] === String(this.options.id)) {
+            missionParams.processData.quantityCreeps++;
 
-                if (creep.memory.canUpgrade) {
-                    let status = creep.upgradeController(target);
-                    if (status === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(target);
-                    } else if (status === ERR_NOT_ENOUGH_RESOURCES) {
-                        creep.memory.canUpgrade = false;
-                    }
-                } else {
-                    let sources = spawnerRoom.room.find(FIND_SOURCES_ACTIVE);
-                    let status = creep.harvest(sources[0]);
-                    if (status === ERR_NOT_IN_RANGE) {
-                        creep.moveTo(sources[0]);
-                    }
+            if (creep.memory.canUpgrade) {
+                let status = creep.upgradeController(target);
+                if (status === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target);
+                } else if (status === ERR_NOT_ENOUGH_RESOURCES) {
+                    creep.memory.canUpgrade = false;
                 }
-
-                if (creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
-                    creep.memory.canUpgrade = true;
+            } else {
+                let sources = spawnerRoom.room.find(FIND_SOURCES_ACTIVE);
+                let status = creep.harvest(sources[0]);
+                if (status === ERR_NOT_IN_RANGE) {
+                    creep.moveTo(sources[0]);
                 }
+            }
+
+            if (creep.store[RESOURCE_ENERGY] === creep.store.getCapacity()) {
+                creep.memory.canUpgrade = true;
             }
         }
     }
@@ -82,12 +84,15 @@ module.exports = {
                 if(args.targetId == null){
                     throw "targetId is not defined";
                 }
-                let id = args.id | Math.floor(Math.random()*100);
-                let mission = {};
-                mission.targetId = args.targetId;
-                mission.requiredCreeps = args.requiredCreeps | 1;
-                mission.nameMission = args.nameMission;
-                Memory.missions[id] = mission;
+                let id = args.id;
+                if(id == null){
+                    id = Math.floor(Math.random()*100);
+                    let mission = {};
+                    mission.targetId = args.targetId;
+                    mission.requiredCreeps = args.requiredCreeps | 1;
+                    mission.nameMission = args.nameMission;
+                    Memory.missions[id] = mission;
+                }
                 return new MissionUpdateController(id);
         }
     }
