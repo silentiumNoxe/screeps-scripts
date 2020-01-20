@@ -2,11 +2,11 @@
   <library name="Screeps API" type="javaScript">
     <properties>
       <sourceFilesUrls>
-        <item url="file://$PROJECT_DIR$/../ScreepsAutocomplete" />
+        <item url="file://$PROJECT_DIR$/ScreepsAutocomplete" />
       </sourceFilesUrls>
     </properties>
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/../ScreepsAutocomplete" />
+      <root url="file://$PROJECT_DIR$/ScreepsAutocomplete" />
     </CLASSES>
     <DOCUMENTATION>
       <root url="https://docs.screeps.com/api" />
