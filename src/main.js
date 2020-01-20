@@ -1,12 +1,10 @@
 let missionType = require("missionType");
 let mission = require("mission");
 
-Memory.prototype.missionBuilder = function(type){
-    if(this.missions == null){
+module.exports.missionBuilder = function(type){
+    if(Memory.missions == null){
         this.missions = [];
     }
-
-    let memory = this;
 
     switch (type) {
         case missionType.UPGRADE_CONTROLLER:
@@ -28,7 +26,7 @@ Memory.prototype.missionBuilder = function(type){
                     return this;
                 },
                 save(){
-                    memory.missions.splice(0,0, this);
+                    Memory.missions.splice(0,0, this);
                 }
             };
     }
