@@ -16,11 +16,21 @@ let status = {
 module.exports.status = status;
 
 module.exports.spawnCreep = {
-    spawnId: "",
-    creepBody: [],
-    namePrefix: "",
-
+    name: "spawnCreep",
     status: status.NO_PROCESSED,
+
+    setSpawnId(id){
+        this.spawnId = id;
+        return this;
+    },
+    setCreepBody(body){
+        this.creepBody = body;
+        return this;
+    },
+    setNamePrefix(prefix){
+        this.namePrefix = prefix;
+        return this;
+    },
 
     execute(){
         let statusMission = Game.getObjectById(this.spawnId).spawnCreep(this.creepBody, this.namePrefix+"-"+Math.floor(Math.random()*100), {});
