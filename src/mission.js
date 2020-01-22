@@ -46,3 +46,45 @@ module.exports.spawnCreep = {
 
     save: save
 };
+
+module.exports.attackRoom = {
+    name: "attackRoom",
+    status: status.NO_PROCESSED,
+
+    setSpawnId(id){
+        this.spawnId = id;
+        return this;
+    },
+
+    setRoom(room){
+        this.room = room;
+        return this;
+    },
+
+    /**
+     * @example
+     *  attackRoom.setArmy([{body: [MOVE, ATTACK], requireQuantity: 10}, {body: [MOVE, RANGED_ATTACK], requiredQuantity: 10}])
+     * */
+    setArmy(name, body, quantity){
+        if(this.army == null){
+            this.army = {};
+        }
+        this.army[name] = {};
+        this.army[name].body = body;
+        this.army[name].creepQuantity = 0;
+        this.army[name].requiredQuantity = quantity;
+        return this;
+    },
+
+    execute(){
+        for(let name in this.army){
+            if(this.army.hasOwnProperty(name)) {
+                if (this.army[name].creepQuantity < this.army[name].requiredQuantity) {
+                    module.exports.spawnCreep.setCreepBody(this.army[name].body).setSpawnId(this.spawnId).setNamePrefix(name).save();
+                }
+            }
+        }
+    },
+
+    save: save
+};
