@@ -207,7 +207,7 @@ function spawnCreeps(){
                 spawn.spawnCreep(
                     creepsCounter[role].body,
                     role+Math.floor(Math.random()*100),
-                    {memory: creepsCounter[role].memory, dryRun: true});
+                    {memory: creepsCounter[role].memory});
             }
         }
     }
