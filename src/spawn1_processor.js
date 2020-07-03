@@ -65,8 +65,10 @@ module.exports = {
                 if(creep.memory.toDo !== Creep.TODO.MOVE && creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.UCL);
             }
 
-            if(creep.ticksToLive < 600){
-                creep.setToDo(Creep.TODO.RENEW);
+            if(creep.ticksToLive < 200){
+                if(!creep.toDoIs(Creep.TODO.MOVE)) {
+                    creep.setToDo(Creep.TODO.RENEW);
+                }
             }
         }
 
@@ -76,7 +78,13 @@ module.exports = {
 
 function renewCreep(creep) {
     creep.setTarget(spawn);
-    return spawn.renewCreep(creep);
+    let status = spawn.renewCreep(creep);
+    if(status === ERR_NOT_IN_RANGE){
+        moveCreep(creep);
+    }else if(status === OK){
+        creep.setToDo(Creep.TODO.WAIT);
+    }
+    return status;
 }
 
 function moveCreep(creep) {
@@ -86,7 +94,7 @@ function moveCreep(creep) {
         creep.memory.move.path = creep.pos.findPathTo(creep.getTarget());
     }
 
-    if(creep.pos.getRangeTo(Game.getObjectById(creep.memory.move.targetId)) <= 5){
+    if(creep.pos.getRangeTo(Game.getObjectById(creep.memory.move.targetId)) <= 1){
         creep.setToDo(Creep.TODO.WAIT);
     }
 
@@ -103,7 +111,12 @@ function transferEnergy(creep) {
             return struct.energy < struct.energyCapacity;
         }}));
 
-    return creep.transfer(creep.getTarget());
+    let status = creep.transfer(creep.getTarget(), RESOURCE_ENERGY);
+    if(status === ERR_NOT_IN_RANGE){
+        moveCreep(creep);
+    }
+
+    return status;
 }
 
 function harvest(creep) {
@@ -111,14 +124,19 @@ function harvest(creep) {
 
     let status = creep.harvest(Game.getObjectById(creep.memory.targetId));
     if(status === ERR_NOT_IN_RANGE){
-        creep.setToDo(Creep.TODO.MOVE);
+        moveCreep(creep);
     }
     return status;
 }
 
 function ucl(creep) {
     creep.setTarget(spawn.room.controller);
-    return creep.upgradeController(creep.getTarget());
+    let status = creep.upgradeController(creep.getTarget());
+    if(status === ERR_NOT_IN_RANGE){
+        moveCreep(creep);
+    }
+    
+    return status;
 }
 
 function spawnCreeps(){

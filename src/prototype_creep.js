@@ -41,8 +41,8 @@ Creep.prototype.getTarget = function({onlyId = false} = {}){
 
 Creep.prototype.do = function(action){
     let status = action(this);
-    if(status === ERR_NOT_IN_RANGE){
-        this.setToDo(Creep.TODO.MOVE);
-    }
+    // if(status === ERR_NOT_IN_RANGE){
+    //     this.setToDo(Creep.TODO.MOVE);
+    // }
     return status;
 };
