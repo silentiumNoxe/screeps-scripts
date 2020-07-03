@@ -6,11 +6,11 @@ const spawn = Game.spawns.Spawn1;
 const creepsCounter = {};
 creepsCounter[Creep.ROLE.ENERGY_HARVESTER] = {
     current: 0, max: 3, notEnough(){return this.current < this.max},
-    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST}
+    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST, spawn: spawn.id}
 };
 creepsCounter[Creep.ROLE.CL_UPGRADER] = {
-    current: 0, max: 3, notEnough(){return this.current < this.max},
-    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST}
+    current: 0, max: 7, notEnough(){return this.current < this.max},
+    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST, spawn: spawn.id}
 };
 
 module.exports = {
@@ -92,7 +92,7 @@ function harvest(creep) {
 
     let status = creep.harvest(Game.getObjectById(creep.memory.targetId));
     if(status === ERR_NOT_IN_RANGE){
-        creep.memory.toDO = Creep.TODO.MOVE;
+        creep.setToDo(Creep.TODO.MOVE);
     }
     return status;
 }
@@ -103,7 +103,8 @@ function ucl(creep) {
 }
 
 function spawnCreeps(){
-    for(let role of Creep.ROLE){
+    for(let roleName in Creep.ROLE){
+        const role = Creep.ROLE[roleName];
         if(creepsCounter[role].notEnough()){
             spawn.spawnCreep(
                 creepsCounter[role].body,
