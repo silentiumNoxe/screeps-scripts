@@ -1,6 +1,7 @@
 Creep.ROLE = {
     ENERGY_HARVESTER: "H",
-    CL_UPGRADER: "CL"
+    CL_UPGRADER: "CL",
+    BUILDER: "B"
 };
 
 Creep.TODO = {
@@ -11,7 +12,8 @@ Creep.TODO = {
     BUILD: 3,
     UCL: 4,
     ATTACK: 5,
-    RENEW: 6
+    RENEW: 6,
+    REPAIR: 7
 };
 
 Creep.prototype.hasRole = function(role){
@@ -41,8 +43,5 @@ Creep.prototype.getTarget = function({onlyId = false} = {}){
 
 Creep.prototype.do = function(action){
     let status = action(this);
-    // if(status === ERR_NOT_IN_RANGE){
-    //     this.setToDo(Creep.TODO.MOVE);
-    // }
     return status;
 };

@@ -12,6 +12,10 @@ creepsCounter[Creep.ROLE.CL_UPGRADER] = {
     current: 0, max: 7, notEnough(){return this.current < this.max},
     body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST, spawn: spawn.id}
 };
+creepsCounter[Creep.ROLE.BUILDER] = {
+    current: 0, max: 2, notEnough(){return this.current < this.max},
+    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST, spawn: spawn.id}
+};
 
 module.exports = {
     process(){
@@ -19,8 +23,6 @@ module.exports = {
             Game.notify("spawn1 is null");
             return;
         }
-
-
 
         for(const creepName in Memory.creeps){
             /** @type Creep*/const creep = Game.creeps[creepName];
@@ -42,6 +44,7 @@ module.exports = {
                 case Creep.TODO.TRANSFER: status = creep.do(transferEnergy); break;
                 case Creep.TODO.UCL: status = creep.do(ucl); break;
                 case Creep.TODO.RENEW: status = creep.do(renewCreep); break;
+                case Creep.TODO.BUILD: status = creep.do(build); break;
 
                 case Creep.TODO.WAIT:
                     creep.setToDo(Creep.TODO.HARVEST);
@@ -75,6 +78,43 @@ module.exports = {
         spawnCreeps();
     }
 };
+
+function build(creep) {
+    if(creep.getTarget().progress == null) {
+        let target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+        if(target == null){
+            repair(creep);
+        }
+        creep.setTarget(target);
+    }
+
+    let status = creep.build(creep.getTarget());
+    if(status === ERR_NOT_IN_RANGE){
+        moveCreep(creep);
+    }
+}
+
+function repair(creep) {
+    let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (struct) => {
+            let type = struct.structureType;
+            if(type === STRUCTURE_WALL || type === STRUCTURE_RAMPART) {
+                return struct.hits < 500;
+            }
+            return struct.hits < struct.hitsMax;
+        }});
+
+    if(target == null){
+        creep.setToDo(Creep.TODO.WAIT);
+        return;
+    }
+
+    creep.setTarget(target);
+
+    let status = creep.repair(target);
+    if(status === ERR_NOT_IN_RANGE){
+        moveCreep(creep);
+    }
+}
 
 function renewCreep(creep) {
     creep.setTarget(spawn);
@@ -143,10 +183,16 @@ function spawnCreeps(){
     for(let roleName in Creep.ROLE){
         const role = Creep.ROLE[roleName];
         if(creepsCounter[role].notEnough()){
-            spawn.spawnCreep(
+            let status = spawn.spawnCreep(
                 creepsCounter[role].body,
                 role+Math.floor(Math.random()*100),
-                {memory: creepsCounter[role].memory});
+                {memory: creepsCounter[role].memory, dryRun: true});
+            if(status === OK){
+                spawn.spawnCreep(
+                    creepsCounter[role].body,
+                    role+Math.floor(Math.random()*100),
+                    {memory: creepsCounter[role].memory, dryRun: true});
+            }
         }
     }
 }
