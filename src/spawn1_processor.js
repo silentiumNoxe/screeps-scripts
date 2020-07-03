@@ -56,12 +56,12 @@ module.exports = {
             if(creep.hasRole(Creep.ROLE.ENERGY_HARVESTER)){
                 creepsCounter[Creep.ROLE.ENERGY_HARVESTER].current++;
 
-                if(creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.TRANSFER);
+                if(creep.memory.toDo !== Creep.TODO.MOVE && creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.TRANSFER);
 
             }else if(creep.hasRole(Creep.ROLE.CL_UPGRADER)){
                 creepsCounter[Creep.ROLE.CL_UPGRADER].current++;
 
-                if(creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.UCL);
+                if(creep.memory.toDo !== Creep.TODO.MOVE && creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.UCL);
             }
         }
 
