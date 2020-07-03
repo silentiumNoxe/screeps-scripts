@@ -41,6 +41,7 @@ module.exports = {
                 case Creep.TODO.HARVEST: status = creep.do(harvest); break;
                 case Creep.TODO.TRANSFER: status = creep.do(transferEnergy); break;
                 case Creep.TODO.UCL: status = creep.do(ucl); break;
+                case Creep.TODO.RENEW: status = creep.do(renewCreep); break;
 
                 case Creep.TODO.WAIT:
                     creep.setToDo(Creep.TODO.HARVEST);
@@ -63,11 +64,20 @@ module.exports = {
 
                 if(creep.memory.toDo !== Creep.TODO.MOVE && creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.UCL);
             }
+
+            if(creep.ticksToLive < 600){
+                creep.setToDo(Creep.TODO.RENEW);
+            }
         }
 
         spawnCreeps();
     }
 };
+
+function renewCreep(creep) {
+    creep.setTarget(spawn);
+    return spawn.renewCreep(creep);
+}
 
 function moveCreep(creep) {
     if(creep.memory.move == null) creep.memory.move = {targetId: "", path: []};
@@ -76,7 +86,7 @@ function moveCreep(creep) {
         creep.memory.move.path = creep.pos.findPathTo(creep.getTarget());
     }
 
-    if(creep.pos.getRangeTo(Game.getObjectById(creep.memory.move.targetId)) <= 1){
+    if(creep.pos.getRangeTo(Game.getObjectById(creep.memory.move.targetId)) <= 5){
         creep.setToDo(Creep.TODO.WAIT);
     }
 

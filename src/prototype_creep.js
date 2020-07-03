@@ -10,7 +10,8 @@ Creep.TODO = {
     TRANSFER: 2,
     BUILD: 3,
     UCL: 4,
-    ATTACK: 5
+    ATTACK: 5,
+    RENEW: 6
 };
 
 Creep.prototype.hasRole = function(role){
@@ -23,6 +24,10 @@ Creep.prototype.getSpawn = function({onlyId = false} = {}){
 
 Creep.prototype.setToDo = function(val){
     this.memory.toDo = val;
+};
+
+Creep.prototype.toDoIs = function(todo){
+    return this.memory.toDo = todo;
 };
 
 Creep.prototype.setTarget = function(val){
