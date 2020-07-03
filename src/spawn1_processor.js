@@ -79,7 +79,7 @@ module.exports = {
 function renewCreep(creep) {
     creep.setTarget(spawn);
     let status = spawn.renewCreep(creep);
-    if(status === ERR_NOT_IN_RANGE){
+    if(status === ERR_NOT_IN_RANGE || creep.pos.getRangeTo(creep.getTarget()) > 1){
         moveCreep(creep);
     }else if(status === OK){
         creep.setToDo(Creep.TODO.WAIT);
@@ -135,7 +135,7 @@ function ucl(creep) {
     if(status === ERR_NOT_IN_RANGE){
         moveCreep(creep);
     }
-    
+
     return status;
 }
 
