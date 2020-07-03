@@ -41,6 +41,11 @@ module.exports = {
                 case Creep.TODO.HARVEST: status = creep.do(harvest); break;
                 case Creep.TODO.TRANSFER: status = creep.do(transferEnergy); break;
                 case Creep.TODO.UCL: status = creep.do(ucl); break;
+
+                case Creep.TODO.WAIT:
+                    creep.setToDo(Creep.TODO.HARVEST);
+                    status = creep.do(harvest);
+                    break;
             }
 
             if(status === ERR_NOT_ENOUGH_RESOURCES){
@@ -69,6 +74,10 @@ function moveCreep(creep) {
     if(creep.memory.move.targetId !== creep.getTarget({onlyId: true})){
         creep.memory.move.targetId = creep.getTarget({onlyId: true});
         creep.memory.move.path = creep.pos.findPathTo(creep.getTarget());
+    }
+
+    if(creep.pos.getRangeTo(Game.getObjectById(creep.memory.move.targetId)) <= 1){
+        creep.setToDo(Creep.TODO.WAIT);
     }
 
     let status = creep.moveByPath(creep.memory.move.path);
