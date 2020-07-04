@@ -16,6 +16,10 @@ Creep.TODO = {
     REPAIR: 7
 };
 
+Creep.prototype.toMemory = function(obj){
+    this.memory = Object.assign(this.memory, obj);
+};
+
 Creep.prototype.hasRole = function(role){
       return this.name.startsWith(role);
 };
@@ -24,24 +28,41 @@ Creep.prototype.getSpawn = function({onlyId = false} = {}){
     return onlyId ? this.memory.spawn : Game.getObjectById(this.memory.spawn);
 };
 
-Creep.prototype.setToDo = function(val){
-    this.memory.toDo = val;
+Creep.prototype.todoIs = function(todo){
+    return this.memory.todo = todo;
 };
 
-Creep.prototype.toDoIs = function(todo){
-    return this.memory.toDo = todo;
+Creep.prototype.getTodo = function(){
+    return this.memory.todo;
 };
 
-Creep.prototype.setTarget = function(val){
-    if(typeof val == "object") val = val.id;
-    this.memory.targetId = val;
+Creep.prototype.setTarget = function(target, todo){
+    if(target == null) return;
+
+    if(typeof target == "object") target = target.id;
+    this.toMemory({targetId: target, todo: todo});
 };
 
 Creep.prototype.getTarget = function({onlyId = false} = {}){
     return onlyId ? this.memory.targetId : Game.getObjectById(this.memory.targetId);
 };
 
-Creep.prototype.do = function(action){
-    let status = action(this);
-    return status;
+Creep.prototype.do = function(actions){
+    let memory = this.memory;
+    if(!memory.action) memory.action = "start";
+
+    memory.prevAction = memory.action;
+    memory.action = actions[memory.action](this);
+
+    memory.prevActoin = memory.action;
+    if(actions[memory.action])
+        memory.action = actions[memory.action]();
+};
+
+Creep.prototype.myMove = function (target) {
+    if(this.memory.move == null) this.memory.move = {targetId: "", path: []};
+
+    if(this.memory.move.targetId !== target.id){
+        this.memory.move
+    }
 };

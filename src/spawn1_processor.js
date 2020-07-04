@@ -2,19 +2,25 @@ require("prototype_store");
 require("prototype_creep");
 
 const spawn = Game.spawns.Spawn1;
+const energySources = ["5bbcadc29099fc012e637ca8", "5bbcadc29099fc012e637caa"];
+
+const defaultMemoryCreep = {spawn: spawn.id, action: "start", prevAction: null, targetId: null};
+const notEnough = function () {
+    return this.current < this.max;
+};
 
 const creepsCounter = {};
 creepsCounter[Creep.ROLE.ENERGY_HARVESTER] = {
-    current: 0, max: 3, notEnough(){return this.current < this.max},
-    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST, spawn: spawn.id}
+    current: 0, max: 3, notEnough: notEnough,
+    body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.CL_UPGRADER] = {
-    current: 0, max: 7, notEnough(){return this.current < this.max},
-    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST, spawn: spawn.id}
+    current: 0, max: 7, notEnough: notEnough,
+    body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.BUILDER] = {
-    current: 0, max: 2, notEnough(){return this.current < this.max},
-    body: [WORK, MOVE, CARRY], memory: {toDo: Creep.TODO.HARVEST, spawn: spawn.id}
+    current: 0, max: 2, notEnough: notEnough,
+    body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 
 module.exports = {
@@ -24,72 +30,94 @@ module.exports = {
             return;
         }
 
-        for(const creepName in Memory.creeps){
+        for(const creepName in Memory.creeps) {
             /** @type Creep*/const creep = Game.creeps[creepName];
-            if(creep == null){
+            if (creep == null) {
                 delete Memory.creeps[creepName];
                 continue;
             }
 
-            if(creep.getSpawn({onlyId: true}) !== spawn.id){
+            if (creep.getSpawn({onlyId: true}) !== spawn.id) {
                 continue;
             }
 
-            let status;
-
-            //global logic
-            switch (creep.memory.toDo) {
-                case Creep.TODO.MOVE: status = creep.do(moveCreep); break;
-                case Creep.TODO.HARVEST: status = creep.do(harvest); break;
-                case Creep.TODO.TRANSFER: status = creep.do(transferEnergy); break;
-                case Creep.TODO.UCL: status = creep.do(ucl); break;
-                case Creep.TODO.RENEW: status = creep.do(renewCreep); break;
-                case Creep.TODO.BUILD: status = creep.do(build); break;
-            }
-
-            if(status === ERR_NOT_ENOUGH_RESOURCES){
-                creep.setToDo(Creep.TODO.HARVEST);
-            }
-
-            //individual logic
-            if(creep.hasRole(Creep.ROLE.ENERGY_HARVESTER)){
-                creepsCounter[Creep.ROLE.ENERGY_HARVESTER].current++;
-
-                if(creep.memory.toDo !== Creep.TODO.MOVE && creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.TRANSFER);
-
-                if(creep.toDoIs(Creep.TODO.WAIT)){
-                    creep.setToDo(Creep.TODO.HARVEST);
-                    status = creep.do(harvest);
-                }
-            }else if(creep.hasRole(Creep.ROLE.CL_UPGRADER)){
-                creepsCounter[Creep.ROLE.CL_UPGRADER].current++;
-
-                if(creep.memory.toDo !== Creep.TODO.MOVE && creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.UCL);
-
-                if(creep.toDoIs(Creep.TODO.WAIT)){
-                    creep.setToDo(Creep.TODO.HARVEST);
-                    status = creep.do(harvest);
-                }
-            }else if(creep.hasRole(Creep.ROLE.BUILDER)){
-                creepsCounter[Creep.ROLE.BUILDER].current++;
-
-                if(creep.memory.toDo !== Creep.TODO.MOVE && creep.store.isFull(RESOURCE_ENERGY)) creep.setToDo(Creep.TODO.BUILD);
-
-                if(creep.toDoIs(Creep.TODO.WAIT)){
-                    creep.do(build);
-                }
-            }
-
-            if(creep.ticksToLive < 200){
-                if(!creep.toDoIs(Creep.TODO.MOVE)) {
-                    creep.setToDo(Creep.TODO.RENEW);
-                }
-            }
+            harvesterLogic(creep);
+            spawnCreeps();
         }
-
-        spawnCreeps();
     }
 };
+
+const harvesterActions = {};
+harvesterActions["start"] = harvesterActions["harvest"];
+harvesterActions["harvest"] = (creep) => {
+    return creep.harvest(Game.getObjectById(creep.memory.targetId));
+};
+harvesterActions["transfer"] = (creep) => {
+    return creep.transfer(Game.getObjectById(creep.memory.targetId));
+};
+harvesterActions["error"] = (creep) => {
+    console.log(creep.name, "has an error");
+    return "error";
+};
+harvesterActions[OK] = (creep) => {
+    return creep.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY) ? "harvest" : "transfer";
+};
+harvesterActions[ERR_NO_BODYPART] = (creep) => {
+    Game.notify(creep.name+" has an error (ERR_NO_BODYPART). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory));
+    return "error";
+};
+harvesterActions[ERR_INVALID_ARGS] = (creep) => {
+    Game.notify(creep.name+" has an error (ERR_INVALID_ARGS). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory));
+    return "error";
+};
+harvesterActions[ERR_NOT_ENOUGH_ENERGY] = (creep) => {
+    return "harvest";
+};
+harvesterActions[ERR_INVALID_TARGET] = (creep) => {
+    if(this.memory.prevAction === "harvest") {
+        let minDistance = 100;
+        for (let sourceId in energySources) {
+            let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
+            if (dist < minDistance) {
+                minDistance = dist;
+                creep.memory.targetId = sourceId;
+            }
+        }
+    }else if(this.memory.prevAction === "transfer"){
+        this.memory.targetId = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+            {filter: (struct) => struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
+    }
+};
+harvesterActions[ERR_NOT_IN_RANGE] = (creep) => {
+    creep.moveTo(creep.memory.targetId);
+    return creep.memory.prevAction;
+};
+
+
+/** @param creep {Creep}*/
+function harvesterLogic(creep){
+    if(!creep.hasRole(Creep.ROLE.ENERGY_HARVESTER)){
+        return;
+    }
+
+    creepsCounter[Creep.ROLE.ENERGY_HARVESTER].current++;
+
+    creep.do(harvesterActions);
+}
+
+/** @param creep {Creep}*/
+function uclLogic(creep) {
+    if(!creep.hasRole(Creep.ROLE.UCL)){
+        return;
+    }
+}
+
+/** @param creep {Creep}*/
+function builderLogic(creep) {
+    if(!creep.hasRole(Creep.ROLE.BUILDER)){
+        return;
+    }
+}
 
 function build(creep) {
     if(creep.getTarget().progress == null) {
@@ -187,6 +215,7 @@ function harvest(creep) {
 
 function ucl(creep) {
     creep.setTarget(spawn.room.controller);
+
     let status = creep.upgradeController(creep.getTarget());
     if(status === ERR_NOT_IN_RANGE){
         moveCreep(creep);
