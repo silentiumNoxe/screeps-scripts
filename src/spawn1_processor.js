@@ -105,10 +105,13 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
             }
         }
     }else if(creep.memory.prevAction === "transfer"){
-        creep.memory.targetId = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+        let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
             {filter: (struct) => {
                     if (struct.store) return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-                }}).id;
+                }});
+        if(target != null){
+            creep.toMemory({targetId: target.id});
+        }
     }
     return creep.memory.prevAction;
 };
