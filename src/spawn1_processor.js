@@ -2,7 +2,7 @@ require("prototype_store");
 require("prototype_creep");
 
 const spawn = Game.spawns.Spawn1;
-const energySources = ["adc6316cd9efe568e72adf08"];
+const energySources = [];
 
 const defaultMemoryCreep = {spawn: spawn.id, action: "start", prevAction: null, targetId: null};
 const notEnough = function () {
@@ -15,7 +15,7 @@ creepsCounter[Creep.ROLE.ENERGY_HARVESTER] = {
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.CL_UPGRADER] = {
-    current: 0, max: 0, notEnough: notEnough,
+    current: 0, max: 1, notEnough: notEnough,
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.BUILDER] = {
@@ -42,11 +42,36 @@ module.exports = {
             }
 
             harvesterLogic(creep);
+            uclLogic(creep);
         }
         spawnCreeps();
     }
 };
 
+const defaultActions = {};
+defaultActions["error"] = (creep) => {
+    console.log(creep.name, "has an error");
+    console.log(creep.memory.errorMsg);
+    return "error";
+};
+defaultActions[ERR_NO_BODYPART] = (creep) => {
+    let msg = creep.name+" has an error (ERR_NO_BODYPART). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory);
+    Game.notify(msg);
+    creep.toMemory({errorMsg: msg});
+    return "error";
+};
+defaultActions[ERR_INVALID_ARGS] = (creep) => {
+    let msg = creep.name+" has an error (ERR_INVALID_ARGS). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory);
+    Game.notify(msg);
+    creep.toMemory({errorMsg: msg});
+    return "error";
+};
+defaultActions[ERR_NOT_IN_RANGE] = (creep) => {
+    creep.moveTo(Game.getObjectById(creep.memory.targetId));
+    return creep.memory.prevAction;
+};
+
+//------------------------------------------------------------------------------------------------
 const harvesterActions = {};
 harvesterActions["start"] = (creep) =>  harvesterActions["harvest"](creep);
 harvesterActions["harvest"] = creep => {
@@ -59,29 +84,12 @@ harvesterActions["harvest"] = creep => {
     return status;
 };
 harvesterActions["transfer"] = (creep) => {
-    let status = creep.transfer(Game.getObjectById(creep.memory.targetId));
+    let status = creep.transfer(Game.getObjectById(creep.memory.targetId), RESOURCE_ENERGY);
     if(status === OK) status = "transfer";
     return status;
 };
-harvesterActions["error"] = (creep) => {
-    console.log(creep.name, "has an error");
-    console.log(creep.memory.errorMsg);
-    return "error";
-};
 harvesterActions[OK] = (creep) => {
-    return creep.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY) ? "harvest" : "transfer";
-};
-harvesterActions[ERR_NO_BODYPART] = (creep) => {
-    let msg = creep.name+" has an error (ERR_NO_BODYPART). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory);
-    Game.notify(msg);
-    creep.toMemory({errorMsg: msg});
-    return "error";
-};
-harvesterActions[ERR_INVALID_ARGS] = (creep) => {
-    let msg = creep.name+" has an error (ERR_INVALID_ARGS). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory);
-    Game.notify(msg);
-    creep.toMemory({errorMsg: msg});
-    return "error";
+    return creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "harvest" : "transfer";
 };
 harvesterActions[ERR_NOT_ENOUGH_ENERGY] = harvesterActions[ERR_BUSY] = (creep) => {
     return "harvest";
@@ -98,14 +106,55 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
         }
     }else if(creep.memory.prevAction === "transfer"){
         creep.memory.targetId = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
-            {filter: (struct) => struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
+            {filter: (struct) => {
+                    if (struct.store) return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                }}).id;
     }
-};
-harvesterActions[ERR_NOT_IN_RANGE] = (creep) => {
-    creep.moveTo(Game.getObjectById(creep.memory.targetId));
     return creep.memory.prevAction;
 };
+harvesterActions["error"] = defaultActions["error"];
+harvesterActions[ERR_NO_BODYPART] = defaultActions[ERR_NO_BODYPART];
+harvesterActions[ERR_INVALID_ARGS] = defaultActions[ERR_INVALID_ARGS];
+harvesterActions[ERR_NOT_IN_RANGE] = defaultActions[ERR_NOT_IN_RANGE];
 
+//------------------------------------------------------------------------------------------------
+const uclActions = {};
+uclActions["start"] = (creep) => uclActions["harvest"](creep);
+uclActions["harvest"] = (creep) => {
+    let status = creep.harvest(Game.getObjectById(creep.memory.targetId));
+    if(status === OK && creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0){
+        status = "upgrade";
+    }else if(status === OK){
+        status = "harvest";
+    }
+    return status;
+};
+uclActions["upgrade"] = (creep) => {
+    let status = creep.upgradeController(spawn);
+    if(status === OK) status = "upgrade";
+    return status;
+};
+uclActions[ERR_INVALID_TARGET] = (creep) => {
+    if(creep.memory.prevAction === "harvest" || creep.memory.prevAction === "start") {
+        let minDistance = 100;
+        for (let sourceId of energySources) {
+            let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
+            if (dist < minDistance) {
+                minDistance = dist;
+                creep.memory.targetId = sourceId;
+            }
+        }
+    }else if(creep.memory.prevAction === "upgrade"){
+        creep.memory.targetId = spawn.room.controller.id;
+    }
+    return creep.memory.prevAction;
+};
+uclActions[OK] = (creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "harvest" : "transfer";
+uclActions[ERR_NOT_IN_RANGE] = defaultActions[ERR_NOT_IN_RANGE];
+uclActions[ERR_NOT_ENOUGH_ENERGY] = harvesterActions[ERR_NOT_ENOUGH_ENERGY];
+uclActions["error"] = defaultActions["error"];
+uclActions[ERR_NO_BODYPART] = defaultActions[ERR_NO_BODYPART];
+uclActions[ERR_INVALID_ARGS] = defaultActions[ERR_INVALID_ARGS];
 
 /** @param creep {Creep}*/
 function harvesterLogic(creep){
@@ -123,6 +172,10 @@ function uclLogic(creep) {
     if(!creep.hasRole(Creep.ROLE.UCL)){
         return;
     }
+
+    creepsCounter[Creep.ROLE.UCL].current++;
+
+    creep.do(uclActions);
 }
 
 /** @param creep {Creep}*/
