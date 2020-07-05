@@ -43,6 +43,7 @@ module.exports = {
 
             harvesterLogic(creep);
             uclLogic(creep);
+            builderLogic(creep);
         }
         spawnCreeps();
     }
@@ -164,7 +165,7 @@ uclActions[ERR_INVALID_ARGS] = defaultActions[ERR_INVALID_ARGS];
 const builderActions = {};
 builderActions["start"] = (creep) => builderActions["energy"](creep);
 builderActions["energy"] = (creep) => {
-    let status = creep.withdraw(creep.getTarget());
+    let status = creep.withdraw(creep.getTarget(), RESOURCE_ENERGY);
     if(status === OK) status = "build";
     return status;
 };
@@ -218,11 +219,11 @@ function harvesterLogic(creep){
 
 /** @param creep {Creep}*/
 function uclLogic(creep) {
-    if(!creep.hasRole(Creep.ROLE.UCL)){
+    if(!creep.hasRole(Creep.ROLE.CL_UPGRADER)){
         return;
     }
 
-    creepsCounter[Creep.ROLE.UCL].current++;
+    creepsCounter[Creep.ROLE.CL_UPGRADER].current++;
 
     creep.do(uclActions);
 }
