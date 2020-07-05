@@ -78,7 +78,7 @@ harvesterActions[ERR_NOT_ENOUGH_ENERGY] = harvesterActions[ERR_BUSY] = (creep) =
     return "harvest";
 };
 harvesterActions[ERR_INVALID_TARGET] = (creep) => {
-    if(creep.memory.prevAction === "harvest") {
+    if(creep.memory.prevAction === "harvest" || creep.memory.prevAction === "start") {
         let minDistance = 100;
         for (let sourceId in energySources) {
             let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
