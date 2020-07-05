@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8c18eb7f-7a01-417d-b1b5-0c2c1b24d89a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/spawn1_processor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/spawn1_processor.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,15 +24,6 @@
         <option value="JavaScript File" />
       </list>
     </option>
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>options.id</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>options.id</replace>
-      <replace>this.options.id</replace>
-    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -125,6 +117,8 @@
       <workItem from="1593944974604" duration="1788000" />
       <workItem from="1593946781596" duration="1806000" />
       <workItem from="1593948614631" duration="1818000" />
+      <workItem from="1593950458100" duration="877000" />
+      <workItem from="1593952550792" duration="637000" />
     </task>
     <task id="LOCAL-00001" summary="spawn process logic">
       <created>1593772666402</created>
@@ -294,7 +288,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593950082204</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="try make creeps more fast">
+      <created>1593950503583</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1593950503583</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -324,17 +325,18 @@
     <MESSAGE value="add builder logic" />
     <MESSAGE value="few fixes" />
     <MESSAGE value="add renew logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="add renew logic" />
+    <MESSAGE value="try make creeps more fast" />
+    <option name="LAST_COMMIT_MESSAGE" value="try make creeps more fast" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="76" key="#Notifications" timestamp="1593772928060">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="76" key="#Notifications/0.0.1536.834@0.0.1536.834" timestamp="1593772928060" />
-    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593950081331">
+    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593950502366">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593950081331" />
+    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593950502366" />
     <state x="473" y="159" key="FileChooserDialogImpl" timestamp="1593720041322">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -343,10 +345,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="249" y="0" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1593720053249" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593950083849">
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593950505668">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593950083849" />
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593950505668" />
     <state x="578" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593784460540">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
