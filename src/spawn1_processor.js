@@ -3,8 +3,6 @@ require("prototype_creep");
 
 const spawn = Game.spawns.Spawn1;
 
-const defaultMemoryCreep = {spawn: spawn.id, action: "start", prevAction: null, targetId: null};
-
 module.exports = {
     process(){
         if(spawn == null){
@@ -21,6 +19,8 @@ module.exports = {
         }
 
         if(spawn.memory.creepsCounter == null){
+            const defaultMemoryCreep = {spawn: spawn.id, action: "start", prevAction: null, targetId: null};
+
             spawn.memory.creepsCounter = {};
             spawn.memory.creepsCounter[Creep.ROLE.ENERGY_HARVESTER] = {
                 current: 0, max: 3, body: [WORK, MOVE, CARRY, CARRY], memory: Object.assign(defaultMemoryCreep, {})
@@ -264,18 +264,18 @@ function spawnCreeps(){
     for(let roleName in Creep.ROLE){
         const role = Creep.ROLE[roleName];
         const counter = spawn.memory.creepsCounter[role];
-        if(counter[role].current < counter[role].max){
+        if(counter.current < counter.max){
             let status = spawn.spawnCreep(
                 counter.body,
                 role+Math.floor(Math.random()*100),
-                {memory: counter[role].memory, dryRun: true});
+                {memory: counter.memory, dryRun: true});
             if(status === OK){
                 spawn.spawnCreep(
-                    counter[role].body,
+                    counter.body,
                     role+Math.floor(Math.random()*100),
-                    {memory: counter[role].memory});
+                    {memory: counter.memory});
             }
         }
-        spawn.memory.creepsCounter[role].current = 0;
+        counter.current = 0;
     }
 }
