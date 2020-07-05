@@ -2,7 +2,7 @@ require("prototype_store");
 require("prototype_creep");
 
 const spawn = Game.spawns.Spawn1;
-const energySources = ["5bbcadc29099fc012e637ca8", "5bbcadc29099fc012e637caa"];
+const energySources = ["adc6316cd9efe568e72adf08"];
 
 const defaultMemoryCreep = {spawn: spawn.id, action: "start", prevAction: null, targetId: null};
 const notEnough = function () {
@@ -15,11 +15,11 @@ creepsCounter[Creep.ROLE.ENERGY_HARVESTER] = {
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.CL_UPGRADER] = {
-    current: 0, max: 7, notEnough: notEnough,
+    current: 0, max: 0, notEnough: notEnough,
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.BUILDER] = {
-    current: 0, max: 2, notEnough: notEnough,
+    current: 0, max: 0, notEnough: notEnough,
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 
@@ -48,7 +48,7 @@ module.exports = {
 };
 
 const harvesterActions = {};
-harvesterActions["start"] = harvesterActions["harvest"];
+harvesterActions["start"] = (creep) =>  harvesterActions["harvest"](creep);
 harvesterActions["harvest"] = creep => creep.harvest(Game.getObjectById(creep.memory.targetId));
 harvesterActions["transfer"] = (creep) => creep.transfer(Game.getObjectById(creep.memory.targetId));
 harvesterActions["error"] = (creep) => {
@@ -66,11 +66,11 @@ harvesterActions[ERR_INVALID_ARGS] = (creep) => {
     Game.notify(creep.name+" has an error (ERR_INVALID_ARGS). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory));
     return "error";
 };
-harvesterActions[ERR_NOT_ENOUGH_ENERGY] = (creep) => {
+harvesterActions[ERR_NOT_ENOUGH_ENERGY] = harvesterActions[ERR_BUSY] = (creep) => {
     return "harvest";
 };
 harvesterActions[ERR_INVALID_TARGET] = (creep) => {
-    if(this.memory.prevAction === "harvest") {
+    if(creep.memory.prevAction === "harvest") {
         let minDistance = 100;
         for (let sourceId in energySources) {
             let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
@@ -79,8 +79,8 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
                 creep.memory.targetId = sourceId;
             }
         }
-    }else if(this.memory.prevAction === "transfer"){
-        this.memory.targetId = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+    }else if(creep.memory.prevAction === "transfer"){
+        creep.memory.targetId = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
             {filter: (struct) => struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
     }
 };

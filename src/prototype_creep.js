@@ -50,7 +50,9 @@ Creep.prototype.getTarget = function({onlyId = false} = {}){
 Creep.prototype.do = function(actions){
     if(this.memory.action == null) this.memory.action = "start";
 
-    this.memory.prevAction = this.memory.action;
+    if(this.memory.action !== this.memory.prevAction){
+        this.memory.prevAction = this.memory.action;
+    }
     this.memory.action = actions[this.memory.action](this);
 };
 
