@@ -75,11 +75,12 @@ defaultActions[ERR_NOT_IN_RANGE] = (creep) => {
     if(creep.memory.prevAction !== "renew" && creep.ticksToLive < 200){
         return "renew";
     }
-    let status = creep.moveTo(Game.getObjectById(creep.memory.targetId), {reusePath: 100, ignoreCreeps: false, maxOps: 500});
-    if(status === ERR_NO_PATH || status === ERR_NOT_FOUND){
-        creep.memory.errorMsg = creep.memory.targetId;
-        return ERR_INVALID_TARGET;
-    }
+    creep.moveTo(Game.getObjectById(creep.memory.targetId));
+    // let status = creep.moveTo(Game.getObjectById(creep.memory.targetId), {reusePath: 100, ignoreCreeps: false, maxOps: 500});
+    // if(status === ERR_NO_PATH || status === ERR_NOT_FOUND){
+    //     creep.memory.errorMsg = creep.memory.targetId;
+    //     return ERR_INVALID_TARGET;
+    // }
     return creep.memory.prevAction;
 };
 
