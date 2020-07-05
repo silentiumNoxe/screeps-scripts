@@ -229,6 +229,7 @@ function harvesterLogic(creep){
     creepsCounter[Creep.ROLE.ENERGY_HARVESTER].current++;
 
     creep.do(harvesterActions);
+    creep.do(harvesterActions);
 }
 
 /** @param creep {Creep}*/
@@ -240,6 +241,7 @@ function uclLogic(creep) {
     creepsCounter[Creep.ROLE.CL_UPGRADER].current++;
 
     creep.do(uclActions);
+    creep.do(uclActions);
 }
 
 /** @param creep {Creep}*/
@@ -250,6 +252,7 @@ function builderLogic(creep) {
 
     creepsCounter[Creep.ROLE.BUILDER].current++;
 
+    creep.do(builderActions);
     creep.do(builderActions);
 }
 
