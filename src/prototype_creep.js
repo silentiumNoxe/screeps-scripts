@@ -17,6 +17,7 @@ Creep.TODO = {
 };
 
 Creep.prototype.toMemory = function(obj){
+    if(this.memory.debug) console.log(this.name, "write to memory", JSON.stringify(obj));
     this.memory = Object.assign(this.memory, obj);
 };
 
@@ -26,14 +27,6 @@ Creep.prototype.hasRole = function(role){
 
 Creep.prototype.getSpawn = function({onlyId = false} = {}){
     return onlyId ? this.memory.spawn : Game.getObjectById(this.memory.spawn);
-};
-
-Creep.prototype.todoIs = function(todo){
-    return this.memory.todo = todo;
-};
-
-Creep.prototype.getTodo = function(){
-    return this.memory.todo;
 };
 
 Creep.prototype.setTarget = function(target, todo){
@@ -48,17 +41,13 @@ Creep.prototype.getTarget = function({onlyId = false} = {}){
 };
 
 Creep.prototype.do = function(actions){
+    if(this.memory.debug) console.log(this.name, "do action", this.memory.action);
+
     if(this.memory.action == null) this.toMemory({action: "start"});
 
     let action = actions[this.memory.action](this);
     this.toMemory({prevAction: this.memory.action});
     this.toMemory({action: action});
-};
 
-Creep.prototype.myMove = function (target) {
-    if(this.memory.move == null) this.memory.move = {targetId: "", path: []};
-
-    if(this.memory.move.targetId !== target.id){
-        this.memory.move
-    }
+    if(this.memory.debug) console.log(this.name, "fatigue", this.fatigue);
 };

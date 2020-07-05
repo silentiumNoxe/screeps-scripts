@@ -19,7 +19,7 @@ module.exports = {
         }
 
         if(spawn.memory.creepsCounter == null){
-            const defaultMemoryCreep = {spawn: spawn.id, action: "start", prevAction: null, targetId: null};
+            const defaultMemoryCreep = {spawn: spawn.id, action: "start", prevAction: null, targetId: null, debug: false};
 
             spawn.memory.creepsCounter = {};
             spawn.memory.creepsCounter[Creep.ROLE.ENERGY_HARVESTER] = {
@@ -75,7 +75,7 @@ defaultActions[ERR_NOT_IN_RANGE] = (creep) => {
     if(creep.memory.prevAction !== "renew" && creep.ticksToLive < 200){
         return "renew";
     }
-    creep.moveTo(Game.getObjectById(creep.memory.targetId));
+    creep.moveTo(Game.getObjectById(creep.memory.targetId), {swampCost: 3});
     // let status = creep.moveTo(Game.getObjectById(creep.memory.targetId), {reusePath: 100, ignoreCreeps: false, maxOps: 500});
     // if(status === ERR_NO_PATH || status === ERR_NOT_FOUND){
     //     creep.memory.errorMsg = creep.memory.targetId;
@@ -210,7 +210,7 @@ builderActions[ERR_INVALID_TARGET] = (creep) => {
     if(creep.memory.prevAction === "energy" || creep.memory.prevAction === "start") {
         target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
             {filter: (struct) => {
-                    if (struct.store) return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                    if (struct.store) return struct.store[RESOURCE_ENERGY] > 0
                 }});
     }else if(creep.memory.prevAction === "build"){
         target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
