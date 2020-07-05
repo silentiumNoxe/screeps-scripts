@@ -15,11 +15,11 @@ creepsCounter[Creep.ROLE.ENERGY_HARVESTER] = {
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.CL_UPGRADER] = {
-    current: 0, max: 1, notEnough: notEnough,
+    current: 0, max: 2, notEnough: notEnough,
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 creepsCounter[Creep.ROLE.BUILDER] = {
-    current: 0, max: 0, notEnough: notEnough,
+    current: 0, max: 1, notEnough: notEnough,
     body: [WORK, MOVE, CARRY], memory: Object.assign(defaultMemoryCreep, {})
 };
 
@@ -115,6 +115,7 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
     }
     return creep.memory.prevAction;
 };
+harvesterActions[ERR_FULL] = (creep) => creep.memory.prevAction;
 harvesterActions["error"] = defaultActions["error"];
 harvesterActions[ERR_NO_BODYPART] = defaultActions[ERR_NO_BODYPART];
 harvesterActions[ERR_INVALID_ARGS] = defaultActions[ERR_INVALID_ARGS];
@@ -133,7 +134,7 @@ uclActions["harvest"] = (creep) => {
     return status;
 };
 uclActions["upgrade"] = (creep) => {
-    let status = creep.upgradeController(spawn);
+    let status = creep.upgradeController(Game.getObjectById(creep.memory.targetId));
     if(status === OK) status = "upgrade";
     return status;
 };
@@ -154,10 +155,55 @@ uclActions[ERR_INVALID_TARGET] = (creep) => {
 };
 uclActions[OK] = (creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "harvest" : "transfer";
 uclActions[ERR_NOT_IN_RANGE] = defaultActions[ERR_NOT_IN_RANGE];
-uclActions[ERR_NOT_ENOUGH_ENERGY] = harvesterActions[ERR_NOT_ENOUGH_ENERGY];
+uclActions[ERR_NOT_ENOUGH_ENERGY] = uclActions[ERR_BUSY] = harvesterActions[ERR_NOT_ENOUGH_ENERGY];
 uclActions["error"] = defaultActions["error"];
 uclActions[ERR_NO_BODYPART] = defaultActions[ERR_NO_BODYPART];
 uclActions[ERR_INVALID_ARGS] = defaultActions[ERR_INVALID_ARGS];
+
+//------------------------------------------------------------------------------------------------
+const builderActions = {};
+builderActions["start"] = (creep) => builderActions["energy"](creep);
+builderActions["energy"] = (creep) => {
+    let status = creep.withdraw(creep.getTarget());
+    if(status === OK) status = "build";
+    return status;
+};
+builderActions["build"] = (creep) => {
+    let status = creep.build(creep.getTarget());
+    if(status === OK) status = "build";
+    return status;
+};
+builderActions["repair"] = (creep) => {
+    let status = creep.repair(creep.getTarget());
+    if(status === OK) status = "build";
+    return status;
+};
+builderActions[ERR_INVALID_TARGET] = (creep) => {
+    let target;
+    if(creep.memory.prevAction === "energy" || creep.memory.prevAction === "start") {
+        target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
+            {filter: (struct) => {
+                    if (struct.store) return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+                }});
+    }else if(creep.memory.prevAction === "build"){
+        target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+    }else if(creep.memory.prevAction === "repair"){
+        target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (struct) => {
+                return struct.hits < struct.hitsMax;
+            }});
+    }
+    if(target != null){
+        creep.toMemory({targetId: target.id});
+    }
+
+    return creep.memory.prevAction;
+};
+builderActions[OK] = (creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "energy" : "build";
+builderActions[ERR_NOT_IN_RANGE] = defaultActions[ERR_NOT_IN_RANGE];
+builderActions[ERR_NOT_ENOUGH_ENERGY] = uclActions[ERR_BUSY] = (creep) => "energy";
+builderActions["error"] = defaultActions["error"];
+builderActions[ERR_NO_BODYPART] = defaultActions[ERR_NO_BODYPART];
+builderActions[ERR_INVALID_ARGS] = defaultActions[ERR_INVALID_ARGS];
 
 /** @param creep {Creep}*/
 function harvesterLogic(creep){
@@ -186,6 +232,10 @@ function builderLogic(creep) {
     if(!creep.hasRole(Creep.ROLE.BUILDER)){
         return;
     }
+
+    creepsCounter[Creep.ROLE.BUILDER].current++;
+
+    creep.do(builderActions);
 }
 
 function build(creep) {
