@@ -42,22 +42,22 @@ module.exports = {
             }
 
             harvesterLogic(creep);
-            spawnCreeps();
         }
+        spawnCreeps();
     }
 };
 
-const harvesterActions = {};
-harvesterActions["start"] = harvesterActions["harvest"];
-harvesterActions["harvest"] = (creep) => {
-    return creep.harvest(Game.getObjectById(creep.memory.targetId));
-};
-harvesterActions["transfer"] = (creep) => {
-    return creep.transfer(Game.getObjectById(creep.memory.targetId));
+const harvesterActions = {
+    start: this.harvest,
+    harvest: (creep) => creep.harvest(Game.getObjectById(creep.memory.targetId)),
+    transfer: (creep) => creep.transfer(Game.getObjectById(creep.memory.targetId)),
+    error: (creep) => {
+        console.log(creep.name, "has an error");
+        return "error";
+    }
 };
 harvesterActions["error"] = (creep) => {
-    console.log(creep.name, "has an error");
-    return "error";
+
 };
 harvesterActions[OK] = (creep) => {
     return creep.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY) ? "harvest" : "transfer";
