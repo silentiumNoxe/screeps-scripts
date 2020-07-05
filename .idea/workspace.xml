@@ -118,7 +118,9 @@
       <workItem from="1593946781596" duration="1806000" />
       <workItem from="1593948614631" duration="1818000" />
       <workItem from="1593950458100" duration="877000" />
-      <workItem from="1593952550792" duration="637000" />
+      <workItem from="1593952550792" duration="1603000" />
+      <workItem from="1593954363465" duration="1307000" />
+      <workItem from="1593956289212" duration="304000" />
     </task>
     <task id="LOCAL-00001" summary="spawn process logic">
       <created>1593772666402</created>
@@ -295,7 +297,21 @@
       <option name="project" value="LOCAL" />
       <updated>1593950503583</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="update spawn logic">
+      <created>1593953200974</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1593953200974</updated>
+    </task>
+    <task id="LOCAL-00027" summary="update spawn logic">
+      <created>1593953324138</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1593953324138</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -326,17 +342,18 @@
     <MESSAGE value="few fixes" />
     <MESSAGE value="add renew logic" />
     <MESSAGE value="try make creeps more fast" />
-    <option name="LAST_COMMIT_MESSAGE" value="try make creeps more fast" />
+    <MESSAGE value="update spawn logic" />
+    <option name="LAST_COMMIT_MESSAGE" value="update spawn logic" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="76" key="#Notifications" timestamp="1593772928060">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="76" key="#Notifications/0.0.1536.834@0.0.1536.834" timestamp="1593772928060" />
-    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593953200319">
+    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593953323153">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593953200319" />
+    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593953323153" />
     <state x="473" y="159" key="FileChooserDialogImpl" timestamp="1593720041322">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -345,10 +362,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="249" y="0" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1593720053249" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593953202779">
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593953325508">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593953202779" />
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593953325508" />
     <state x="578" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593784460540">
       <screen x="0" y="0" width="1536" height="834" />
     </state>

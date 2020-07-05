@@ -75,7 +75,11 @@ defaultActions[ERR_NOT_IN_RANGE] = (creep) => {
     if(creep.memory.prevAction !== "renew" && creep.ticksToLive < 200){
         return "renew";
     }
-    creep.moveTo(Game.getObjectById(creep.memory.targetId));
+    let status = creep.moveTo(Game.getObjectById(creep.memory.targetId), {reusePath: 100, ignoreCreeps: false, maxOps: 500});
+    if(status === ERR_NO_PATH || status === ERR_NOT_FOUND){
+        creep.memory.errorMsg = creep.memory.targetId;
+        return ERR_INVALID_TARGET;
+    }
     return creep.memory.prevAction;
 };
 
@@ -106,12 +110,16 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
     if(creep.memory.prevAction === "harvest" || creep.memory.prevAction === "start") {
         let minDistance = 100;
         for (let sourceId of spawn.memory.energySources) {
+            if(sourceId === creep.memory.errorMsg) continue;
+
             let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
             if (dist < minDistance) {
                 minDistance = dist;
                 creep.memory.targetId = sourceId;
             }
         }
+
+        creep.memory.errorMsg = "";
     }else if(creep.memory.prevAction === "transfer"){
         let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES,
             {filter: (struct) => {
@@ -153,12 +161,16 @@ uclActions[ERR_INVALID_TARGET] = (creep) => {
     if(creep.memory.prevAction === "harvest" || creep.memory.prevAction === "start") {
         let minDistance = 100;
         for (let sourceId of spawn.memory.energySources) {
+            if(sourceId === creep.memory.errorMsg) continue;
+
             let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
             if (dist < minDistance) {
                 minDistance = dist;
                 creep.memory.targetId = sourceId;
             }
         }
+
+        creep.memory.errorMsg = "";
     }else if(creep.memory.prevAction === "upgrade"){
         creep.memory.targetId = spawn.room.controller.id;
     }else if(creep.memory.prevAction === "renew"){
@@ -263,6 +275,12 @@ function builderLogic(creep) {
 function spawnCreeps(){
     for(let roleName in Creep.ROLE){
         const role = Creep.ROLE[roleName];
+        if(role === Creep.ROLE.BUILDER){
+            if(spawn.memory.creepsCounter[Creep.ROLE.ENERGY_HARVESTER].current < spawn.memory.creepsCounter[Creep.ROLE.ENERGY_HARVESTER].max){
+                continue;
+            }
+        }
+
         const counter = spawn.memory.creepsCounter[role];
         if(counter.current < counter.max){
             let status = spawn.spawnCreep(
