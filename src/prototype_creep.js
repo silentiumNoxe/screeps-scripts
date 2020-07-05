@@ -48,10 +48,11 @@ Creep.prototype.getTarget = function({onlyId = false} = {}){
 };
 
 Creep.prototype.do = function(actions){
-    if(this.memory.action == null) this.memory.action = "start";
+    if(this.memory.action == null) this.toMemory({action: "start"});
 
-    this.memory.prevAction = this.memory.action;
-    this.memory.action = actions[this.memory.action](this);
+    let action = actions[this.memory.action](this);
+    this.toMemory({prevAction: this.memory.action});
+    this.toMemory({action: action});
 };
 
 Creep.prototype.myMove = function (target) {

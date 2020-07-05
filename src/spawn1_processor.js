@@ -51,7 +51,11 @@ const harvesterActions = {};
 harvesterActions["start"] = (creep) =>  harvesterActions["harvest"](creep);
 harvesterActions["harvest"] = creep => {
     let status = creep.harvest(Game.getObjectById(creep.memory.targetId));
-    if(status === OK) status = "harvest";
+    if(status === OK && creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0){
+        status = "transfer";
+    }else if(status === OK){
+        status = "harvest";
+    }
     return status;
 };
 harvesterActions["transfer"] = (creep) => {
@@ -80,7 +84,7 @@ harvesterActions[ERR_NOT_ENOUGH_ENERGY] = harvesterActions[ERR_BUSY] = (creep) =
 harvesterActions[ERR_INVALID_TARGET] = (creep) => {
     if(creep.memory.prevAction === "harvest" || creep.memory.prevAction === "start") {
         let minDistance = 100;
-        for (let sourceId in energySources) {
+        for (let sourceId of energySources) {
             let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
             if (dist < minDistance) {
                 minDistance = dist;
@@ -93,7 +97,7 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
     }
 };
 harvesterActions[ERR_NOT_IN_RANGE] = (creep) => {
-    creep.moveTo(creep.memory.targetId);
+    creep.moveTo(Game.getObjectById(creep.memory.targetId));
     return creep.memory.prevAction;
 };
 
