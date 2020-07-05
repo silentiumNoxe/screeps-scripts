@@ -50,6 +50,7 @@ module.exports = {
 };
 
 const defaultActions = {};
+defaultActions["renew"] = (creep) => spawn.renewCreep(creep);
 defaultActions["error"] = (creep) => {
     console.log(creep.name, "has an error");
     console.log(creep.memory.errorMsg);
@@ -68,6 +69,9 @@ defaultActions[ERR_INVALID_ARGS] = (creep) => {
     return "error";
 };
 defaultActions[ERR_NOT_IN_RANGE] = (creep) => {
+    if(creep.memory.prevAction !== "renew" && creep.ticksToLive < 200){
+        return "renew";
+    }
     creep.moveTo(Game.getObjectById(creep.memory.targetId));
     return creep.memory.prevAction;
 };
@@ -113,9 +117,12 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
         if(target != null){
             creep.toMemory({targetId: target.id});
         }
+    }else if(creep.memory.prevAction === "renew"){
+        creep.toMemory({targetId: creep.memory.spawn});
     }
     return creep.memory.prevAction;
 };
+harvesterActions["renew"] = defaultActions["renew"];
 harvesterActions[ERR_FULL] = (creep) => creep.memory.prevAction;
 harvesterActions["error"] = defaultActions["error"];
 harvesterActions[ERR_NO_BODYPART] = defaultActions[ERR_NO_BODYPART];
@@ -151,9 +158,12 @@ uclActions[ERR_INVALID_TARGET] = (creep) => {
         }
     }else if(creep.memory.prevAction === "upgrade"){
         creep.memory.targetId = spawn.room.controller.id;
+    }else if(creep.memory.prevAction === "renew"){
+        creep.toMemory({targetId: creep.memory.spawn});
     }
     return creep.memory.prevAction;
 };
+uclActions["renew"] = defaultActions["renew"];
 uclActions[OK] = (creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "harvest" : "transfer";
 uclActions[ERR_NOT_IN_RANGE] = defaultActions[ERR_NOT_IN_RANGE];
 uclActions[ERR_NOT_ENOUGH_ENERGY] = uclActions[ERR_BUSY] = harvesterActions[ERR_NOT_ENOUGH_ENERGY];
@@ -188,10 +198,13 @@ builderActions[ERR_INVALID_TARGET] = (creep) => {
                 }});
     }else if(creep.memory.prevAction === "build"){
         target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+        if(target == null) return "repair";
     }else if(creep.memory.prevAction === "repair"){
         target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (struct) => {
                 return struct.hits < struct.hitsMax;
             }});
+    }else if(creep.memory.prevAction === "renew"){
+        creep.toMemory({targetId: creep.memory.spawn});
     }
     if(target != null){
         creep.toMemory({targetId: target.id});
@@ -199,6 +212,7 @@ builderActions[ERR_INVALID_TARGET] = (creep) => {
 
     return creep.memory.prevAction;
 };
+builderActions["renew"] = defaultActions["renew"];
 builderActions[OK] = (creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "energy" : "build";
 builderActions[ERR_NOT_IN_RANGE] = defaultActions[ERR_NOT_IN_RANGE];
 builderActions[ERR_NOT_ENOUGH_ENERGY] = uclActions[ERR_BUSY] = (creep) => "energy";
