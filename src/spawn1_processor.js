@@ -65,17 +65,22 @@ harvesterActions["transfer"] = (creep) => {
 };
 harvesterActions["error"] = (creep) => {
     console.log(creep.name, "has an error");
+    console.log(creep.memory.errorMsg);
     return "error";
 };
 harvesterActions[OK] = (creep) => {
     return creep.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY) ? "harvest" : "transfer";
 };
 harvesterActions[ERR_NO_BODYPART] = (creep) => {
-    Game.notify(creep.name+" has an error (ERR_NO_BODYPART). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory));
+    let msg = creep.name+" has an error (ERR_NO_BODYPART). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory);
+    Game.notify(msg);
+    creep.toMemory({errorMsg: msg});
     return "error";
 };
 harvesterActions[ERR_INVALID_ARGS] = (creep) => {
-    Game.notify(creep.name+" has an error (ERR_INVALID_ARGS). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory));
+    let msg = creep.name+" has an error (ERR_INVALID_ARGS). CREEP: "+JSON.stringify(creep)+" MEMORY: "+JSON.stringify(creep.memory);
+    Game.notify(msg);
+    creep.toMemory({errorMsg: msg});
     return "error";
 };
 harvesterActions[ERR_NOT_ENOUGH_ENERGY] = harvesterActions[ERR_BUSY] = (creep) => {
