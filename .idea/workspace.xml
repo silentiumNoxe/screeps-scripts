@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="8c18eb7f-7a01-417d-b1b5-0c2c1b24d89a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/prototype_creep.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/prototype_creep.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/spawn1_processor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/spawn1_processor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,6 +121,7 @@
       <workItem from="1593891393697" duration="735000" />
       <workItem from="1593936801291" duration="1447000" />
       <workItem from="1593939491490" duration="1666000" />
+      <workItem from="1593941301546" duration="577000" />
     </task>
     <task id="LOCAL-00001" summary="spawn process logic">
       <created>1593772666402</created>
@@ -221,7 +221,14 @@
       <option name="project" value="LOCAL" />
       <updated>1593940375661</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="add ERR_BUSY logic, update spawn constants and ids of sources">
+      <created>1593941540434</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1593941540434</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -242,17 +249,18 @@
     <MESSAGE value="update logic spawn1 and add cpu tracking" />
     <MESSAGE value="update harvester logic" />
     <MESSAGE value="update creep do logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="update creep do logic" />
+    <MESSAGE value="add ERR_BUSY logic, update spawn constants and ids of sources" />
+    <option name="LAST_COMMIT_MESSAGE" value="add ERR_BUSY logic, update spawn constants and ids of sources" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="76" key="#Notifications" timestamp="1593772928060">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="76" key="#Notifications/0.0.1536.834@0.0.1536.834" timestamp="1593772928060" />
-    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593940374701">
+    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593941539529">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593940374701" />
+    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593941539529" />
     <state x="473" y="159" key="FileChooserDialogImpl" timestamp="1593720041322">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -261,10 +269,10 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="249" y="0" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1593720053249" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593940378009">
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593941543807">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593940378009" />
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593941543807" />
     <state x="578" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593784460540">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
