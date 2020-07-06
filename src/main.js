@@ -31,7 +31,7 @@ module.exports.loop = () => {
 function harvester(creep){
     if(!creep.name.startsWith("H")) return 0;
 
-    let target;
+    let target, status;
     switch(creep.memory.task){
         case "harvest":
             if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
@@ -40,7 +40,7 @@ function harvester(creep){
             }
 
             target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-            let status = creep.harvest(target);
+            status = creep.harvest(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
             }
@@ -51,13 +51,15 @@ function harvester(creep){
                 break;
             }
 
-            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
+                return struct.structureType == STRUCTURE_CONTAINER && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            })});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 
-            let status = creep.transfer(target, RESOURCE_ENERGY);
+            status = creep.transfer(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
             }else if(status == ERR_NOT_ENOUGH_ENERGY){
@@ -72,7 +74,7 @@ function harvester(creep){
 /** @param creep {Creep}*/
 function ucl(creep){
     if(!creep.name.startsWith("CL")) return 0;
-    let target;
+    let target, status;
 
     switch(creep.memory.task){
         case "energy":
@@ -87,7 +89,7 @@ function ucl(creep){
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 
-            let status = creep.withdraw(target, RESOURCE_ENERGY);
+            status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
             }
@@ -99,7 +101,7 @@ function ucl(creep){
             }
 
             target = creep.room.controller;
-            let status = creep.upgradeController(target);
+            status = creep.upgradeController(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
             }
@@ -112,7 +114,7 @@ function ucl(creep){
 /** @param creep {Creep}*/
 function builder(creep){
     if(!creep.name.startsWith("B")) return 0;
-    let target;
+    let target, status;
 
     switch(creep.memory.task){
         case "energy":
@@ -127,7 +129,7 @@ function builder(creep){
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 
-            let status = creep.withdraw(target, RESOURCE_ENERGY);
+            status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
             }
@@ -146,7 +148,7 @@ function builder(creep){
                 break;
             }
 
-            let status = creep.repair(target);
+            status = creep.repair(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
             }else if(static == ERR_NOT_ENOUGH_ENERGY){
@@ -165,7 +167,7 @@ function builder(creep){
                 break;
             }
 
-            let status = creep.build(target);
+            status = creep.build(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
             }else if(static == ERR_NOT_ENOUGH_ENERGY){
