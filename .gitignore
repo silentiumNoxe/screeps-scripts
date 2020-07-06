@@ -1,2 +1,4 @@
 .idea/
-/ScreepsAutocomplete/
+ScreepsAutocomplete/
+
+.tern-project
