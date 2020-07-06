@@ -43,6 +43,7 @@ module.exports.loop = () => {
 function harvester(creep){
     if(!creep.name.startsWith("H")) return 0;
 
+    let target;
     switch(creep.memory.task){
         case "harvest":
             if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
@@ -50,7 +51,7 @@ function harvester(creep){
                 break;
             }
 
-            let target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
             let status = creep.harvest(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
@@ -62,7 +63,7 @@ function harvester(creep){
                 break;
             }
 
-            let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
             if(target == null)
@@ -83,6 +84,7 @@ function harvester(creep){
 /** @param creep {Creep}*/
 function ucl(creep){
     if(!creep.name.startsWith("CL")) return 0;
+    let target;
 
     switch(creep.memory.task){
         case "energy":
@@ -91,7 +93,7 @@ function ucl(creep){
                 break;
             }
 
-            let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
             if(target == null)
@@ -108,7 +110,7 @@ function ucl(creep){
                 break;
             }
 
-            let target = creep.room.controller;
+            target = creep.room.controller;
             let status = creep.upgradeController(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
@@ -122,6 +124,7 @@ function ucl(creep){
 /** @param creep {Creep}*/
 function builder(creep){
     if(!creep.name.startsWith("B")) return 0;
+    let target;
 
     switch(creep.memory.task){
         case "energy":
@@ -130,7 +133,7 @@ function builder(creep){
                 break;
             }
 
-            let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
             if(target == null)
@@ -147,7 +150,7 @@ function builder(creep){
                 break;
             }
 
-            let target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (struct) => {
+            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (struct) => {
                 return struct.hits < struct.hitsMax;
             }});
             if(target == null){
@@ -168,7 +171,7 @@ function builder(creep){
                 break;
             }
 
-            let target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+            target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
             if(target == null){
                 creep.memory.task = "repair";
                 break;
