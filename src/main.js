@@ -103,7 +103,7 @@ function ucl(creep){
             }
             break;
         case "upgrade":
-            if(creep.store.[RESOURCE_ENERGY] == 0){
+            if(creep.store[RESOURCE_ENERGY] == 0){
                 creep.memory.task = "energy";
                 break;
             }
