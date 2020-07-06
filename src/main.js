@@ -52,8 +52,12 @@ function harvester(creep){
             }
 
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                return struct.structureType == STRUCTURE_CONTAINER && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-            })});
+                return struct.structureType == STRUCTURE_EXTENSION && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            }})
+            if(target == null)
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
+                    return struct.structureType == STRUCTURE_CONTAINER && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
             if(target == null)
