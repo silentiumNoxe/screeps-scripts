@@ -1,16 +1,4 @@
-// let spawn1Processor = require("spawn1_processor");
-
 module.exports.loop = () => {
-    // let startCPU = Game.cpu.getUsed();
-    // processTowers();
-    // let usedCPU = Game.cpu.getUsed();
-    // console.log("processTowers cpu: ", (usedCPU - startCPU).toFixed(2));
-    //
-    // startCPU = Game.cpu.getUsed();
-    // spawn1Processor.process();
-    // usedCPU = Game.cpu.getUsed();
-    // console.log("spawn1Processor cpu: ", (usedCPU - startCPU).toFixed(2));
-
     let cpuStart = Game.cpu.getUsed();
 
     const debug = Memory.debug;
