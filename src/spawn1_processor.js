@@ -37,7 +37,7 @@ module.exports = {
         }
 
         for(const creepName in Memory.creeps) {
-            /** @type Creep*/const creep = Game.creeps[creepName];
+            const creep = Game.creeps[creepName];
             if (creep == null) {
                 delete Memory.creeps[creepName];
                 continue;
@@ -57,7 +57,7 @@ module.exports = {
 
 const defaultActions = {};
 defaultActions["renew"] = (creep) => {
-    if(creep.getTarget({onlyId: true}) !== spawn.id) creep.toMemory({targetId: creep.getSpawn({onlyId: true})});
+    if(creep.getTarget({onlyId: true}) !== Game.spawns[spawnName].id) creep.toMemory({targetId: creep.getSpawn({onlyId: true})});
     return Game.spawns[spawnName].renewCreep(creep);
 };
 defaultActions["error"] = (creep) => {
@@ -81,12 +81,8 @@ defaultActions[ERR_NOT_IN_RANGE] = (creep) => {
     if(creep.memory.prevAction !== "renew" && creep.ticksToLive < 200){
         return "renew";
     }
+    
     creep.myMove(Game.getObjectById(creep.memory.targetId));
-    // let status = creep.myMove(Game.getObjectById(creep.memory.targetId), {reusePath: 100, ignoreCreeps: false, maxOps: 500});
-    // if(status === ERR_NO_PATH || status === ERR_NOT_FOUND){
-    //     creep.memory.errorMsg = creep.memory.targetId;
-    //     return ERR_INVALID_TARGET;
-    // }
     return creep.memory.prevAction;
 };
 
@@ -118,9 +114,10 @@ harvesterActions[ERR_INVALID_TARGET] = (creep) => {
     if(creep.memory.prevAction === "harvest" || creep.memory.prevAction === "start") {
         let minDistance = 100;
         for (let sourceId of Game.spawns[spawnName].memory.energySources) {
-            if(sourceId === creep.memory.errorMsg) continue;
-
-            let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
+            let source = Game.getObjectById(sourceId);
+            let pos = source.pos.getFreePlace();
+            if(pos == null) continue;
+            let dist = creep.pos.getRangeTo(pos);
             if (dist < minDistance) {
                 minDistance = dist;
                 creep.memory.targetId = sourceId;
@@ -167,14 +164,14 @@ uclActions[ERR_INVALID_TARGET] = (creep) => {
     if(creep.memory.prevAction === "harvest" || creep.memory.prevAction === "start") {
         let minDistance = 100;
         for (let sourceId of Game.spawns[spawnName].memory.energySources) {
-            let dist = creep.pos.getRangeTo(Game.getObjectById(sourceId));
+            let source = Game.getObjectById(sourceId);
+            if(!source.pos.isFree()) continue;
+            let dist = creep.pos.getRangeTo(source);
             if (dist < minDistance) {
                 minDistance = dist;
                 creep.memory.targetId = sourceId;
             }
         }
-
-        creep.memory.errorMsg = "";
     }else if(creep.memory.prevAction === "upgrade"){
         creep.memory.targetId = Game.spawns[spawnName].room.controller.id;
     }else if(creep.memory.prevAction === "renew"){
@@ -195,7 +192,7 @@ const builderActions = {};
 builderActions["start"] = (creep) => builderActions["energy"](creep);
 builderActions["energy"] = (creep) => {
     let status = creep.withdraw(creep.getTarget(), RESOURCE_ENERGY);
-    if(status === OK) status = "build";
+    if(status === OK) status = "repair";
     return status;
 };
 builderActions["build"] = (creep) => {
@@ -205,7 +202,7 @@ builderActions["build"] = (creep) => {
 };
 builderActions["repair"] = (creep) => {
     let status = creep.repair(creep.getTarget());
-    if(status === OK) status = "build";
+    if(status === OK) status = "repair";
     return status;
 };
 builderActions[ERR_INVALID_TARGET] = (creep) => {
@@ -222,6 +219,7 @@ builderActions[ERR_INVALID_TARGET] = (creep) => {
         target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (struct) => {
                 return struct.hits < struct.hitsMax;
             }});
+        if(target == null) return "build";
     }else if(creep.memory.prevAction === "renew"){
         creep.toMemory({targetId: creep.getSpawn({onlyId: true})});
     }
@@ -231,8 +229,8 @@ builderActions[ERR_INVALID_TARGET] = (creep) => {
 
     return creep.memory.prevAction;
 };
-builderActions[OK] = (creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "energy" : "build";
-builderActions[ERR_FULL] = (creep) => "build";
+builderActions[OK] = (creep) => creep.store.getFreeCapacity(RESOURCE_ENERGY) > 0 ? "energy" : "repair";
+builderActions[ERR_FULL] = (creep) => "repair";
 builderActions["renew"] = defaultActions["renew"];
 builderActions[ERR_NOT_IN_RANGE] = defaultActions[ERR_NOT_IN_RANGE];
 builderActions[ERR_NOT_ENOUGH_ENERGY] = builderActions[ERR_BUSY] = (creep) => {
@@ -273,7 +271,7 @@ function builderLogic(creep) {
         return;
     }
 
-    spawn.memory.creepsCounter[Creep.ROLE.BUILDER].current++;
+    Game.spawns[spawnName].memory.creepsCounter[Creep.ROLE.BUILDER].current++;
 
     creep.do(builderActions);
     creep.do(builderActions);

@@ -31,7 +31,9 @@ RoomPosition.prototype.getFreePlace = function(){
 RoomPosition.prototype.isFree = function(){
     const look = this.look();
     for(const a of look){
-        if(a.type === LOOK_FLAGS) return false;
+        if(a.type === LOOK_FLAGS){
+            if(a[LOOK_FLAGS].color === COLOR_WHITE && a[LOOK_FLAGS].secondaryColor === COLOR_WHITE) return false;
+        }
 
         if(a.type === LOOK_TERRAIN){
             if(a[LOOK_TERRAIN] === "wall") return false;
@@ -47,4 +49,4 @@ RoomPosition.prototype.isFree = function(){
     }
 
     return true;
-}
+};

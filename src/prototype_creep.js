@@ -59,7 +59,7 @@ Creep.prototype.myMove = function(target=null){
 
     let flag = Game.flags[this.name];
     if(flag != null){
-        this.moveTo(flag, {maxOps: 100, ignoreCreeps: true, swampCost: 3});
         if(this.pos.isEqualTo(flag.pos)) flag.remove();
+        this.moveTo(flag, {maxOps: 100, ignoreCreeps: false, swampCost: 3});
     }
 };
