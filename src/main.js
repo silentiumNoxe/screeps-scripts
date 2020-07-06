@@ -55,7 +55,7 @@ function harvester(creep){
                 return struct.structureType == STRUCTURE_CONTAINER && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
             })});
             if(target == null)
-                target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 
@@ -83,9 +83,9 @@ function ucl(creep){
                 break;
             }
 
-            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
             if(target == null)
-                target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 
