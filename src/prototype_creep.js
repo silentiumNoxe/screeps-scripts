@@ -1,19 +1,9 @@
+require("prototype_position");
+
 Creep.ROLE = {
     ENERGY_HARVESTER: "H",
     CL_UPGRADER: "CL",
     BUILDER: "B"
-};
-
-Creep.TODO = {
-    WAIT: -1,
-    MOVE: 0,
-    HARVEST: 1,
-    TRANSFER: 2,
-    BUILD: 3,
-    UCL: 4,
-    ATTACK: 5,
-    RENEW: 6,
-    REPAIR: 7
 };
 
 Creep.prototype.toMemory = function(obj){
@@ -27,13 +17,6 @@ Creep.prototype.hasRole = function(role){
 
 Creep.prototype.getSpawn = function({onlyId = false} = {}){
     return onlyId ? this.memory.spawn : Game.getObjectById(this.memory.spawn);
-};
-
-Creep.prototype.setTarget = function(target, todo){
-    if(target == null) return;
-
-    if(typeof target == "object") target = target.id;
-    this.toMemory({targetId: target, todo: todo});
 };
 
 Creep.prototype.getTarget = function({onlyId = false} = {}){
@@ -50,4 +33,33 @@ Creep.prototype.do = function(actions){
     this.toMemory({action: action});
 
     if(this.memory.debug) console.log(this.name, "fatigue", this.fatigue);
+};
+
+Creep.prototype.setMoveTarget = function(target){
+    let flag = Game.flags[this.name];
+    if((flag != null && flag.pos.isNearTo(target))) return;
+
+    if(this.pos.isNearTo(target)) return;
+
+    let pos;
+    if(target instanceof RoomPosition) pos = target;
+    else if(target.pos) pos = target.pos;
+
+    if(flag != null) flag.remove();
+    pos = pos.getFreePlace();
+    if(pos != null) this.takePos(pos);
+};
+
+Creep.prototype.takePos = function(pos){
+    pos.createFlag(this.name);
+};
+
+Creep.prototype.myMove = function(target=null){
+    if(target != null) this.setMoveTarget(target);
+
+    let flag = Game.flags[this.name];
+    if(flag != null){
+        this.moveTo(flag, {maxOps: 100, ignoreCreeps: true, swampCost: 3});
+        if(this.pos.isEqualTo(flag.pos)) flag.remove();
+    }
 };

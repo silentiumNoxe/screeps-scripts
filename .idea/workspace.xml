@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8c18eb7f-7a01-417d-b1b5-0c2c1b24d89a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/prototype_position.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/prototype_creep.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/prototype_creep.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/spawn1_processor.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/spawn1_processor.js" afterDir="false" />
@@ -123,7 +124,13 @@
       <workItem from="1593954363465" duration="1307000" />
       <workItem from="1593956289212" duration="1958000" />
       <workItem from="1593959370780" duration="670000" />
-      <workItem from="1593961176185" duration="1053000" />
+      <workItem from="1593961176185" duration="1769000" />
+      <workItem from="1593963011978" duration="599000" />
+      <workItem from="1594022214293" duration="1790000" />
+      <workItem from="1594024025824" duration="1787000" />
+      <workItem from="1594025839516" duration="1627000" />
+      <workItem from="1594033189365" duration="840000" />
+      <workItem from="1594037813351" duration="240000" />
     </task>
     <task id="LOCAL-00001" summary="spawn process logic">
       <created>1593772666402</created>
@@ -328,14 +335,20 @@
       <option name="project" value="LOCAL" />
       <updated>1593956942719</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="added debug mod to creep">
+      <created>1593962295223</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1593962295223</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="add wait action" />
     <MESSAGE value="few change logic spawn1" />
     <MESSAGE value="update actions logics" />
     <MESSAGE value="update action &quot;renew&quot; logic" />
@@ -360,17 +373,18 @@
     <MESSAGE value="update spawn logic" />
     <MESSAGE value="update move logic" />
     <MESSAGE value="return move logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="return move logic" />
+    <MESSAGE value="added debug mod to creep" />
+    <option name="LAST_COMMIT_MESSAGE" value="added debug mod to creep" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="76" key="#Notifications" timestamp="1593772928060">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="361" y="76" key="#Notifications/0.0.1536.834@0.0.1536.834" timestamp="1593772928060" />
-    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593956941831">
+    <state x="359" y="12" key="CommitChangelistDialog2" timestamp="1593962293821">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593956941831" />
+    <state x="359" y="12" key="CommitChangelistDialog2/0.0.1536.834@0.0.1536.834" timestamp="1593962293821" />
     <state x="473" y="159" key="FileChooserDialogImpl" timestamp="1593720041322">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
@@ -379,14 +393,18 @@
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="249" y="0" key="SettingsEditor/0.0.1536.834@0.0.1536.834" timestamp="1593720053249" />
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593956944711">
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2" timestamp="1593962299840">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
-    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593956944711" />
+    <state x="361" y="150" key="Vcs.Push.Dialog.v2/0.0.1536.834@0.0.1536.834" timestamp="1593962299840" />
     <state x="578" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593784460540">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
     <state x="578" y="334" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.834@0.0.1536.834" timestamp="1593784460540" />
+    <state x="425" y="189" key="run.anything.popup" timestamp="1594024096491">
+      <screen x="0" y="0" width="1536" height="834" />
+    </state>
+    <state x="425" y="189" key="run.anything.popup/0.0.1536.834@0.0.1536.834" timestamp="1594024096491" />
     <state x="431" y="155" width="672" height="678" key="search.everywhere.popup" timestamp="1593945872906">
       <screen x="0" y="0" width="1536" height="834" />
     </state>
