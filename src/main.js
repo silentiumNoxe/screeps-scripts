@@ -52,7 +52,7 @@ module.exports.loop = () => {
     maxCPU.val = maxCPU.val.toFixed(2);
     maxCPU.max = maxCPU.max.toFixed(2);
     console.log("maxCPU:", JSON.stringify(maxCPU));
-    console.log("");
+    console.log();
 };
 
 /** @param creep {Creep}*/
@@ -75,8 +75,10 @@ function harvester(creep){
                 creep.memory.task = "transfer";
                 break;
             }
-
-            target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            target = Game.getObjectById(creep.memory.target);
+            if(target == null || target.structureType != null){
+                creep.memory.target = target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+            }
             status = creep.harvest(target);
             if(status == ERR_NOT_IN_RANGE){
                 moveCreep(creep, target);
@@ -88,14 +90,16 @@ function harvester(creep){
                 break;
             }
 
-
-            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
-                    if(struct.store){
-                        return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+            target = Game.getObjectById(creep.memory.target);
+            if(target == null || target.structureType == null){}
+                creep.memory.target = target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
+                    if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
+                        if(struct.store){
+                            return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                        }
                     }
-                }
-            }})
+                }})
+            }
             if(target == null) break;
 
             status = creep.transfer(target, RESOURCE_ENERGY);
@@ -261,7 +265,13 @@ function thief(creep){
                 creep.memory.task = "transfer";
                 break;
             }
-            target = Game.getObjectById("5f034d003187fd67e0facec4");
+
+            if(!creep.pos.isNearTo(Game.flags["steal1"])){
+                moveCreep(creep, Game.flags["steal1"]);
+                break;
+            }
+
+            target = creep.pos.findClosestByRange(FIND_HOSTILE_SPAWNS);
             status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
                 moveCreep(creep, target);
@@ -270,7 +280,7 @@ function thief(creep){
             }
             break;
         case "transfer":
-            let target = spawn.pos.findClosestByRange(FIND_STRUCTURES, {filter(struct) =>{
+            target = spawn.pos.findClosestByRange(FIND_STRUCTURES, {filter(struct){
                 if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
                     if(struct.store){
                         return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
@@ -309,7 +319,7 @@ function renewCreep(creep){
 }
 
 function moveCreep(creep, target){
-    return creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+    return creep.moveTo(target, {reusePath: 50, maxOps: 100, ignoreCreeps: false});
 }
 
 
