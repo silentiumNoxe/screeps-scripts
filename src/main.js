@@ -7,7 +7,7 @@ module.exports.loop = () => {
     let ucls = 0;
     let builders = 0;
 
-    for (var creepName in Memory.creeps) {
+    for (var creepName in Game.creeps) {
         const creep = Game.creeps[creepName];
         if(creep == null) delete Memory.creeps;
 
@@ -30,6 +30,8 @@ module.exports.loop = () => {
 /** @param creep {Creep}*/
 function harvester(creep){
     if(!creep.name.startsWith("H")) return 0;
+
+    if(creep.memory.task == null) creep.memory.task = "harvest";
 
     let target, status;
     switch(creep.memory.task){
@@ -78,6 +80,9 @@ function harvester(creep){
 /** @param creep {Creep}*/
 function ucl(creep){
     if(!creep.name.startsWith("CL")) return 0;
+
+    if(creep.memory.task == null) creep.memory.task = "energy";
+
     let target, status;
 
     switch(creep.memory.task){
@@ -118,6 +123,8 @@ function ucl(creep){
 /** @param creep {Creep}*/
 function builder(creep){
     if(!creep.name.startsWith("B")) return 0;
+    if(creep.memory.task == null) creep.memory.task = "energy";
+    
     let target, status;
 
     switch(creep.memory.task){
