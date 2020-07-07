@@ -20,13 +20,13 @@ module.exports.loop = () => {
 
     if(harvesters < 10){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1"}});
-    }else if(ucls < 3){
+    }else if(ucls < 5){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "CL"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
-    }else if(builders < 1){
+    }else if(builders < 5){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
 
-    console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2));
+    console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket: ", Game.cpu.bucket);
 };
 
 /** @param creep {Creep}*/
@@ -59,17 +59,13 @@ function harvester(creep){
                 break;
             }
 
+
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                return struct.structureType == STRUCTURE_EXTENSION && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
+                    return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                }
             }})
-            if(target == null)
-                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                    return struct.structureType == STRUCTURE_CONTAINER && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                }});
-            if(target == null)
-                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
-            if(target == null)
-                target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+            if(target == null) break;
 
             status = creep.transfer(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
