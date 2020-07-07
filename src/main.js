@@ -46,6 +46,7 @@ module.exports.loop = () => {
 
 /** @param creep {Creep}*/
 function harvester(creep){
+    if(creep == null) return 0;
     if(!creep.name.startsWith("H")) return 0;
 
     if(creep.memory.task == null) creep.memory.task = "harvest";
@@ -102,6 +103,7 @@ function harvester(creep){
 
 /** @param creep {Creep}*/
 function ucl(creep){
+    if(creep == null) return 0;
     if(!creep.name.startsWith("CL")) return 0;
 
     if(creep.memory.task == null) creep.memory.task = "energy";
@@ -153,6 +155,7 @@ function ucl(creep){
 
 /** @param creep {Creep}*/
 function builder(creep){
+    if(creep == null) return 0;
     if(!creep.name.startsWith("B")) return 0;
     if(creep.memory.task == null) creep.memory.task = "energy";
 
