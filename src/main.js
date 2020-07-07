@@ -114,11 +114,12 @@ function ucl(creep){
                 break;
             }
 
-            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-            if(target == null)
-                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
-            if(target == null)
-                target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) =>{
+                if(struct.structureType == STRUCTURE_CONTAINER || struct.structureType == STRUCTURE_STORAGE){
+                    return struct.store[RESOURCE_ENERGY] > 0;
+                }
+            }});
+            if(target == null) break;
 
             status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
@@ -173,12 +174,10 @@ function builder(creep){
             }
 
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) =>{
-                return struct.structureType == STRUCTURE_CONTAINER && struct.store[RESOURCE_ENERGY] > 0;
+                if(struct.structureType == STRUCTURE_CONTAINER || struct.structureType == STRUCTURE_STORAGE){
+                    return struct.store[RESOURCE_ENERGY] > 0;
+                }
             }});
-            if(target == null)
-                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                    return struct.structureType == STRUCTURE_STORAGE && struct.store[RESOURCE_ENERGY] > 0;
-                }});
             if(target == null) break;
 
             status = creep.withdraw(target, RESOURCE_ENERGY);
