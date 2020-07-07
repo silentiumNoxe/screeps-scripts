@@ -77,7 +77,8 @@ function harvester(creep){
             }
             target = Game.getObjectById(creep.memory.target);
             if(target == null || target.structureType != null){
-                creep.memory.target = target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+                target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+                creep.memory.target = target.id;
             }
             status = creep.harvest(target);
             if(status == ERR_NOT_IN_RANGE){
@@ -91,8 +92,8 @@ function harvester(creep){
             }
 
             target = Game.getObjectById(creep.memory.target);
-            if(target == null || target.structureType == null){}
-                creep.memory.target = target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
+            if(target == null || target.structureType == null){
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
                     if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
                         if(struct.store){
                             return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
@@ -101,6 +102,7 @@ function harvester(creep){
                 }})
             }
             if(target == null) break;
+            creep.memory.target = target.id;
 
             status = creep.transfer(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
