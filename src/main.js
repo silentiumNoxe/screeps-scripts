@@ -123,13 +123,17 @@ function builder(creep){
     switch(creep.memory.task){
         case "energy":
             if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
-                creep.memory.task = "upgrade";
+                creep.memory.task = "repair";
                 break;
             }
 
-            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) =>{
+                return struct.structureType == STRUCTURE_CONTAINER && struct.store[RESOURCE_ENERGY] > 0;
+            }});
             if(target == null)
-                target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_STORAGE}});
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
+                    return struct.structureType == STRUCTURE_STORAGE && struct.store[RESOURCE_ENERGY] > 0;
+                }});
             if(target == null)
                 target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
 
