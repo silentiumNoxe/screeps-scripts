@@ -36,6 +36,10 @@ function harvester(creep){
     if(creep.memory.task == null) creep.memory.task = "harvest";
 
     let target, status;
+    const spawn = Game.spawns[creep.memory.spawnName];
+
+    if(creep.ticksToLive < 200) creep.memory.task = "renew";
+
     switch(creep.memory.task){
         case "harvest":
             if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
@@ -46,7 +50,7 @@ function harvester(creep){
             target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
             status = creep.harvest(target);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+                moveCreep(creep, target);
             }
             break;
         case "transfer":
@@ -69,8 +73,18 @@ function harvester(creep){
 
             status = creep.transfer(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+                moveCreep(creep, target);
             }else if(status == ERR_NOT_ENOUGH_ENERGY){
+                creep.memory.task = "harvest";
+            }
+            break;
+        case "renew":
+            if(spawn == null) creep.memory.task = "harvest";
+
+            status = spawn.renew(creep);
+            if(status == ERR_NOT_IN_RANGE){
+                moveCreep(creep, spawn);
+            }else if(status == OK){
                 creep.memory.task = "harvest";
             }
             break;
@@ -86,6 +100,9 @@ function ucl(creep){
     if(creep.memory.task == null) creep.memory.task = "energy";
 
     let target, status;
+    const spawn = Game.spawns[creep.spawnName];
+
+    if(creep.ticksToLive < 200) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "energy":
@@ -102,7 +119,7 @@ function ucl(creep){
 
             status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+                moveCreep(creep, target);
             }
             break;
         case "upgrade":
@@ -114,7 +131,17 @@ function ucl(creep){
             target = creep.room.controller;
             status = creep.upgradeController(target);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+                moveCreep(creep, target);
+            }
+            break;
+        case "renew":
+            if(spawn == null) creep.memory.task = "upgrade";
+
+            status = spawn.renew(creep);
+            if(status == ERR_NOT_IN_RANGE){
+                moveCreep(creep, spawn);
+            }else if(status == OK){
+                creep.memory.task = "upgrade";
             }
             break;
     }
@@ -128,6 +155,9 @@ function builder(creep){
     if(creep.memory.task == null) creep.memory.task = "energy";
 
     let target, status;
+    const spawn = Game.spawns[creep.spawnName];
+
+    if(creep.ticksToLive < 200) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "energy":
@@ -148,7 +178,7 @@ function builder(creep){
 
             status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+                moveCreep(creep, target);
             }
             break;
         case "repair":
@@ -167,7 +197,7 @@ function builder(creep){
 
             status = creep.repair(target);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+                moveCreep(creep, target);
             }else if(status == ERR_NOT_ENOUGH_ENERGY){
                 creep.memory.task = "energy";
             }
@@ -186,14 +216,28 @@ function builder(creep){
 
             status = creep.build(target);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
+                moveCreep(creep, target);
             }else if(status == ERR_NOT_ENOUGH_ENERGY){
                 creep.memory.task = "energy";
+            }
+            break;
+        case "renew":
+            if(spawn == null) creep.memory.task = "upgrade";
+
+            status = spawn.renew(creep);
+            if(status == ERR_NOT_IN_RANGE){
+                moveCreep(creep, spawn);
+            }else if(status == OK){
+                creep.memory.task = "upgrade";
             }
             break;
     }
 
     return 1;
+}
+
+function moveCreep(creep, target){
+    return creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
 }
 
 
