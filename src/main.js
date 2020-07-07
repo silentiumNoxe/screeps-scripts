@@ -31,14 +31,14 @@ module.exports.loop = () => {
         if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
 
         before = Game.cpu.getUsed();
-        builders += thief(creep);
+        thiefs += thief(creep);
         after = Game.cpu.getUsed() - before;
         if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
     }
 
     if(harvesters < 10){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1"}});
-    }else if(thiefs < 3){
+    }else if(thiefs < 0){
         Game.spawns.Spawn1.spawnCreep([MOVE, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1"}});
     }else if(ucls < 5){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "CL"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
@@ -47,12 +47,13 @@ module.exports.loop = () => {
     }
 
     console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket, "creeps:", Object.getOwnPropertyNames(Memory.creeps).length);
-    maxCPU.max = 20 / Object.getOwnPropertyNames(Memory.creeps).length;
+    maxCPU.max = Game.cpu.limit / Object.getOwnPropertyNames(Memory.creeps).length;
     if(maxCPU.val > maxCPU.max) Game.notify("creep "+maxCPU.creepName+" used "+maxCPU.val+" CPU but can use "+maxCPU.max);
     maxCPU.val = maxCPU.val.toFixed(2);
     maxCPU.max = maxCPU.max.toFixed(2);
     console.log("maxCPU:", JSON.stringify(maxCPU));
     console.log();
+    if(Game.cpu.bucket < 10000) Game.notify("Bucket was used ("+Game.cpu.bucket+")");
 };
 
 /** @param creep {Creep}*/
@@ -109,6 +110,18 @@ function harvester(creep){
                 moveCreep(creep, target);
             }else if(status == ERR_NOT_ENOUGH_ENERGY){
                 creep.memory.task = "harvest";
+            }else if(status == ERR_FULL){
+                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
+                    if(struct.id == target.id) return false;
+
+                    if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
+                        if(struct.store){
+                            return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                        }
+                    }
+                }});
+
+                creep.memory.target = target.id;
             }
             break;
         default: creep.memory.task = "harvest";
