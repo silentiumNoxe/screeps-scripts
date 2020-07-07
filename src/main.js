@@ -38,7 +38,7 @@ function harvester(creep){
     let target, status;
     const spawn = Game.spawns[creep.memory.spawnName];
 
-    if(creep.ticksToLive < 200) creep.memory.task = "renew";
+    if(creep.ticksToLive < 200 && spawn != null) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "harvest":
@@ -105,7 +105,7 @@ function ucl(creep){
     let target, status;
     const spawn = Game.spawns[creep.spawnName];
 
-    if(creep.ticksToLive < 200) creep.memory.task = "renew";
+    if(creep.ticksToLive < 200 && spawn != null) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "energy":
@@ -163,7 +163,7 @@ function builder(creep){
     let target, status;
     const spawn = Game.spawns[creep.spawnName];
 
-    if(creep.ticksToLive < 200) creep.memory.task = "renew";
+    if(creep.ticksToLive < 200 && spawn != null) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "energy":
@@ -230,7 +230,7 @@ function builder(creep){
         case "renew":
             if(spawn == null){
                  creep.memory.task = "upgrade";
-                 break;
+                 break
             }
 
             status = spawn.renew(creep);
