@@ -1,5 +1,6 @@
 module.exports.loop = () => {
     let cpuStart = Game.cpu.getUsed();
+    let maxCPU = {val: 0, creepName: ""};
 
     const debug = Memory.debug;
 
@@ -13,9 +14,20 @@ module.exports.loop = () => {
         const creep = Game.creeps[creepName];
         if(creep == null) delete Memory.creeps;
 
+        let before = Game.cpu.getUsed();
         harvesters += harvester(creep);
+        let after = Game.cpu.getUsed() - before;
+        if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
+
+        before = Game.cpu.getUsed();
         ucls += ucl(creep);
+        after = Game.cpu.getUsed() - before;
+        if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
+
+        before = Game.cpu.getUsed();
         builders += builder(creep);
+        after = Game.cpu.getUsed() - before;
+        if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
     }
 
     if(harvesters < 10){
@@ -26,7 +38,8 @@ module.exports.loop = () => {
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
 
-    console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket);
+    console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket, "creeps:", Object.getOwnPropertyNames(Memory.creeps).length);
+    console.log("maxCPU:", JSON.stringify(maxCPU));
 };
 
 /** @param creep {Creep}*/
@@ -63,7 +76,7 @@ function harvester(creep){
 
 
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
+                if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
                     if(struct.store){
                         return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                     }
