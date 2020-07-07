@@ -26,7 +26,7 @@ module.exports.loop = () => {
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
 
-    console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket: ", Game.cpu.bucket);
+    console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket);
 };
 
 /** @param creep {Creep}*/
