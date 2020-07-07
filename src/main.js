@@ -62,7 +62,9 @@ function harvester(creep){
 
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
                 if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
-                    return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    if(struct.store){
+                        return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                    }
                 }
             }})
             if(target == null) break;
