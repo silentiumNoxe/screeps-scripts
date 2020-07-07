@@ -38,7 +38,7 @@ function harvester(creep){
     let target, status;
     const spawn = Game.spawns[creep.memory.spawnName];
 
-    if(creep.ticksToLive < 500 && spawn != null) creep.memory.task = "renew";
+    if(renewCreep(creep)) return;
 
     switch(creep.memory.task){
         case "harvest":
@@ -76,19 +76,6 @@ function harvester(creep){
                 creep.memory.task = "harvest";
             }
             break;
-        case "renew":
-            if(spawn == null){
-                creep.memory.task = "harvest";
-                break;
-            }
-
-            status = spawn.renewCreep(creep);
-            if(status == ERR_NOT_IN_RANGE){
-                moveCreep(creep, spawn);
-            }else if(status == OK){
-                creep.memory.task = "harvest";
-            }
-            break;
     }
 
     return 1;
@@ -103,7 +90,7 @@ function ucl(creep){
     let target, status;
     const spawn = Game.spawns[creep.spawnName];
 
-    if(creep.ticksToLive < 500 && spawn != null) creep.memory.task = "renew";
+    if(renewCreep(creep)) return;
 
     switch(creep.memory.task){
         case "energy":
@@ -136,19 +123,6 @@ function ucl(creep){
                 moveCreep(creep, target);
             }
             break;
-        case "renew":
-            if(spawn == null){
-                creep.memory.task = "upgrade";
-                break;
-            }
-
-            status = spawn.renewCreep(creep);
-            if(status == ERR_NOT_IN_RANGE){
-                moveCreep(creep, spawn);
-            }else if(status == OK){
-                creep.memory.task = "upgrade";
-            }
-            break;
     }
 
     return 1;
@@ -162,7 +136,7 @@ function builder(creep){
     let target, status;
     const spawn = Game.spawns[creep.spawnName];
 
-    if(creep.ticksToLive < 500 && spawn != null) creep.memory.task = "renew";
+    if(renewCreep(creep)) return;
 
     switch(creep.memory.task){
         case "energy":
@@ -223,22 +197,24 @@ function builder(creep){
                 creep.memory.task = "energy";
             }
             break;
-        case "renew":
-            if(spawn == null){
-                 creep.memory.task = "upgrade";
-                 break
-            }
-
-            status = spawn.renewCreep(creep);
-            if(status == ERR_NOT_IN_RANGE){
-                moveCreep(creep, spawn);
-            }else if(status == OK){
-                creep.memory.task = "upgrade";
-            }
-            break;
     }
 
     return 1;
+}
+
+function renewCreep(creep){
+    if(creep.ticksToLive > 500) return true;
+
+    const spawn = Game.spawns[creep.spawnName];
+    if(spawn == null) return true;
+
+    status = spawn.renewCreep(creep);
+    if(status == ERR_NOT_IN_RANGE){
+        moveCreep(creep, spawn);
+        return false;
+    }
+
+    return true;
 }
 
 function moveCreep(creep, target){
