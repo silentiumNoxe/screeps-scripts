@@ -76,6 +76,8 @@ function harvester(creep){
                 creep.memory.task = "harvest";
             }
             break;
+        default: creep.memory.task = "harvest";
+            break;
     }
 
     return 1;
@@ -122,6 +124,8 @@ function ucl(creep){
             if(status == ERR_NOT_IN_RANGE){
                 moveCreep(creep, target);
             }
+            break;
+        default: creep.memory.task="upgrade";
             break;
     }
 
@@ -196,6 +200,8 @@ function builder(creep){
             }else if(status == ERR_NOT_ENOUGH_ENERGY){
                 creep.memory.task = "energy";
             }
+            break;
+        default: creep.memory.task = "repair";
             break;
     }
 
