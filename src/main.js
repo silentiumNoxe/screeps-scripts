@@ -174,7 +174,7 @@ function builder(creep){
             }
 
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                return struct.hits < struct.hitsMax;
+                return struct.structureType != STRUCTURE_WALL && struct.hits < struct.hitsMax;
             }});
             if(target == null){
                 creep.memory.task = "build";
