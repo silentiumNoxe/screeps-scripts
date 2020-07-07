@@ -22,7 +22,7 @@ module.exports.loop = () => {
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1"}});
     }else if(ucls < 5){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "CL"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
-    }else if(builders < 5){
+    }else if(builders < 3){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
 
@@ -38,7 +38,7 @@ function harvester(creep){
     let target, status;
     const spawn = Game.spawns[creep.memory.spawnName];
 
-    if(creep.ticksToLive < 200 && spawn != null) creep.memory.task = "renew";
+    if(creep.ticksToLive < 500 && spawn != null) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "harvest":
@@ -82,7 +82,7 @@ function harvester(creep){
                 break;
             }
 
-            status = spawn.renew(creep);
+            status = spawn.renewCreep(creep);
             if(status == ERR_NOT_IN_RANGE){
                 moveCreep(creep, spawn);
             }else if(status == OK){
@@ -103,7 +103,7 @@ function ucl(creep){
     let target, status;
     const spawn = Game.spawns[creep.spawnName];
 
-    if(creep.ticksToLive < 200 && spawn != null) creep.memory.task = "renew";
+    if(creep.ticksToLive < 500 && spawn != null) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "energy":
@@ -142,7 +142,7 @@ function ucl(creep){
                 break;
             }
 
-            status = spawn.renew(creep);
+            status = spawn.renewCreep(creep);
             if(status == ERR_NOT_IN_RANGE){
                 moveCreep(creep, spawn);
             }else if(status == OK){
@@ -162,7 +162,7 @@ function builder(creep){
     let target, status;
     const spawn = Game.spawns[creep.spawnName];
 
-    if(creep.ticksToLive < 200 && spawn != null) creep.memory.task = "renew";
+    if(creep.ticksToLive < 500 && spawn != null) creep.memory.task = "renew";
 
     switch(creep.memory.task){
         case "energy":
@@ -229,7 +229,7 @@ function builder(creep){
                  break
             }
 
-            status = spawn.renew(creep);
+            status = spawn.renewCreep(creep);
             if(status == ERR_NOT_IN_RANGE){
                 moveCreep(creep, spawn);
             }else if(status == OK){
