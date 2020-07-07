@@ -179,8 +179,7 @@ function builder(creep){
                 target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
                     return struct.structureType == STRUCTURE_STORAGE && struct.store[RESOURCE_ENERGY] > 0;
                 }});
-            if(target == null)
-                target = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+            if(target == null) break;
 
             status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
