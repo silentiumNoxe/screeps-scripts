@@ -3,6 +3,8 @@ module.exports.loop = () => {
 
     const debug = Memory.debug;
 
+    processTowers();
+
     let harvesters = 0;
     let ucls = 0;
     let builders = 0;
@@ -155,7 +157,7 @@ function builder(creep){
                 break;
             }
 
-            target = creep.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (struct) => {
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
                 return struct.hits < struct.hitsMax;
             }});
             if(target == null){
@@ -195,26 +197,26 @@ function builder(creep){
 }
 
 
-// function processTowers() {
-//     for(const structureId in Game.structures){
-//         const struct = Game.structures[structureId];
-//         if(struct.structureType === STRUCTURE_TOWER){
-//             let target = struct.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-//             if(target != null){
-//                 struct.attack(target);
-//                 continue;
-//             }
-//
-//             target = struct.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax});
-//             if(target != null){
-//                 struct.heal(target);
-//                 continue;
-//             }
-//
-//             target = struct.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
-//             if(target != null){
-//                 target.repair(target);
-//             }
-//         }
-//     }
-// }
+function processTowers() {
+    for(const structureId in Game.structures){
+        const struct = Game.structures[structureId];
+        if(struct.structureType === STRUCTURE_TOWER){
+            let target = struct.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            if(target != null){
+                struct.attack(target);
+                continue;
+            }
+
+            target = struct.pos.findClosestByRange(FIND_MY_CREEPS, {filter: (c) => c.hits < c.hitsMax});
+            if(target != null){
+                struct.heal(target);
+                continue;
+            }
+
+            target = struct.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
+            if(target != null){
+                target.repair(target);
+            }
+        }
+    }
+}
