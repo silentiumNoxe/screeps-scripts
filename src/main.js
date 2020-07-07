@@ -124,7 +124,7 @@ function ucl(creep){
 function builder(creep){
     if(!creep.name.startsWith("B")) return 0;
     if(creep.memory.task == null) creep.memory.task = "energy";
-    
+
     let target, status;
 
     switch(creep.memory.task){
@@ -166,7 +166,7 @@ function builder(creep){
             status = creep.repair(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
-            }else if(static == ERR_NOT_ENOUGH_ENERGY){
+            }else if(status == ERR_NOT_ENOUGH_ENERGY){
                 creep.memory.task = "energy";
             }
             break;
@@ -185,7 +185,7 @@ function builder(creep){
             status = creep.build(target);
             if(status == ERR_NOT_IN_RANGE){
                 creep.moveTo(target, {maxOps: 50, ignoreCreeps: false});
-            }else if(static == ERR_NOT_ENOUGH_ENERGY){
+            }else if(status == ERR_NOT_ENOUGH_ENERGY){
                 creep.memory.task = "energy";
             }
             break;
