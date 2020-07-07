@@ -79,7 +79,10 @@ function harvester(creep){
             }
             break;
         case "renew":
-            if(spawn == null) creep.memory.task = "harvest";
+            if(spawn == null){
+                creep.memory.task = "harvest";
+                break;
+            }
 
             status = spawn.renew(creep);
             if(status == ERR_NOT_IN_RANGE){
@@ -135,7 +138,10 @@ function ucl(creep){
             }
             break;
         case "renew":
-            if(spawn == null) creep.memory.task = "upgrade";
+            if(spawn == null){
+                creep.memory.task = "upgrade";
+                break;
+            }
 
             status = spawn.renew(creep);
             if(status == ERR_NOT_IN_RANGE){
@@ -222,7 +228,10 @@ function builder(creep){
             }
             break;
         case "renew":
-            if(spawn == null) creep.memory.task = "upgrade";
+            if(spawn == null){
+                 creep.memory.task = "upgrade";
+                 break;
+            }
 
             status = spawn.renew(creep);
             if(status == ERR_NOT_IN_RANGE){
