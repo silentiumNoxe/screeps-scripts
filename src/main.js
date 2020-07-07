@@ -214,9 +214,14 @@ function renewCreep(creep){
     const spawn = Game.spawns[creep.spawnName];
     if(spawn == null) return false;
 
-    status = spawn.renewCreep(creep);
+    let status = spawn.renewCreep(creep);
     if(status == ERR_NOT_IN_RANGE){
         moveCreep(creep, spawn);
+        return true;
+    }if(status == ERR_NOT_ENOUGH_ENERGY){
+        creep.memory.task = "transfer";
+        return false;
+    }if(status == ERR_BUSY){
         return true;
     }
 
