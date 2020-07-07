@@ -10,9 +10,9 @@ module.exports.loop = () => {
     let ucls = 0;
     let builders = 0;
 
-    for (var creepName in Game.creeps) {
+    for (const creepName in Memory.creeps) {
         const creep = Game.creeps[creepName];
-        if(creep == null) delete Memory.creeps;
+        if(creep == null) delete Memory.creeps[creepName];
 
         let before = Game.cpu.getUsed();
         harvesters += harvester(creep);
@@ -39,7 +39,9 @@ module.exports.loop = () => {
     }
 
     console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket, "creeps:", Object.getOwnPropertyNames(Memory.creeps).length);
+    maxCPU.val = maxCPU.val.toFixed(2);
     console.log("maxCPU:", JSON.stringify(maxCPU));
+    console.log("");
 };
 
 /** @param creep {Creep}*/
