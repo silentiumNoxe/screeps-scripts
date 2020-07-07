@@ -203,18 +203,18 @@ function builder(creep){
 }
 
 function renewCreep(creep){
-    if(creep.ticksToLive > 500) return true;
+    if(creep.ticksToLive > 500) return false;
 
     const spawn = Game.spawns[creep.spawnName];
-    if(spawn == null) return true;
+    if(spawn == null) return false;
 
     status = spawn.renewCreep(creep);
     if(status == ERR_NOT_IN_RANGE){
         moveCreep(creep, spawn);
-        return false;
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 function moveCreep(creep, target){
