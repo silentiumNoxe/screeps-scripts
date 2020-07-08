@@ -10,6 +10,13 @@ module.exports.loop = () => {
     let ucls = 0;
     let builders = 0;
     let thiefs = 0;
+    let attackers = 0;
+
+    if(Memory.maxHarvesters == null) Memory.maxHarvesters = 10;
+    if(Memory.maxUcls == null) Memory.maxUcls = 5;
+    if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
+    if(Memory.maxThiefs == null) Memory.maxThiefs = 1;
+    if(Memory.maxAttackers == null) Memory.maxAttackers = 0;
 
     for (const creepName in Memory.creeps) {
         const creep = Game.creeps[creepName];
@@ -34,15 +41,23 @@ module.exports.loop = () => {
         thiefs += thief(creep);
         after = Game.cpu.getUsed() - before;
         if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
+
+        before = Game.cpu.getUsed();
+        attackers += attacker(creep);
+        after = Game.cpu.getUsed() - before;
+        if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
     }
 
-    if(harvesters < 10){
+
+    if(harvesters < Memory.maxHarvesters){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1"}});
-    }else if(thiefs < 0){
+    }else if(attackers < Memory.maxAttackers){
+        Game.spawns.Spawn1.spawnCreep([ATTACK, MOVE, ATTACK], "A"+Math.floor(Math.random() * 100), {memory: {task: "goto", spawnName: "Spawn1"}});
+    }else if(thiefs < Memory.maxThiefs){
         Game.spawns.Spawn1.spawnCreep([MOVE, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1"}});
-    }else if(ucls < 5){
+    }else if(ucls < Memory.maxUcls){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "CL"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
-    }else if(builders < 3){
+    }else if(builders < Memory.maxBuilders){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
 
@@ -55,6 +70,62 @@ module.exports.loop = () => {
     console.log();
     if(Game.cpu.bucket < 10000) Game.notify("Bucket was used ("+Game.cpu.bucket+")");
 };
+
+function attacker(creep){
+    if(creep == null) return 0;
+    if(!creep.name.startsWith("A")) return 0;
+
+    if(creep.memory.task == null) creep.memory.task = "goto";
+
+    let target, status;
+    const spawn = Game.spawns[creep.memory.spawnName];
+
+    if(spawn != null && creep.room.name == spawn.room.name && spawn.store[RESOURCE_ENERGY] > 100){
+        if(renewCreep(creep)) return;
+    }
+
+    switch(creep.memory.task){
+        case "goto":
+            const flag = Object.keys(Game.flags).filter(key => key.startsWith("capture"));
+            if(flag == null){
+                 creep.memory.task = "home";
+                 break;
+            }
+            if(creep.room.name == flag.room.name){
+                creep.memory.task = "attack";
+                break;
+            }
+            moveCreep(creep, flag);
+            break;
+        case "attack":
+            target = creep.pos.findClosestByPath(FIND_HOSTILE_SPAWNS);
+            if(target == null)
+                target = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS);
+            if(target == null){
+                creep.memory.task = "home";
+                break;
+            }
+            let status = creep.attack(target);
+            if(status == ERR_NOT_IN_RANGE){
+                moveCreep(target);
+            }
+            break;
+        case "home":
+            if(spawn == null) spawn = Game.spawns[Object.keys(Game.spawns)[0]];
+            if(creep.room.name == spawn.room.name){
+                creep.memory.task = "goto";
+                break;
+            }
+
+            moveCreep(creep, spawn);
+            break;
+        default:
+            creep.memory.task = "goto";
+            break;
+    }
+
+    return 1;
+}
 
 /** @param creep {Creep}*/
 function harvester(creep){
