@@ -96,7 +96,7 @@ function attacker(creep){
                  creep.memory.task = "home";
                  break;
             }
-            if(creep.room.name == flag.room.name){
+            if(creep.pos.roomName == flag.pos.roomName){
                 creep.memory.task = "attack";
                 break;
             }
