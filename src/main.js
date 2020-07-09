@@ -1,6 +1,17 @@
+function initMemory(){
+    if(Memory.maxHarvesters == null) Memory.maxHarvesters = 10;
+    if(Memory.maxUcls == null) Memory.maxUcls = 10;
+    if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
+    if(Memory.maxThiefs == null) Memory.maxThiefs = 1;
+    if(Memory.maxAttackers == null) Memory.maxAttackers = 0;
+
+    if(Memory.energySources == null) Memory.energySources = ["5bbcad759099fc012e6374e3", "5bbcad759099fc012e6374e4", "5bbcad759099fc012e6374e8", "5bbcad759099fc012e6374e9"];
+}
+
 module.exports.loop = () => {
     let cpuStart = Game.cpu.getUsed();
     let maxCPU = {val: 0, creepName: ""};
+    initMemory();
 
     const debug = Memory.debug;
 
@@ -11,12 +22,6 @@ module.exports.loop = () => {
     let builders = 0;
     let thiefs = 0;
     let attackers = 0;
-
-    if(Memory.maxHarvesters == null) Memory.maxHarvesters = 10;
-    if(Memory.maxUcls == null) Memory.maxUcls = 5;
-    if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
-    if(Memory.maxThiefs == null) Memory.maxThiefs = 1;
-    if(Memory.maxAttackers == null) Memory.maxAttackers = 0;
 
     for (const creepName in Memory.creeps) {
         const creep = Game.creeps[creepName];
@@ -149,7 +154,15 @@ function harvester(creep){
             }
             target = Game.getObjectById(creep.memory.target);
             if(target == null || target.structureType != null){
-                target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+                let target = {id: null, minDist: 100};
+                for(const id of Memory.energySources){
+                    let source = Game.getObjectById(id);
+                    let distance = creep.getRangeTo(source);
+                    if(distance < target.minDist){
+                        target.minDist = distance;
+                        target.id = id;
+                    }
+                }
                 creep.memory.target = target.id;
             }
             status = creep.harvest(target);
@@ -427,7 +440,7 @@ function processTowers() {
 
             target = struct.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
             if(target != null){
-                target.repair(target);
+                struct.repair(target);
             }
         }
     }
