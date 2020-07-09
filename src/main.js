@@ -154,15 +154,13 @@ function harvester(creep){
             }
             target = Game.getObjectById(creep.memory.target);
             if(target == null || target.structureType != null){
-                let target = {id: null, minDist: 100};
+                let sources = [];
                 for(const id of Memory.energySources){
-                    let source = Game.getObjectById(id);
-                    let distance = creep.pos.getRangeTo(source);
-                    if(distance < target.minDist){
-                        target.minDist = distance;
-                        target.id = id;
-                    }
+                    sources.push(Game.getObjectById(id));
                 }
+
+                target = creep.findClosestByPath(sources);
+                if(target == null) break;
                 creep.memory.target = target.id;
             }
             status = creep.harvest(target);
