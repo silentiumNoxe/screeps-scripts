@@ -157,7 +157,7 @@ function harvester(creep){
                 let target = {id: null, minDist: 100};
                 for(const id of Memory.energySources){
                     let source = Game.getObjectById(id);
-                    let distance = creep.getRangeTo(source);
+                    let distance = creep.pos.getRangeTo(source);
                     if(distance < target.minDist){
                         target.minDist = distance;
                         target.id = id;
