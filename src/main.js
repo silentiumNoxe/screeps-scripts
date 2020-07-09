@@ -159,7 +159,7 @@ function harvester(creep){
                     sources.push(Game.getObjectById(id));
                 }
 
-                target = creep.findClosestByPath(sources);
+                target = creep.pos.findClosestByPath(sources);
                 if(target == null) break;
                 creep.memory.target = target.id;
             }
