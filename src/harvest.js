@@ -39,7 +39,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
                 renew(creep);
                 harvestTransfer(creep, target);
             })
-            return harvest(id);
+            return harvest(source.id, namePrefix, creepsQuantity, body);
         },
         storage(id){
             const target = Game.getObjectById(id);
@@ -48,7 +48,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
                 renew(creep);
                 harvestTransfer(creep, target);
             })
-            return harvest(id);
+            return harvest(source.id, namePrefix, creepsQuantity, body);
         },
         spawn(id){
             const target = Game.getObjectById(id);
@@ -57,7 +57,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
                 renew(creep);
                 harvestTransfer(creep, target);
             })
-            return harvest(id);
+            return harvest(source.id, namePrefix, creepsQuantity, body);
         },
         tower(id){
             const target = Game.getObjectById(id);
@@ -66,7 +66,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
                 renew(creep);
                 harvestTransfer(creep, target);
             })
-            return harvest(id);
+            return harvest(source.id, namePrefix, creepsQuantity, body);
         }
     }
 }

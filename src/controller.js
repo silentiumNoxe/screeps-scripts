@@ -25,7 +25,7 @@ function controller(id){
                 let distance = creep.pos.getRangeTo(a);
                 if(distance < minDistance){
                     minDistance = distance;
-                    tmpEnergy = a;
+                    nearEnergy = a;
                 }
             }
             energy = nearEnergy;
