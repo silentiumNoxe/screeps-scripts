@@ -42,11 +42,11 @@ module.exports.loop = () => {
         .extension("5f05ad330df7a9ff701eace9");//28,32
 
     harvest("5bbcad759099fc012e6374e3", "HE2")
-        .extension("5f0595759a625c36013cf208")
-        .extension("5f05354c72a05a36d0f293c5")
-        .extension("5f04d2079b7a523ab267cfc2")
-        .extension("5f05b2345e332a4ad2c00228")
-        .extension("5f05310a3109800f3c52d836");
+        .extension("5f0595759a625c36013cf208")//28,22
+        .extension("5f05354c72a05a36d0f293c5")//28,23
+        .extension("5f04d2079b7a523ab267cfc2")//28,24
+        .extension("5f05b2345e332a4ad2c00228")//29,22
+        .extension("5f05310a3109800f3c52d836");//29,23
 
     // let harvesters = 0;
     let builders = 0;
