@@ -50,6 +50,15 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
             })
             return harvest(source.id, namePrefix, creepsQuantity, body);
         },
+        extension(id){
+            const target = Game.getObjectById(id);
+
+            creeps.forEach(creep => {
+                renew(creep);
+                harvestTransfer(creep, target);
+            })
+            return harvest(source.id, namePrefix, creepsQuantity, body);
+        },
         spawn(id){
             const target = Game.getObjectById(id);
 
