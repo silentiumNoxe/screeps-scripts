@@ -1,8 +1,9 @@
+require("prototype_room")
+
 function initMemory(){
     if(Memory.maxHarvesters == null) Memory.maxHarvesters = 10;
-    if(Memory.maxUcls == null) Memory.maxUcls = 10;
     if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
-    if(Memory.maxThiefs == null) Memory.maxThiefs = 1;
+    if(Memory.maxThiefs == null) Memory.maxThiefs = 0;
     if(Memory.maxAttackers == null) Memory.maxAttackers = 0;
 
     if(Memory.energySources == null) Memory.energySources = ["5bbcad759099fc012e6374e3", "5bbcad759099fc012e6374e4", "5bbcad759099fc012e6374e8", "5bbcad759099fc012e6374e9"];
@@ -17,8 +18,9 @@ module.exports.loop = () => {
 
     processTowers();
 
+    controller("5bbcad759099fc012e6374e5").upgrade(8);
+
     let harvesters = 0;
-    let ucls = 0;
     let builders = 0;
     let thiefs = 0;
     let attackers = 0;
@@ -55,26 +57,70 @@ module.exports.loop = () => {
 
 
     if(harvesters < Memory.maxHarvesters){
-        Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1", stats: {harvested: 0}}});
     }else if(attackers < Memory.maxAttackers){
         Game.spawns.Spawn1.spawnCreep([ATTACK, MOVE, ATTACK], "A"+Math.floor(Math.random() * 100), {memory: {task: "goto", spawnName: "Spawn1"}});
     }else if(thiefs < Memory.maxThiefs){
-        Game.spawns.Spawn1.spawnCreep([MOVE, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1"}});
-    }else if(ucls < Memory.maxUcls){
-        Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "CL"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep([MOVE, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1", stats: {stealed: 0}}});
     }else if(builders < Memory.maxBuilders){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
 
-    console.log("usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket, "creeps:", Object.getOwnPropertyNames(Memory.creeps).length);
+    console.log("T"+Game.time+" >> usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket, "creeps:", Object.getOwnPropertyNames(Memory.creeps).length);
     maxCPU.max = Game.cpu.limit / Object.getOwnPropertyNames(Memory.creeps).length;
-    if(maxCPU.val > maxCPU.max) Game.notify("creep "+maxCPU.creepName+" used "+maxCPU.val+" CPU but can use "+maxCPU.max);
+    if(maxCPU.val > maxCPU.max) Game.notify("T"+Game.time+" >> creep "+maxCPU.creepName+" used "+maxCPU.val+" CPU but can use "+maxCPU.max, 200);
     maxCPU.val = maxCPU.val.toFixed(2);
     maxCPU.max = maxCPU.max.toFixed(2);
-    console.log("maxCPU:", JSON.stringify(maxCPU));
+    console.log("T"+Game.time+" >> maxCPU:", JSON.stringify(maxCPU));
     console.log();
-    if(Game.cpu.bucket < 10000) Game.notify("Bucket was used ("+Game.cpu.bucket+")");
+    if(Game.cpu.bucket < 10000) Game.notify("T"+Game.time+" >> Bucket was used ("+Game.cpu.bucket+")", 200);
 };
+
+function controller(id){
+    if(id == null) return;
+    const target = Game.getObjectById(id);
+    const room = target.room;
+
+    return {
+        upgrade(creepsQuantity, body=[WORK, CARRY, MOVE], namePrefix="CL"){
+            const creeps = room.find(FIND_MY_CREEPS, {filter: (creep) => creep.name.startsWith(namePrefix));
+            creeps.forEach((creep) => {
+                if(creep.store[RESOURCE_ENERGY] == 0){
+                    if(creep.memory.energy == null){
+                        const energy = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (structure) => {
+                            if(structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE){
+                                return structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity(RESOURCE_ENERGY);
+                            }
+                        }});
+                        creep.memory.energy = energy.id;
+                    }
+
+                    const energy = Game.getObjectById(creep.memory.energy);
+                    creep.moveTo(energy, {reusePath: 10, ignoreCreeps: false});
+                    creep.withdraw(energy, RESOURCE_ENERGY);
+                }else{
+                    creep.memory.energy = null;
+
+                    creep.moveTo(target, {reusePath: 50, ignoreCreeps: false});
+                    creep.upgradeController(target);
+                }
+            })
+
+            if(creeps.length < creepsQuantity){
+                room.spawn.spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
+            }
+        },
+        claim(roomName){
+
+        },
+        reserve(roomName){
+
+        },
+        attack(roomName){
+
+        }
+    }
+}
 
 function attacker(creep){
     if(creep == null) return 0;
@@ -91,7 +137,7 @@ function attacker(creep){
 
     switch(creep.memory.task){
         case "goto":
-            const flag = Object.keys(Game.flags).filter(key => key.startsWith("capture"));
+            const flag = Object.keys(Game.flags).filter(key => key.startsWith("capture"))[0];
             if(flag == null){
                  creep.memory.task = "home";
                  break;
@@ -304,7 +350,7 @@ function builder(creep){
             }
 
             target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                return struct.structureType != STRUCTURE_WALL && struct.hits < struct.hitsMax;
+                return struct.structureType != STRUCTURE_WALL && struct.hits < struct.hitsMax || (struct.structureType == STRUCTURE_RAMPART && struct.hits < 1000000);//1M
             }});
             if(target == null){
                 creep.memory.task = "build";
@@ -358,6 +404,8 @@ function thief(creep){
 
     switch(creep.memory.task){
         case "steal":
+            if(creep.ticksToLive < 10 || creep.hits < 10) Game.notify(creep.name+" stealed "+creep.memory.stats.stealed+" energy");
+
             if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
                 creep.memory.task = "transfer";
                 break;
@@ -384,16 +432,45 @@ function thief(creep){
                     }
                 }
             }});
+            if(target == null){
+                moveCreep(creep, spawn);
+                break;
+            }
             status = creep.transfer(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
-                moveCreep(creep, spawn);
+                moveCreep(creep, target);
             }else if(status == ERR_NOT_ENOUGH_ENERGY){
+                creep.memory.stats.stealed += creep.store.getCapacity(RESOURCE_ENERGY);
                 creep.memory.task = "steal";
             }
     }
 
     return 1;
 }
+
+// function claimer(creep){
+//     if(creep == null) return 0;
+//     if(!creep.name.startsWith("CC")) return 0;
+//     if(creep.memory.task == null) creep.memory.task = "claim";
+//
+//     let target, status;
+//
+//     switch(creep.memory.task){
+//         case "goto":
+//             const flag = Object.keys(Game.flags).filter(key => key.startsWith("claim"))[0];
+//             if(flag == null){
+//                  creep.memory.task = "home";
+//                  break;
+//             }
+//             if(creep.pos.roomName == flag.pos.roomName){
+//                 creep.memory.task = "attack";
+//                 break;
+//             }
+//             moveCreep(creep, flag);
+//             break;
+//             break;
+//     }
+// }
 
 function renewCreep(creep){
     if(creep.ticksToLive > 500) return false;
@@ -416,7 +493,7 @@ function renewCreep(creep){
 }
 
 function moveCreep(creep, target){
-    return creep.moveTo(target, {reusePath: 50, maxOps: 100, ignoreCreeps: false});
+    return creep.moveTo(target, {reusePath: 10, maxOps: 100, ignoreCreeps: false});
 }
 
 
@@ -436,7 +513,9 @@ function processTowers() {
                 continue;
             }
 
-            target = struct.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
+            target = struct.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => {
+                return s.id != struct.id && s.hits < s.hitsMax
+            }});
             if(target != null){
                 struct.repair(target);
             }
