@@ -13,7 +13,7 @@ function controller(id){
 
     function takeEnergy(creep){
         if(creep.memory.energy == null){
-            const energy = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {
+            let energy = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {
                 if(structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE){
                     return structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity(RESOURCE_ENERGY);
                 }
@@ -28,8 +28,9 @@ function controller(id){
                     tmpEnergy = a;
                 }
             }
+            energy = nearEnergy;
 
-            if(nearEnergy != null)
+            if(energy != null)
                 creep.memory.energy = energy.id;
         }
 
