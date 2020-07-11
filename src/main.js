@@ -83,7 +83,7 @@ function controller(id){
 
     return {
         upgrade(creepsQuantity, body=[WORK, CARRY, MOVE], namePrefix="CL"){
-            const creeps = room.find(FIND_MY_CREEPS, {filter: (creep) => creep.name.startsWith(namePrefix));
+            const creeps = room.find(FIND_MY_CREEPS, {filter: (creep) => creep.name.startsWith(namePrefix)});
             creeps.forEach((creep) => {
                 if(creep.store[RESOURCE_ENERGY] == 0){
                     if(creep.memory.energy == null){
