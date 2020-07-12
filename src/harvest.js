@@ -2,7 +2,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
     if(id == null) return;
     const source = Game.getObjectById(id);
     const room = source.room;
-    const creeps = Object.entries(Game.creeps).filter((creep) => creep.name.startsWith(namePrefix)));
+    const creeps = Object.entries(Game.creeps).filter(([key, value]) => key.startsWith(namePrefix)).map([key, value] => value);
 
     function renew(creep){
         if(creep.ticksToLive < 500 && room.spawn.store[RESOURCE_ENERGY] >= 100){
@@ -35,8 +35,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
         container(id){
             const target = Game.getObjectById(id);
             if(target.store.getFreeCapacity() > 0){
-                creeps.forEach(creepName => {
-                    const creep = Game.creeps[creepName];
+                creeps.forEach(creep => {
                     renew(creep);
                     harvestTransfer(creep, target);
                 })
@@ -46,8 +45,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
         storage(id){
             const target = Game.getObjectById(id);
             if(target.store.getFreeCapacity() > 0){
-                creeps.forEach(creepName => {
-                    const creep = Game.creeps[creepName];
+                creeps.forEach(creep => {
                     renew(creep);
                     harvestTransfer(creep, target);
                 })
@@ -57,8 +55,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
         extension(id){
             const target = Game.getObjectById(id);
             if(target.store.getFreeCapacity() > 0){
-                creeps.forEach(creepName => {
-                    const creep = Game.creeps[creepName];
+                creeps.forEach(creep => {
                     renew(creep);
                     harvestTransfer(creep, target);
                 })
@@ -68,8 +65,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
         spawn(id){
             const target = Game.getObjectById(id);
             if(target.store.getFreeCapacity() > 0){
-                creeps.forEach(creepName => {
-                    const creep = Game.creeps[creepName];
+                creeps.forEach(creep => {
                     renew(creep);
                     harvestTransfer(creep, target);
                 })
@@ -79,8 +75,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
         tower(id){
             const target = Game.getObjectById(id);
             if(target.store.getFreeCapacity() > 0){
-                creeps.forEach(creepName => {
-                    const creep = Game.creeps[creepName];
+                creeps.forEach(creep => {
                     renew(creep);
                     harvestTransfer(creep, target);
                 })

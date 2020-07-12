@@ -1,4 +1,4 @@
-function rapair(roomName, namePrefix="B", creepsQuantity=3, body=[WORK, CARRY, MOVE]){
+function repair(roomName, namePrefix="B", creepsQuantity=3, body=[WORK, CARRY, MOVE]){
 
 }
 
