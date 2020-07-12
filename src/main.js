@@ -140,7 +140,7 @@ function harvester(creep){
                     sources.push(Game.getObjectById(id));
                 }
 
-                target = creep.pos.findClosestByPath(sources);
+                target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
                 if(target == null) break;
                 creep.memory.target = target.id;
             }
@@ -157,13 +157,22 @@ function harvester(creep){
 
             target = Game.getObjectById(creep.memory.target);
             if(target == null || target.structureType == null){
-                target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
-                    if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
-                        if(struct.store){
-                            return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                        }
+                let tower = Game.getObjectById("5f05ffecf159a6369edb06d6");
+                if(tower.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                    target = tower;
+                }else{
+                    target = creep.pos.findClosestByPath(Game.structures,
+                        {filter: (struct) => struct.room.name == creep.room.name && struct.structureType == STRUCTURE_EXTENSION && struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
+                    if(target == null){
+                        target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (struct) => {
+                            if(struct.structureType == STRUCTURE_EXTENSION || STRUCTURE_TOWER || STRUCTURE_CONTAINER || STRUCTURE_STORAGE || STRUCTURE_SPAWN){
+                                if(struct.store){
+                                    return struct.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                                }
+                            }
+                        }});
                     }
-                }})
+                }
             }
             if(target == null) break;
             creep.memory.target = target.id;
@@ -453,12 +462,12 @@ function processTowers() {
                 continue;
             }
 
-            target = struct.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => {
-                return s.id != struct.id && s.hits < s.hitsMax
-            }});
-            if(target != null){
-                struct.repair(target);
-            }
+            // target = struct.pos.findClosestByRange(FIND_MY_STRUCTURES, {filter: (s) => {
+            //     return s.id != struct.id && s.hits < s.hitsMax
+            // }});
+            // if(target != null){
+            //     struct.repair(target);
+            // }
         }
     }
 }

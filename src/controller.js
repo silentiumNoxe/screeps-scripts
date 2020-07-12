@@ -1,12 +1,14 @@
+const utils = reqire("utils");
+
 function controller(id){
     if(id == null) return;
     const target = Game.getObjectById(id);
     const room = target.room;
 
     function renew(creep){
-        if(creep.ticksToLive < 500 && room.spawn.store[RESOURCE_ENERGY] >= 100){
-            creep.moveTo(room.spawn, {reusePath: 30, ignoreCreeps: false});
-            room.spawn.renewCreep(creep);
+        if(creep.ticksToLive < 500 && room.mySpawn.store[RESOURCE_ENERGY] >= 100){
+            creep.moveTo(room.mySpawn, {reusePath: 30, ignoreCreeps: false});
+            room.mySpawn.renewCreep(creep);
             return;
         }
     }
@@ -43,7 +45,7 @@ function controller(id){
 
     return {
         upgrade(creepsQuantity, body=[WORK, CARRY, MOVE], namePrefix="CL"){
-            const creeps = room.find(FIND_MY_CREEPS, {filter: (creep) => creep.name.startsWith(namePrefix)});
+            const creeps = utils.creeps(namePrefix);
             creeps.forEach((creep) => {
                 renew(creep);
 
@@ -58,7 +60,7 @@ function controller(id){
             })
 
             if(creeps.length < creepsQuantity){
-                room.spawn.spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
+                room.mySpawn.spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
             }
         },
         claim(roomName){

@@ -7,9 +7,9 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
     const creeps = utils.creeps(namePrefix);
 
     function renew(creep){
-        if(creep.ticksToLive < 500 && room.spawn.store[RESOURCE_ENERGY] >= 100){
-            creep.moveTo(room.spawn, {reusePath: 30, ignoreCreeps: false});
-            room.spawn.renewCreep(creep);
+        if(creep.ticksToLive < 500 && room.mySpawn.store[RESOURCE_ENERGY] >= 100){
+            creep.moveTo(room.mySpawn, {reusePath: 30, ignoreCreeps: false});
+            room.mySpawn.renewCreep(creep);
             return;
         }
     }
@@ -30,7 +30,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
     }
 
     if(creeps.length < creepsQuantity){
-        room.spawn.spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
+        room.mySpawn.spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
     }
 
     return {
