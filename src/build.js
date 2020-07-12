@@ -40,7 +40,7 @@ function build(roomName, namePrefix="B", creepsQuantity=3, body=[WORK, CARRY, MO
                 creep.withdraw(energy, RESOURCE_ENERGY);
             }
         }else{
-            const target;
+            let target;
             if(creep.memory.build == null){
                 target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
             }

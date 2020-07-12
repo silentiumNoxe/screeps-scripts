@@ -2,7 +2,7 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
     if(id == null) return;
     const source = Game.getObjectById(id);
     const room = source.room;
-    const creeps = source.room.find(FIND_MY_CREEPS, {filter: (creep) => creep.name.startsWith(namePrefix)});
+    const creeps = Object.entries(Game.creeps).filter((creep) => creep.name.startsWith(namePrefix)));
 
     function renew(creep){
         if(creep.ticksToLive < 500 && room.spawn.store[RESOURCE_ENERGY] >= 100){
@@ -34,48 +34,58 @@ function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE])
     return {
         container(id){
             const target = Game.getObjectById(id);
-
-            creeps.forEach(creep => {
-                renew(creep);
-                harvestTransfer(creep, target);
-            })
-            return harvest(source.id, namePrefix, creepsQuantity, body);
+            if(target.store.getFreeCapacity() > 0){
+                creeps.forEach(creepName => {
+                    const creep = Game.creeps[creepName];
+                    renew(creep);
+                    harvestTransfer(creep, target);
+                })
+            }
+            return this;
         },
         storage(id){
             const target = Game.getObjectById(id);
-
-            creeps.forEach(creep => {
-                renew(creep);
-                harvestTransfer(creep, target);
-            })
-            return harvest(source.id, namePrefix, creepsQuantity, body);
+            if(target.store.getFreeCapacity() > 0){
+                creeps.forEach(creepName => {
+                    const creep = Game.creeps[creepName];
+                    renew(creep);
+                    harvestTransfer(creep, target);
+                })
+            }
+            return this;
         },
         extension(id){
             const target = Game.getObjectById(id);
-
-            creeps.forEach(creep => {
-                renew(creep);
-                harvestTransfer(creep, target);
-            })
-            return harvest(source.id, namePrefix, creepsQuantity, body);
+            if(target.store.getFreeCapacity() > 0){
+                creeps.forEach(creepName => {
+                    const creep = Game.creeps[creepName];
+                    renew(creep);
+                    harvestTransfer(creep, target);
+                })
+            }
+            return this;
         },
         spawn(id){
             const target = Game.getObjectById(id);
-
-            creeps.forEach(creep => {
-                renew(creep);
-                harvestTransfer(creep, target);
-            })
-            return harvest(source.id, namePrefix, creepsQuantity, body);
+            if(target.store.getFreeCapacity() > 0){
+                creeps.forEach(creepName => {
+                    const creep = Game.creeps[creepName];
+                    renew(creep);
+                    harvestTransfer(creep, target);
+                })
+            }
+            return this;
         },
         tower(id){
             const target = Game.getObjectById(id);
-
-            creeps.forEach(creep => {
-                renew(creep);
-                harvestTransfer(creep, target);
-            })
-            return harvest(source.id, namePrefix, creepsQuantity, body);
+            if(target.store.getFreeCapacity() > 0){
+                creeps.forEach(creepName => {
+                    const creep = Game.creeps[creepName];
+                    renew(creep);
+                    harvestTransfer(creep, target);
+                })
+            }
+            return this;
         }
     }
 }
