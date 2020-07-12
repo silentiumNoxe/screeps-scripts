@@ -59,15 +59,21 @@ module.exports.loop = () => {
         .extension("5f05b2345e332a4ad2c00228")//29,22
         .extension("5f05310a3109800f3c52d836");//29,23
 
-    build("E9N23", "B");
-    repair("E9N23", "R");
+    // build("E9N23", "B");
+    // repair("E9N23", "R");
 
+    let builders = 0;
     let thiefs = 0;
     let attackers = 0;
 
     for (const creepName in Memory.creeps) {
         const creep = Game.creeps[creepName];
         if(creep == null) delete Memory.creeps[creepName];
+
+        before = Game.cpu.getUsed();
+        builders += builder(creep);
+        after = Game.cpu.getUsed() - before;
+        if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
 
         before = Game.cpu.getUsed();
         thiefs += thief(creep);
@@ -85,6 +91,8 @@ module.exports.loop = () => {
         Game.spawns.Spawn1.spawnCreep([ATTACK, MOVE, ATTACK], "A"+Math.floor(Math.random() * 100), {memory: {task: "goto", spawnName: "Spawn1"}});
     }else if(thiefs < Memory.maxThiefs){
         Game.spawns.Spawn1.spawnCreep([MOVE, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1", stats: {stealed: 0}}});
+    }else if(builders < Memory.maxBuilders){
+        Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
 
     console.log("T"+Game.time+" >> usage cpu:", (Game.cpu.getUsed() - cpuStart).toFixed(2), "bucket:", Game.cpu.bucket, "creeps:", Object.getOwnPropertyNames(Memory.creeps).length);
