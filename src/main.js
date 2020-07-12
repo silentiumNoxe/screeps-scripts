@@ -5,6 +5,7 @@ const build = require("build");
 const repair = require("repair");
 
 function initMemory(){
+    if(Memory.maxHarvesters == null) Memory.maxHarvesters = 10;
     if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
     if(Memory.maxThiefs == null) Memory.maxThiefs = 0;
     if(Memory.maxAttackers == null) Memory.maxAttackers = 0;
@@ -23,41 +24,41 @@ module.exports.loop = () => {
 
     controller("5bbcad759099fc012e6374e5").upgrade(8);//E9N23
 
-    harvest("5bbcad759099fc012e6374e3", "H1", 4)//18,16
-        .tower("5f05ffecf159a6369edb06d6")//30,20
-        .container("5f063581d3c5918913b55191")//20,17
-        .container("5f0305939f82ec03bdf199a5")//24,28
-        .container("5f048a3a9b7a52ff7567b7dc")//24,27
-        .container("5f048e76541ecf62302139ac")//25,27
-        .container("5f060713f159a616e6db08e8")//34,27
-        .extension("5f04c499a2794b34a7cf9313")//25,30
-        .extension("5f0533da3513bc92c7702028")//26,31
-        .extension("5f050251f08c78de7b8a154b")//27,31
-        .extension("5f05e91f90a2a0c988a5421b")//27,32
-        .extension("5f05ad330df7a9ff701eace9")//28,32
-        .extension("5f0595759a625c36013cf208")//28,22
-        .extension("5f05354c72a05a36d0f293c5")//28,23
-        .extension("5f04d2079b7a523ab267cfc2")//28,24
-        .extension("5f05b2345e332a4ad2c00228")//29,22
-        .extension("5f05310a3109800f3c52d836");//29,23
-
-    harvest("5bbcad759099fc012e6374e4", "H2", 4)//18,16
-        .tower("5f05ffecf159a6369edb06d6")//30,20
-        .container("5f063581d3c5918913b55191")//20,17
-        .container("5f0305939f82ec03bdf199a5")//24,28
-        .container("5f048a3a9b7a52ff7567b7dc")//24,27
-        .container("5f048e76541ecf62302139ac")//25,27
-        .container("5f060713f159a616e6db08e8")//34,27
-        .extension("5f04c499a2794b34a7cf9313")//25,30
-        .extension("5f0533da3513bc92c7702028")//26,31
-        .extension("5f050251f08c78de7b8a154b")//27,31
-        .extension("5f05e91f90a2a0c988a5421b")//27,32
-        .extension("5f05ad330df7a9ff701eace9")//28,32
-        .extension("5f0595759a625c36013cf208")//28,22
-        .extension("5f05354c72a05a36d0f293c5")//28,23
-        .extension("5f04d2079b7a523ab267cfc2")//28,24
-        .extension("5f05b2345e332a4ad2c00228")//29,22
-        .extension("5f05310a3109800f3c52d836");//29,23
+    // harvest("5bbcad759099fc012e6374e3", "H1", 4)//18,16
+    //     .tower("5f05ffecf159a6369edb06d6")//30,20
+    //     .container("5f063581d3c5918913b55191")//20,17
+    //     .container("5f0305939f82ec03bdf199a5")//24,28
+    //     .container("5f048a3a9b7a52ff7567b7dc")//24,27
+    //     .container("5f048e76541ecf62302139ac")//25,27
+    //     .container("5f060713f159a616e6db08e8")//34,27
+    //     .extension("5f04c499a2794b34a7cf9313")//25,30
+    //     .extension("5f0533da3513bc92c7702028")//26,31
+    //     .extension("5f050251f08c78de7b8a154b")//27,31
+    //     .extension("5f05e91f90a2a0c988a5421b")//27,32
+    //     .extension("5f05ad330df7a9ff701eace9")//28,32
+    //     .extension("5f0595759a625c36013cf208")//28,22
+    //     .extension("5f05354c72a05a36d0f293c5")//28,23
+    //     .extension("5f04d2079b7a523ab267cfc2")//28,24
+    //     .extension("5f05b2345e332a4ad2c00228")//29,22
+    //     .extension("5f05310a3109800f3c52d836");//29,23
+    //
+    // harvest("5bbcad759099fc012e6374e4", "H2", 4)//18,16
+    //     .tower("5f05ffecf159a6369edb06d6")//30,20
+    //     .container("5f063581d3c5918913b55191")//20,17
+    //     .container("5f0305939f82ec03bdf199a5")//24,28
+    //     .container("5f048a3a9b7a52ff7567b7dc")//24,27
+    //     .container("5f048e76541ecf62302139ac")//25,27
+    //     .container("5f060713f159a616e6db08e8")//34,27
+    //     .extension("5f04c499a2794b34a7cf9313")//25,30
+    //     .extension("5f0533da3513bc92c7702028")//26,31
+    //     .extension("5f050251f08c78de7b8a154b")//27,31
+    //     .extension("5f05e91f90a2a0c988a5421b")//27,32
+    //     .extension("5f05ad330df7a9ff701eace9")//28,32
+    //     .extension("5f0595759a625c36013cf208")//28,22
+    //     .extension("5f05354c72a05a36d0f293c5")//28,23
+    //     .extension("5f04d2079b7a523ab267cfc2")//28,24
+    //     .extension("5f05b2345e332a4ad2c00228")//29,22
+    //     .extension("5f05310a3109800f3c52d836");//29,23
 
     // build("E9N23", "B");
     // repair("E9N23", "R");
@@ -69,6 +70,11 @@ module.exports.loop = () => {
     for (const creepName in Memory.creeps) {
         const creep = Game.creeps[creepName];
         if(creep == null) delete Memory.creeps[creepName];
+
+        let before = Game.cpu.getUsed();
+        harvesters += harvester(creep);
+        let after = Game.cpu.getUsed() - before;
+        if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
 
         before = Game.cpu.getUsed();
         builders += builder(creep);
@@ -86,8 +92,9 @@ module.exports.loop = () => {
         if(maxCPU.val < after) maxCPU = {val: after, creepName: creepName};
     }
 
-
-    if(attackers < Memory.maxAttackers){
+    if(harvesters < Memory.maxHarvesters){
+        Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1", stats: {harvested: 0}}});
+    }else if(attackers < Memory.maxAttackers){
         Game.spawns.Spawn1.spawnCreep([ATTACK, MOVE, ATTACK], "A"+Math.floor(Math.random() * 100), {memory: {task: "goto", spawnName: "Spawn1"}});
     }else if(thiefs < Memory.maxThiefs){
         Game.spawns.Spawn1.spawnCreep([MOVE, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1", stats: {stealed: 0}}});
@@ -104,6 +111,79 @@ module.exports.loop = () => {
     console.log();
     if(Game.cpu.bucket < 10000) Game.notify("T"+Game.time+" >> Bucket was used ("+Game.cpu.bucket+")", 200);
 };
+
+function harvest(id, namePrefix="H", creepsQuantity=3, body=[WORK, CARRY, MOVE]){
+    if(id == null) return;
+    const source = Game.getObjectById(id);
+    const room = source.room;
+    const creeps = source.room.find(FIND_MY_CREEPS, {filter: (creep) => creep.name.startsWith(namePrefix)});
+
+    function renew(creep){
+        if(creep.ticksToLive < 500 && room.spawn.store[RESOURCE_ENERGY] >= 100){
+            creep.moveTo(room.spawn, {reusePath: 30, ignoreCreeps: false});
+            room.spawn.renewCreep(creep);
+            return;
+        }
+    }
+
+    function harvestTransfer(creep, target){
+        if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
+            creep.memory.harvest = false;
+        }
+
+        if(creep.memory.harvest){
+            creep.moveTo(source, {reusePath: 10, ignoreCreeps: false});
+            creep.harvest(source);
+        }else{
+            creep.moveTo(target, {reusePath: 30, ignoreCreeps: false});
+            const status = creep.transfer(target, RESOURCE_ENERGY);
+            if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.harvest = true;
+        }
+    }
+
+    if(creeps.length < creepsQuantity){
+        room.spawn.spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
+    }
+
+    return {
+        container(id){
+            const target = Game.getObjectById(id);
+
+            creeps.forEach(creep => {
+                renew(creep);
+                harvestTransfer(creep, target);
+            })
+            return harvest(id);
+        },
+        storage(id){
+            const target = Game.getObjectById(id);
+
+            creeps.forEach(creep => {
+                renew(creep);
+                harvestTransfer(creep, target);
+            })
+            return harvest(id);
+        },
+        spawn(id){
+            const target = Game.getObjectById(id);
+
+            creeps.forEach(creep => {
+                renew(creep);
+                harvestTransfer(creep, target);
+            })
+            return harvest(id);
+        },
+        tower(id){
+            const target = Game.getObjectById(id);
+
+            creeps.forEach(creep => {
+                renew(creep);
+                harvestTransfer(creep, target);
+            })
+            return harvest(id);
+        }
+    }
+}
 
 function attacker(creep){
     if(creep == null) return 0;
