@@ -1,4 +1,5 @@
 require("prototype_room");
+require("prototype_creep");
 // const harvest = require("harvest");
 const controller = require("controller");
 const build = require("build");

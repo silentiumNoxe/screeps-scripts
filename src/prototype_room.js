@@ -1,10 +1,10 @@
-Object.defineProperty(Room.prototype, "mySpawn", {
+Object.defineProperty(Room.prototype, "mySpawns", {
     get(){
-        if(!this._mySpawn){
-            this._mySpawn = this.find(FIND_MY_SPAWNS)[0];
+        if(!this._mySpawns){
+            this._mySpawns = this.find(FIND_MY_SPAWNS);
         }
 
-        return this._mySpawn;
+        return this._mySpawns;
     },
     enumerable: false,
     configurable: true
@@ -22,13 +22,13 @@ Object.defineProperty(Room.prototype, "myExtensions", {
     configurable: true
 });
 
-Object.defineProperty(Room.prototype, "myContainers", {
+Object.defineProperty(Room.prototype, "containers", {
     get(){
-        if(!this._myContainers){
-            this._myContainers = this.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        if(!this._containers){
+            this._containers = this.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
         }
 
-        return this._myContainers;
+        return this._containers;
     },
     enumerable: false,
     configurable: true
@@ -53,6 +53,18 @@ Object.defineProperty(Room.prototype, "myTowers", {
         }
 
         return this._myTowers;
+    },
+    enumerable: false,
+    configurable: true
+});
+
+Object.defineProperty(Room.prototype, "sources", {
+    get(){
+        if(!this._sources){
+            this._sources = this.find(FIND_SOURCES);
+        }
+
+        return this._sources;
     },
     enumerable: false,
     configurable: true

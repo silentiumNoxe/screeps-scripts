@@ -1,4 +1,4 @@
-const utils = reqire("utils");
+const utils = require("utils");
 
 function controller(id){
     if(id == null) return;
@@ -6,31 +6,16 @@ function controller(id){
     const room = target.room;
 
     function renew(creep){
-        if(creep.ticksToLive < 500 && room.mySpawn.store[RESOURCE_ENERGY] >= 100){
-            creep.moveTo(room.mySpawn, {reusePath: 30, ignoreCreeps: false});
-            room.mySpawn.renewCreep(creep);
+        if(creep.ticksToLive < 500 && spawn.store[RESOURCE_ENERGY] >= 100){
+            creep.moveTo(creep.spawn, {reusePath: 30, ignoreCreeps: false});
+            creep.spawn.renewCreep(creep);
             return;
         }
     }
 
     function takeEnergy(creep){
         if(creep.memory.energy == null){
-            let energy = creep.room.find(FIND_STRUCTURES, {filter: (structure) => {
-                if(structure.structureType == STRUCTURE_CONTAINER || structure.structureType == STRUCTURE_STORAGE){
-                    return structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity(RESOURCE_ENERGY);
-                }
-            }});
-
-            let minDistance = 100;
-            let nearEnergy;
-            for(const a of energy){
-                let distance = creep.pos.getRangeTo(a);
-                if(distance < minDistance){
-                    minDistance = distance;
-                    nearEnergy = a;
-                }
-            }
-            energy = nearEnergy;
+            let energy = creep.pos.findClosestByPath(room.containers);
 
             if(energy != null)
                 creep.memory.energy = energy.id;
@@ -60,7 +45,7 @@ function controller(id){
             })
 
             if(creeps.length < creepsQuantity){
-                room.mySpawn.spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
+                room.mySpawns[0].spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
             }
         },
         claim(roomName){
