@@ -1,6 +1,10 @@
 Object.defineProperty(Room.prototype, "mySpawns", {
     get(){
+        if(!this._mySpawns){
+            this._mySpawns = this.find(FIND_MY_SPAWNS);
+        }
 
+        return this._mySpawns;
     },
     enumerable: false,
     configurable: true

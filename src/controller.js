@@ -7,10 +7,11 @@ function controller(roomName){
     const target = room.controller;
 
     function renew(creep){
-        if(creep.ticksToLive < 500 && spawn.store[RESOURCE_ENERGY] >= 100){
+        if(!creep.spawn) return false;
+        if(creep.ticksToLive < 500 && creep.spawn.store[RESOURCE_ENERGY] >= 100){
             creep.moveTo(creep.spawn, {reusePath: 30, ignoreCreeps: false});
-            creep.spawn.renewCreep(creep);
-            return;
+            let status = creep.spawn.renewCreep(creep);
+            return status == ERR_NOT_IN_RANGE;
         }
     }
 
@@ -33,7 +34,7 @@ function controller(roomName){
         upgrade(creepsQuantity, body=[WORK, CARRY, MOVE], namePrefix="CL"){
             const creeps = utils.creeps(namePrefix);
             creeps.forEach((creep) => {
-                renew(creep);
+                if(renew(creep)) return;
 
                 if(creep.store[RESOURCE_ENERGY] == 0){
                     takeEnergy(creep);

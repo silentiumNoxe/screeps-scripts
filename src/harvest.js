@@ -1,6 +1,6 @@
 const utils = require("utils");
 
-function harvest(roomName, x, y, consumers=[], {namePrefix: "H", quantity: 1, body: [WORK, CARRY, MOVE]}={}){
+function harvest(roomName, x, y, consumers=[], {namePrefix = "H", quantity = 1, body = [WORK, CARRY, MOVE]}={}){
     if(consumers.length == 0) return;
 
     const sourcePos = new RoomPosition(x, y, roomName);
@@ -14,7 +14,18 @@ function harvest(roomName, x, y, consumers=[], {namePrefix: "H", quantity: 1, bo
         room.mySpawns[0].spawnCreep(body, namePrefix);
     }
 
+    function renew(creep){
+        if(!creep.spawn) return false;
+        if(creep.ticksToLive < 500 && creep.spawn.store[RESOURCE_ENERGY] >= 100){
+            creep.moveTo(creep.spawn, {reusePath: 30, ignoreCreeps: false});
+            let status = creep.spawn.renewCreep(creep);
+            return status == ERR_NOT_IN_RANGE;
+        }
+    }
+
     creeps.forEach(creep => {
+        if(renew(creep)) return;
+
         if(creep.memory.harvest == null || creep.memory.harvest == true){
             creep.moveTo(sourcePos, {reusePath: 10, ignoreCreeps: false});
             creep.harvest(sourceObj);

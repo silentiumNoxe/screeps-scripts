@@ -6,5 +6,7 @@ Object.defineProperty(Creep.prototype, "spawn", {
         }
 
         return this._spawn;
-    }
-})
+    },
+    enumerable: false,
+    configurable: true
+});
