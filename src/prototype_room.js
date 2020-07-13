@@ -1,10 +1,6 @@
 Object.defineProperty(Room.prototype, "mySpawns", {
     get(){
-        if(!this._mySpawns){
-            this._mySpawns = this.find(FIND_MY_SPAWNS);
-        }
 
-        return this._mySpawns;
     },
     enumerable: false,
     configurable: true
@@ -69,3 +65,22 @@ Object.defineProperty(Room.prototype, "sources", {
     enumerable: false,
     configurable: true
 });
+
+if(!Room.prototype._lookForAt){
+    Room.prototype._lookForAt = Room.prototype.lookForAt;
+
+    Room.prototype.lookForAt = function(type, firstArg, secondArg=null){
+        let res;
+        if(firstArg instanceof RoomPosition){
+            res = this._lookForAt(type, firstArg);
+        }else{
+            res = this._lookForAt(type, firstArg, secondArg);
+        }
+
+        if(secondArg != null && secondArg instanceof Function){
+            return res.filter(secondArg);
+        }
+
+        return res;
+    }
+}

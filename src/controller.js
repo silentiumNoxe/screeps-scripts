@@ -1,9 +1,10 @@
 const utils = require("utils");
 
-function controller(id){
-    if(id == null) return;
-    const target = Game.getObjectById(id);
-    const room = target.room;
+function controller(roomName){
+    const room = Game.rooms[roomName];
+    if(room == null) return;
+
+    const target = room.controller;
 
     function renew(creep){
         if(creep.ticksToLive < 500 && spawn.store[RESOURCE_ENERGY] >= 100){
@@ -15,7 +16,7 @@ function controller(id){
 
     function takeEnergy(creep){
         if(creep.memory.energy == null){
-            let energy = creep.pos.findClosestByPath(room.containers);
+            let energy = creep.pos.findClosestByPath(room.containers, {filter: (st) => st.store[RESOURCE_ENERGY] > 0});
 
             if(energy != null)
                 creep.memory.energy = energy.id;
@@ -45,7 +46,7 @@ function controller(id){
             })
 
             if(creeps.length < creepsQuantity){
-                room.mySpawns[0].spawnCreep(body, namePrefix+"-"+Math.floor(Math.random()*100));
+                room.mySpawns[0].spawnCreep(namePrefix, body);
             }
         },
         claim(roomName){

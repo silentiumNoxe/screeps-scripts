@@ -1,6 +1,8 @@
+require("prototype_position");
 require("prototype_room");
 require("prototype_creep");
-// const harvest = require("harvest");
+require("prototype_spawn");
+const harvest = require("harvest");
 const controller = require("controller");
 const build = require("build");
 const repair = require("repair");
@@ -23,43 +25,11 @@ module.exports.loop = () => {
 
     processTowers();
 
-    controller("5bbcad759099fc012e6374e5").upgrade(8);//E9N23
+    controller("E9N23").upgrade(8);//E9N23
 
-    // harvest("5bbcad759099fc012e6374e3", "H1", 4)//18,16
-    //     .tower("5f05ffecf159a6369edb06d6")//30,20
-    //     .container("5f063581d3c5918913b55191")//20,17
-    //     .container("5f0305939f82ec03bdf199a5")//24,28
-    //     .container("5f048a3a9b7a52ff7567b7dc")//24,27
-    //     .container("5f048e76541ecf62302139ac")//25,27
-    //     .container("5f060713f159a616e6db08e8")//34,27
-    //     .extension("5f04c499a2794b34a7cf9313")//25,30
-    //     .extension("5f0533da3513bc92c7702028")//26,31
-    //     .extension("5f050251f08c78de7b8a154b")//27,31
-    //     .extension("5f05e91f90a2a0c988a5421b")//27,32
-    //     .extension("5f05ad330df7a9ff701eace9")//28,32
-    //     .extension("5f0595759a625c36013cf208")//28,22
-    //     .extension("5f05354c72a05a36d0f293c5")//28,23
-    //     .extension("5f04d2079b7a523ab267cfc2")//28,24
-    //     .extension("5f05b2345e332a4ad2c00228")//29,22
-    //     .extension("5f05310a3109800f3c52d836");//29,23
-    //
-    // harvest("5bbcad759099fc012e6374e4", "H2", 4)//18,16
-    //     .tower("5f05ffecf159a6369edb06d6")//30,20
-    //     .container("5f063581d3c5918913b55191")//20,17
-    //     .container("5f0305939f82ec03bdf199a5")//24,28
-    //     .container("5f048a3a9b7a52ff7567b7dc")//24,27
-    //     .container("5f048e76541ecf62302139ac")//25,27
-    //     .container("5f060713f159a616e6db08e8")//34,27
-    //     .extension("5f04c499a2794b34a7cf9313")//25,30
-    //     .extension("5f0533da3513bc92c7702028")//26,31
-    //     .extension("5f050251f08c78de7b8a154b")//27,31
-    //     .extension("5f05e91f90a2a0c988a5421b")//27,32
-    //     .extension("5f05ad330df7a9ff701eace9")//28,32
-    //     .extension("5f0595759a625c36013cf208")//28,22
-    //     .extension("5f05354c72a05a36d0f293c5")//28,23
-    //     .extension("5f04d2079b7a523ab267cfc2")//28,24
-    //     .extension("5f05b2345e332a4ad2c00228")//29,22
-    //     .extension("5f05310a3109800f3c52d836");//29,23
+    harvest("E9N23", 18, 16, [
+        "5f063581d3c5918913b55191"//20,17
+    ], {namePrefix: "H1", quantity: 2});
 
     // build("E9N23", "B");
     // repair("E9N23", "R");
@@ -95,11 +65,11 @@ module.exports.loop = () => {
     }
 
     if(harvesters < Memory.maxHarvesters){
-        Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1", stats: {harvested: 0}}});
+        Game.spawns.Spawn1.spawnCreep([WORK, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY], "H"+Math.floor(Math.random()*100), {memory: {task: "harvest", spawnName: "Spawn1", stats: {harvested: 0}}});
     }else if(attackers < Memory.maxAttackers){
         Game.spawns.Spawn1.spawnCreep([ATTACK, MOVE, ATTACK], "A"+Math.floor(Math.random() * 100), {memory: {task: "goto", spawnName: "Spawn1"}});
     }else if(thiefs < Memory.maxThiefs){
-        Game.spawns.Spawn1.spawnCreep([MOVE, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1", stats: {stealed: 0}}});
+        Game.spawns.Spawn1.spawnCreep([MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY], "TH"+Math.floor(Math.random()*100), {memory: {task: "steal", spawnName: "Spawn1", stats: {stealed: 0}}});
     }else if(builders < Memory.maxBuilders){
         Game.spawns.Spawn1.spawnCreep([WORK, MOVE, CARRY], "B"+Math.floor(Math.random()*100), {memory: {task: "energy", spawnName: "Spawn1"}});
     }
@@ -365,7 +335,11 @@ function thief(creep){
                 break;
             }
 
-            target = creep.pos.findClosestByRange(FIND_HOSTILE_SPAWNS);
+            target = creep.pos.findClosestByRange(FIND_STRUCTURES, {filter: (st) => {
+                if(st.store){
+                    return st.store[RESOURCE_ENERGY] > 0;
+                }
+            }});
             status = creep.withdraw(target, RESOURCE_ENERGY);
             if(status == ERR_NOT_IN_RANGE){
                 moveCreep(creep, target);
