@@ -138,14 +138,14 @@ module.exports.loop = () => {
                         creep.memory.todo = "repair";
                     }
                 }
-            }
+            }//builder
+        });//forEach
 
-            if(counter.harvester < Memory.maxHarvesters){
-                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", spawnName: "Spawn1"}});
-            }else if(counter.ucl < Memory.maxUcls){
-                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", spawnName: "Spawn1"}});
-            }else if(counter.builder < Memory.maxBuilders){
-                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", spawnName: "Spawn1"}});
-            }
-        })
+    if(counter.harvester < Memory.maxHarvesters){
+        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", spawnName: "Spawn1"}});
+    }else if(counter.ucl < Memory.maxUcls){
+        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", spawnName: "Spawn1"}});
+    }else if(counter.builder < Memory.maxBuilders){
+        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", spawnName: "Spawn1"}});
+    }
 }
