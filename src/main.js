@@ -12,7 +12,7 @@ Object.defineProperties(Room.prototype, {
 })
 //Creep---------------------------------------
 Creep.prototype.hasRole = function(role){
-    return creep.memory.role == role;
+    return this.memory.role == role;
 }
 
 if(!Creep.prototype._harvest){
