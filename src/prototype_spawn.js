@@ -1,7 +1,7 @@
 if(!StructureSpawn.prototype._spawnCreep){
     StructureSpawn.prototype._spawnCreep = StructureSpawn.prototype.spawnCreep;
 
-    StructureSpawn.prototype.spawnCreep = function(namePrefix="", body=[WORK, CARRY, MOVE], memory={}){
+    StructureSpawn.prototype.spawnCreep = function(body=[WORK, CARRY, MOVE], namePrefix="", memory={}){
         if(namePrefix == "") return;
         memory.spawnName = this.name;
 
@@ -13,6 +13,6 @@ if(!StructureSpawn.prototype._spawnCreep){
             if(status == OK) break;
         }
 
-        return this._spawnCreep(body, name, {memory: memory, dryRun: true});
+        return this._spawnCreep(body, name, {memory: memory});
     }
 }
