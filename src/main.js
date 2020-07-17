@@ -53,7 +53,10 @@ module.exports.loop = () => {
     Object.entries(Memory.creeps)
         .forEach(name => {
             const creep = Game.creeps[name];
-            if(creep == null) delete Memory.creeps[name];
+            if(creep == null){
+                delete Memory.creeps[name];
+                return;
+            }
 
             if(creep.hasRole("harvester")){
                 counter.harvester++;
@@ -138,11 +141,11 @@ module.exports.loop = () => {
             }
 
             if(counter.harvester < Memory.maxHarvesters){
-                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", spawnName: "Spawn1"});
+                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", spawnName: "Spawn1"}});
             }else if(counter.ucl < Memory.maxUcls){
-                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", spawnName: "Spawn1"});
+                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", spawnName: "Spawn1"}});
             }else if(counter.builder < Memory.maxBuilders){
-                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", spawnName: "Spawn1"});
+                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", spawnName: "Spawn1"}});
             }
         })
 }
