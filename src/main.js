@@ -38,13 +38,26 @@ Object.defineProperties(Structure.prototype, {
     }
 })
 //main----------------------------------------
+function initMemory(){
+    if(Memory.maxHarvesters == null) Memory.maxHarvesters = 8;
+    if(Memory.maxUcls == null) Memory.maxUcls = 6;
+    if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
+}
 module.exports.loop = () => {
+    const counter = {
+        harvester: 0,
+        ucl: 0,
+        builder: 0
+    }
+
     Object.entries(Memory.creeps)
         .forEach(name => {
             const creep = Game.creeps[name];
             if(creep == null) delete Memory.creeps[name];
 
             if(creep.hasRole("harvester")){
+                counter.harvester++;
+
                 if(creep.memory.todo == "transfer"){
                     let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                         if(s.structureType == STRUCTURE_CONTAINER ||
@@ -68,6 +81,8 @@ module.exports.loop = () => {
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                 }
             }else if(creep.hasRole("ucl")){
+                counter.ucl++;
+
                 if(creep.memory.todo == "energy"){
                     let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                         if(s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE){
@@ -86,6 +101,8 @@ module.exports.loop = () => {
                     if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                 }
             }else if(creep.hasRole("builder")){
+                counter.builder++;
+
                 if(creep.memory.todo == "energy"){
                     let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                         if(s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE){
@@ -118,6 +135,14 @@ module.exports.loop = () => {
                         creep.memory.todo = "repair";
                     }
                 }
+            }
+
+            if(counter.harvester < Memory.maxHarvesters){
+                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", spawnName: "Spawn1"});
+            }else if(counter.ucl < Memory.maxUcls){
+                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", spawnName: "Spawn1"});
+            }else if(counter.builder < Memory.maxBuilders){
+                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", spawnName: "Spawn1"});
             }
         })
 }
