@@ -50,7 +50,7 @@ module.exports.loop = () => {
         builder: 0
     }
 
-    Object.entries(Memory.creeps)
+    Object.keys(Memory.creeps)
         .forEach(name => {
             const creep = Game.creeps[name];
             if(creep == null){
