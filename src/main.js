@@ -1,6 +1,6 @@
 //Room----------------------------------------
-Object.defineProperties(Room.prototype, {
-    sources: {
+if(Room.prototype.sources == null){
+    Object.defineProperty(Room.prototype, "sources", {
         get(){
             if(this._sources == null){
                 this._sources = this.find(FIND_SOURCES);
@@ -8,14 +8,16 @@ Object.defineProperties(Room.prototype, {
 
             return this._sources;
         }
-    }
-})
+    })
+}
 //Creep---------------------------------------
-Creep.prototype.hasRole = function(role){
-    return this.memory.role == role;
+if(Creep.prototype.hasRole == null){
+    Creep.prototype.hasRole = function(role){
+        return this.memory.role == role;
+    }
 }
 
-if(!Creep.prototype._harvest){
+if(Creep.prototype._harvest == null){
     Creep.prototype._harvest = Creep.prototype.harvest;
     Creep.prototype.harvest = function(target){
         if(target == null) return ERR_INVALID_ARGS;
@@ -30,13 +32,15 @@ if(!Creep.prototype._harvest){
     }
 }
 //Structure-----------------------------------
-Object.defineProperties(Structure.prototype, {
-    isBroken: {
-        get(){
-            return this.hits < this.hitsMax;
+if(Structure.prototype.isBroken == null){
+    Object.defineProperty(Structure.prototype, "isBroken", {
+        isBroken: {
+            get(){
+                return this.hits < this.hitsMax;
+            }
         }
-    }
-})
+    })
+}
 //main----------------------------------------
 function initMemory(){
     if(Memory.maxHarvesters == null) Memory.maxHarvesters = 8;
