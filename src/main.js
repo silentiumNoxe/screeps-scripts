@@ -114,6 +114,8 @@ function cpuMonitor(tag, action=null){
     }
 }
 
+cpuMonitor.PRINT = "print";
+
 module.exports.loop = () => {
     initMemory();
 
@@ -242,7 +244,7 @@ module.exports.loop = () => {
     }
     cpuMonitor("spawn");
 
-    cpuMonitor("towers", {action: "print"});
-    cpuMonitor("creeps", {action: "print"});
-    cpuMonitor("spawn", {action: "print"});
+    cpuMonitor("towers", cpuMonitor.PRINT);
+    cpuMonitor("creeps", cpuMonitor.PRINT);
+    cpuMonitor("spawn", cpuMonitor.PRINT);
 }
