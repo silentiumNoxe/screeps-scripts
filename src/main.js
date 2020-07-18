@@ -109,7 +109,10 @@ module.exports.loop = () => {
 
                 if(tower.room.enemies.length > 0){
                     Game.notify("In the room "+tower.room.name+" tower found enemies");
-                    tower.attack(tower.pos.findNearest(tower.room.enemies));
+                    let status = tower.attack(tower.pos.findNearest(tower.room.enemies));
+                    if(status == ERR_NOT_ENOUGH_ENERGY){
+                        Game.notify("Tower ["+tower.room.name+"] can't attack because does not have energy");
+                    }
                 }
             })
         });
