@@ -27,7 +27,7 @@ if(Room.prototype.enemies == null){
     Object.defineProperty(Room.prototype, "enemies", {
         get(){
             if(this._enemies == null){
-                this._enemies = this.find(FIND_HOSTILE_CREEPS);
+                this._enemies = this.find(FIND_HOSTILE_CREEPS, {filter: (c) => Memory.friends.indexOf(c.owner) == -1});
             }
 
             return this._enemies;
@@ -102,6 +102,8 @@ function initMemory(){
     if(Memory.bodyHarvester == null) Memory.bodyHarvester = [WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
     if(Memory.bodyUcl == null) Memory.bodyUcl = [WORK, WORK, CARRY, MOVE];
     if(Memory.bodyBuilder == null) Memory.bodyBuilder = [WORK, WORK, CARRY, CARRY, MOVE];
+
+    if(Memory.friends == null) Memory.friends = [];
 }
 
 function renew(creep){
@@ -157,6 +159,9 @@ module.exports.loop = () => {
 
                 if(creep.memory.waitTo < Game.time){
                     if(creep.memory.todo == "transfer"){
+                        if(creep.room.name != Game.spawns.Spawn1.room.name){
+                            creep.moveTo(Game.spawns.Spawn1);
+                        }
                         let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                             if(s.structureType == STRUCTURE_CONTAINER ||
                                 s.structureType == STRUCTURE_STORAGE ||
@@ -179,6 +184,9 @@ module.exports.loop = () => {
 
                 if(creep.memory.todo == "harvest"){
                     let target = creep.pos.findClosestByPath(creep.room.sources);
+                    if(target == null){
+                        creep.moveTo(new RoomPosition(0, 26, "E9N23"));
+                    }
                     let status = creep.harvest(target);
                     if(status == ERR_FULL) creep.memory.todo = "transfer";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
