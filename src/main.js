@@ -172,7 +172,7 @@ module.exports.loop = () => {
                         }});
                         if(target == null){
                             creep.say("waiting");
-                            creep.memory.waitTo = Game.time+50;
+                            creep.memory.waitTo = Game.time+200;
                         }
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
                         if(status == ERR_FULL) creep.memory.todo = "upgrade";
@@ -198,7 +198,7 @@ module.exports.loop = () => {
                         }});
                         if(target == null){
                             creep.say("waiting");
-                            creep.memory.waitTo = Game.time+100;
+                            creep.memory.waitTo = Game.time+200;
                         }
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
                         if(status == ERR_FULL) creep.memory.todo = "repair";
@@ -231,11 +231,11 @@ module.exports.loop = () => {
         });//forEach
 
     if(counter.harvester < Memory.maxHarvesters){
-        Game.spawns.Spawn1.spawnCreep(Memory.bodyHarvester, "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep(Memory.bodyHarvester, "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", waitTo: 0, spawnName: "Spawn1"}});
     }else if(counter.ucl < Memory.maxUcls){
-        Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
     }else if(counter.builder < Memory.maxBuilders){
-        Game.spawns.Spawn1.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
     }
 
     const endCpu = Game.cpu.getUsed();
