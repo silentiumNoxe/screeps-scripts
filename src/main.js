@@ -107,6 +107,7 @@ function initMemory(){
 }
 
 function renew(creep){
+    if(creep.spawn == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
     if(creep.ticksToLive < 500 && creep.spawn.store[RESOURCE_ENERGY] > 100){
         creep.moveTo(creep.spawn);
         creep.spawn.renew(creep);
@@ -254,7 +255,10 @@ module.exports.loop = () => {
                     if(creep.memory.todo == "repair"){
                         let target = Game.getObjectById(creep.memory.target);
                         if(target == null || target.hits == target.hitsMax){
-                            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.structureType != STRUCTURE_WALL && s.hits < s.hitsMax});
+                            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                                if(s.structureType == STRUCTURE_RAMPART) return s.hits < 1000000;
+                                return s.structureType != STRUCTURE_WALL && s.hits < s.hitsMax;
+                            }});
                         }
                         if(target != null){
                             creep.memory.target = target.id;
