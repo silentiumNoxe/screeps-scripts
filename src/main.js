@@ -143,6 +143,9 @@ module.exports.loop = () => {
                             return s.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
                         }
                     }});
+                    if(target == null){
+                        creep.say("all containers is full");
+                    }
                     let status = creep.transfer(target, RESOURCE_ENERGY);
                     if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
@@ -163,6 +166,9 @@ module.exports.loop = () => {
                             return s.store[RESOURCE_ENERGY] > 0;
                         }
                     }});
+                    if(target == null){
+                        creep.say("all containers is empty");
+                    }
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
                     if(status == ERR_FULL) creep.memory.todo = "upgrade";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
@@ -183,6 +189,9 @@ module.exports.loop = () => {
                             return s.store[RESOURCE_ENERGY] > 0;
                         }
                     }});
+                    if(target == null){
+                        creep.say("all containers is empty");
+                    }
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
                     if(status == ERR_FULL) creep.memory.todo = "repair";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
@@ -195,6 +204,7 @@ module.exports.loop = () => {
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }else{
+                        creep.say("all structures repaired");
                         creep.memory.todo = "build";
                     }
                 }
@@ -206,6 +216,7 @@ module.exports.loop = () => {
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }else{
+                        creep.say("I don't see any construction sites");
                         creep.memory.todo = "repair";
                     }
                 }
