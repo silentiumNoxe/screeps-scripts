@@ -86,15 +86,44 @@ function initMemory(){
     if(Memory.maxHarvesters == null) Memory.maxHarvesters = 8;
     if(Memory.maxUcls == null) Memory.maxUcls = 6;
     if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
+    if(Memory.cpuMonitor == null) Memory.cpuMonitor = {};
+}
+
+function cpuMonitor(tag, action=null){
+    if(tag == null || tag == "") return;
+    if(action == null){
+        if(Memory.cpuMonitor[tag] == null) Memory.cpuMonitor[tag] = [];
+        Memory.cpuMonitor[tag].push(Game.cpu.getUsed());
+    }
+
+    if(action == "print"){
+        console.log("CPU MONITOR ["+tag+"]--------------------------");
+        let sum = 0;
+        for(let i = 0; i < Memory.cpuMonitor[tag].length; i++){
+            const value = Memory.cpuMonitor[tag][i];
+            const prevValue = Memory.cpuMonitor[tag][i-1];
+            let res = 0;
+
+            if(prevValue != null) res = value - prevValue;
+            if(res != null) sum += res;
+
+            console.log(i, value, res);
+        }
+        console.log("CPU:", sum);
+        console.log("CPU MONITOR ["+tag+"]--------------------------")
+    }
 }
 
 module.exports.loop = () => {
+    initMemory();
+
     const counter = {
         harvester: 0,
         ucl: 0,
         builder: 0
     }
 
+    cpuMonitor("towers");
     Object.keys(Game.rooms)
         .forEach(name => {
             const room = Game.rooms[name];
@@ -108,7 +137,9 @@ module.exports.loop = () => {
                 }
             })
         });
+    cpuMonitor("towers");
 
+    cpuMonitor("creeps");
     Object.keys(Memory.creeps)
         .forEach(name => {
             const creep = Game.creeps[name];
@@ -199,7 +230,9 @@ module.exports.loop = () => {
                 }
             }//builder
         });//forEach
+    cpuMonitor("creeps");
 
+    cpuMonitor("spawn");
     if(counter.harvester < Memory.maxHarvesters){
         Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", spawnName: "Spawn1"}});
     }else if(counter.ucl < Memory.maxUcls){
@@ -207,4 +240,9 @@ module.exports.loop = () => {
     }else if(counter.builder < Memory.maxBuilders){
         Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", spawnName: "Spawn1"}});
     }
+    cpuMonitor("spawn");
+
+    cpuMonitor("towers", {action: "print"});
+    cpuMonitor("creeps", {action: "print"});
+    cpuMonitor("spawn", {action: "print"});
 }
