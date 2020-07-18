@@ -86,6 +86,10 @@ function initMemory(){
     if(Memory.maxHarvesters == null) Memory.maxHarvesters = 8;
     if(Memory.maxUcls == null) Memory.maxUcls = 6;
     if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
+
+    if(Memory.bodyHarvester == null) Memory.bodyHarvester = [WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
+    if(Memory.bodyUcl == null) Memory.bodyUcl = [WORK, WORK, CARRY, MOVE];
+    if(Memory.bodyBuilder == null) Memory.bodyBuilder = [WORK, WORK, CARRY, CARRY, MOVE];
 }
 
 module.exports.loop = () => {
@@ -209,11 +213,11 @@ module.exports.loop = () => {
         });//forEach
 
     if(counter.harvester < Memory.maxHarvesters){
-        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep(Memory.bodyHarvester, "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", spawnName: "Spawn1"}});
     }else if(counter.ucl < Memory.maxUcls){
-        Game.spawns.Spawn1.spawnCreep([WORK, WORK CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", spawnName: "Spawn1"}});
     }else if(counter.builder < Memory.maxBuilders){
-        Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", spawnName: "Spawn1"}});
     }
 
     const endCpu = Game.cpu.getUsed();
