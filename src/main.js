@@ -108,6 +108,7 @@ module.exports.loop = () => {
                 if(!tower.my) return;
 
                 if(tower.room.enemies.length > 0){
+                    Game.notify("In the room "+tower.room.name+" tower found enemies");
                     tower.attack(tower.pos.findNearest(tower.room.enemies));
                 }
             })
