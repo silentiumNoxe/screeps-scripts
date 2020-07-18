@@ -189,7 +189,7 @@ module.exports.loop = () => {
                     if(target != null){
                         let status = creep.repair(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
-                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath,
+                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }else{
                         creep.memory.todo = "build";
                     }
@@ -198,9 +198,9 @@ module.exports.loop = () => {
                 if(creep.memory.todo == "build"){
                     let target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
                     if(target != null){
-                        let status = creep.repair(target);
+                        let status = creep.build(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
-                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath,
+                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }else{
                         creep.memory.todo = "repair";
                     }
@@ -209,11 +209,11 @@ module.exports.loop = () => {
         });//forEach
 
     if(counter.harvester < Memory.maxHarvesters){
-        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE], "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", spawnName: "Spawn1"}});
     }else if(counter.ucl < Memory.maxUcls){
-        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep([WORK, WORK CARRY, MOVE], "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", spawnName: "Spawn1"}});
     }else if(counter.builder < Memory.maxBuilders){
-        Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", spawnName: "Spawn1"}});
+        Game.spawns.Spawn1.spawnCreep([WORK, WORK, CARRY, CARRY, MOVE], "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", spawnName: "Spawn1"}});
     }
 
     const endCpu = Game.cpu.getUsed();
