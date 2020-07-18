@@ -230,12 +230,20 @@ module.exports.loop = () => {
             }//builder
         });//forEach
 
+    let containers = Game.spawns.Spawn1.room.find(FIND_STRUCTURES, {filter: (s) => {
+        if(s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE){
+            return s.store[RESOURCE_ENERGY] > 0;
+        }
+    }});
     if(counter.harvester < Memory.maxHarvesters){
         Game.spawns.Spawn1.spawnCreep(Memory.bodyHarvester, "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", waitTo: 0, spawnName: "Spawn1"}});
     }else if(counter.ucl < Memory.maxUcls){
-        Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
+        if(containers.length > 0){
+            Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
+        }
     }else if(counter.builder < Memory.maxBuilders){
-        Game.spawns.Spawn1.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
+        if(containers.length > 0)
+            Game.spawns.Spawn1.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
     }
 
     const endCpu = Game.cpu.getUsed();
