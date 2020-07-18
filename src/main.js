@@ -10,6 +10,46 @@ if(Room.prototype.sources == null){
         }
     })
 }
+
+if(Room.prototype.towers == null){
+    Object.defineProperty(Room.prototype, "towers", {
+        get(){
+            if(this._towers == null){
+                this._towers = this.find(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER});
+            }
+
+            return this._towers;
+        }
+    })
+}
+
+if(Room.prototype.enemies == null){
+    Object.defineProperty(Room.prototype, "enemies", {
+        get(){
+            if(this._enemies == null){
+                this._enemies = this.find(FIND_HOSTILE_CREEPS);
+            }
+
+            return this._enemies;
+        }
+    })
+}
+//RoomPosition--------------------------------
+if(RoomPosition.prototype.findNearest == null){
+    RoomPosition.prototype.findNearest = function(targets){
+        let minDistance = 1000;
+        let found;
+        for(const target of targets){
+            let distance = this.getRangeTo(target);
+            if(distance < minDistance){
+                minDistance = distance;
+                found = target;
+            }
+        }
+
+        return found;
+    }
+}
 //Creep---------------------------------------
 if(Creep.prototype.hasRole == null){
     Creep.prototype.hasRole = function(role){
@@ -47,12 +87,27 @@ function initMemory(){
     if(Memory.maxUcls == null) Memory.maxUcls = 6;
     if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
 }
+
 module.exports.loop = () => {
     const counter = {
         harvester: 0,
         ucl: 0,
         builder: 0
     }
+
+    Object.keys(Game.rooms)
+        .forEach(name => {
+            const room = Game.rooms[name];
+            if(room == null) return;
+
+            room.towers.forEach(tower => {
+                if(!tower.my) return;
+
+                if(tower.room.enemies.length > 0){
+                    tower.attack(tower.pos.findNearest(tower.room.enemies));
+                }
+            })
+        });
 
     Object.keys(Memory.creeps)
         .forEach(name => {
