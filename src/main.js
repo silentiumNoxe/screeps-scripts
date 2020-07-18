@@ -71,8 +71,20 @@ if(Creep.prototype._harvest == null){
         return this._harvest(target);
     }
 }
+
+if(Creep.prototype.spawn == null){
+    Object.defineProperty(Creep.prototype, "spawn", {
+        get(){
+            if(this._spawn == null){
+                this._spawn = Game.spawns[this.memory.spawnName];
+            }
+
+            return this._spawn;
+        }
+    })
+}
 //Structure-----------------------------------
-if(Structure.prototype.isBroken == null){
+if(Structure.prototype.isBroken == null){//<-- not working. returned undefined (trace not showed)
     Object.defineProperty(Structure.prototype, "isBroken", {
         isBroken: {
             get(){
@@ -90,6 +102,16 @@ function initMemory(){
     if(Memory.bodyHarvester == null) Memory.bodyHarvester = [WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
     if(Memory.bodyUcl == null) Memory.bodyUcl = [WORK, WORK, CARRY, MOVE];
     if(Memory.bodyBuilder == null) Memory.bodyBuilder = [WORK, WORK, CARRY, CARRY, MOVE];
+}
+
+function renew(creep){
+    if(creep.ticksToLive < 500 && creep.spawn.store[RESOURCE_ENERGY] > 100){
+        creep.moveTo(creep.spawn);
+        creep.spawn.renew(creep);
+        return false;//continue?
+    }
+
+    return true;//continue?
 }
 
 module.exports.loop = () => {
@@ -112,10 +134,10 @@ module.exports.loop = () => {
                 if(!tower.my) return;
 
                 if(tower.room.enemies.length > 0){
-                    Game.notify("In the room "+tower.room.name+" tower found enemies");
+                    Game.notify("In the room "+tower.room.name+" tower found enemies", 20);
                     let status = tower.attack(tower.pos.findNearest(tower.room.enemies));
                     if(status == ERR_NOT_ENOUGH_ENERGY){
-                        Game.notify("Tower ["+tower.room.name+"] can't attack because does not have energy");
+                        Game.notify("Tower ["+tower.room.name+"] can't attack because does not have energy", 5);
                     }
                 }
             })
@@ -131,6 +153,7 @@ module.exports.loop = () => {
 
             if(creep.hasRole("harvester")){
                 counter.harvester++;
+                if(!renew(creep)) return;
 
                 if(creep.memory.waitTo < Game.time){
                     if(creep.memory.todo == "transfer"){
@@ -154,7 +177,7 @@ module.exports.loop = () => {
                     }
                 }
 
-                if(creep.memory.todo = "harvest"){
+                if(creep.memory.todo == "harvest"){
                     let target = creep.pos.findClosestByPath(creep.room.sources);
                     let status = creep.harvest(target);
                     if(status == ERR_FULL) creep.memory.todo = "transfer";
@@ -162,6 +185,7 @@ module.exports.loop = () => {
                 }
             }else if(creep.hasRole("ucl")){
                 counter.ucl++;
+                if(!renew(creep)) return;
 
                 if(creep.memory.waitTo < Game.time){
                     if(creep.memory.todo == "energy"){
@@ -181,13 +205,15 @@ module.exports.loop = () => {
 
                     if(creep.memory.todo == "upgrade"){
                         let target = creep.room.controller;
-                        creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                        if(!creep.pos.isNearTo(target))
+                            creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                         let status = creep.upgradeController(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                     }
                 }
             }else if(creep.hasRole("builder")){
                 counter.builder++;
+                if(!renew(creep)) return;
 
                 if(creep.memory.waitTo < Game.time){
                     if(creep.memory.todo == "energy"){
@@ -206,7 +232,7 @@ module.exports.loop = () => {
                     }
 
                     if(creep.memory.todo == "repair"){
-                        let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.isBroken});
+                        let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
                         if(target != null){
                             let status = creep.repair(target);
                             if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
