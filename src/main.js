@@ -152,13 +152,13 @@ module.exports.loop = () => {
                         if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }
+                }
 
-                    if(creep.memory.todo = "harvest"){
-                        let target = creep.pos.findClosestByPath(creep.room.sources);
-                        let status = creep.harvest(target);
-                        if(status == ERR_FULL) creep.memory.todo = "transfer";
-                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
-                    }
+                if(creep.memory.todo = "harvest"){
+                    let target = creep.pos.findClosestByPath(creep.room.sources);
+                    let status = creep.harvest(target);
+                    if(status == ERR_FULL) creep.memory.todo = "transfer";
+                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                 }
             }else if(creep.hasRole("ucl")){
                 counter.ucl++;
