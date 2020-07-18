@@ -145,7 +145,7 @@ module.exports.loop = () => {
             })
         });
 
-    Object.keys(Memory.creeps)
+    Object.keys(Game.creeps)
         .forEach(name => {
             const creep = Game.creeps[name];
             if(creep == null){
@@ -254,7 +254,7 @@ module.exports.loop = () => {
                     if(creep.memory.todo == "repair"){
                         let target = Game.getObjectById(creep.memory.target);
                         if(target == null || target.hits == target.hitsMax){
-                            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
+                            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.structureType != STRUCTURE_WALL && s.hits < s.hitsMax});
                         }
                         if(target != null){
                             creep.memory.target = target.id;
