@@ -72,7 +72,7 @@ if(Creep.prototype._harvest == null){
     }
 }
 
-if(Creep.prototype.spawn == null){
+if(Creep.prototype.spawn == null){//throw exception when I do checkout
     Object.defineProperty(Creep.prototype, "spawn", {
         get(){
             if(this._spawn == null){
@@ -104,6 +104,8 @@ function initMemory(){
     if(Memory.bodyBuilder == null) Memory.bodyBuilder = [WORK, WORK, CARRY, CARRY, MOVE];
 
     if(Memory.friends == null) Memory.friends = [];
+
+    if(Memory.nextClean == null) Memory.nextClean = Game.time + 5000;
 }
 
 function renew(creep){
@@ -115,6 +117,18 @@ function renew(creep){
     }
 
     return true;//continue?
+}
+
+function cleanMemory(){
+    if(Memory.nextClean < Game.time){
+        Object.keys(Memory.creeps)
+            .forEach(name => {
+                if(Game.creeps[name] == null)
+                    delete Memory.creeps[name];
+            });
+
+        Memory.nextClean = Game.time + 5000;
+    }
 }
 
 module.exports.loop = () => {
@@ -164,20 +178,24 @@ module.exports.loop = () => {
                             creep.moveTo(Game.spawns.Spawn1);
                             return;
                         }
-                        let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
-                            if(s.structureType == STRUCTURE_CONTAINER ||
-                                s.structureType == STRUCTURE_STORAGE ||
-                                s.structureType == STRUCTURE_TOWER ||
-                                s.structureType == STRUCTURE_SPAWN ||
-                                s.structureType == STRUCTURE_EXTENSION){
+                        let target = Game.getObjectById(creep.memory.target);
+                        if(target == null){
+                            target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                                if(s.structureType == STRUCTURE_CONTAINER ||
+                                    s.structureType == STRUCTURE_STORAGE ||
+                                    s.structureType == STRUCTURE_TOWER ||
+                                    s.structureType == STRUCTURE_SPAWN ||
+                                    s.structureType == STRUCTURE_EXTENSION){
 
-                                return s.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                            }
-                        }});
+                                    return s.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                                }
+                            }});
+                        }
                         if(target == null){
                             creep.say("waiting");
                             creep.memory.waitTo = Game.time+50;
                         }
+                        creep.memory.target = target.id;
                         let status = creep.transfer(target, RESOURCE_ENERGY);
                         if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
@@ -216,6 +234,7 @@ module.exports.loop = () => {
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
                         if(status == ERR_FULL) creep.memory.todo = "upgrade";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                        else if(status == ERR_INVALID_TARGET) creep.memory.energy = null;
                     }
 
                     if(creep.memory.todo == "upgrade"){
@@ -250,6 +269,7 @@ module.exports.loop = () => {
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
                         if(status == ERR_FULL) creep.memory.todo = "repair";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                        else if(status == ERR_INVALID_TARGET) creep.memory.energy = null;
                     }
 
                     if(creep.memory.todo == "repair"){
@@ -265,6 +285,7 @@ module.exports.loop = () => {
                             let status = creep.repair(target);
                             if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                             else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                            else if(status == ERR_INVALID_TARGET) creep.memory.target = null;
                         }else{
                             creep.memory.todo = "build";
                         }
@@ -280,6 +301,7 @@ module.exports.loop = () => {
                             let status = creep.build(target);
                             if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                             else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                            else if(status == ERR_INVALID_TARGET) creep.memory.target = null;
                         }else{
                             creep.memory.todo = "repair";
                         }
@@ -303,6 +325,8 @@ module.exports.loop = () => {
         if(containers.length > 0)
             Game.spawns.Spawn1.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
     }
+
+    cleanMemory();
 
     const endCpu = Game.cpu.getUsed();
     const usedCpu = endCpu - startCpu;
