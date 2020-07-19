@@ -199,6 +199,7 @@ module.exports.loop = () => {
                         let status = creep.transfer(target, RESOURCE_ENERGY);
                         if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                        else if(status == ERR_INVALID_TARGET) creep.memory.target = null;
                     }
                 }
 
