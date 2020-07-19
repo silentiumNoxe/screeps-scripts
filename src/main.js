@@ -179,7 +179,7 @@ module.exports.loop = () => {
                             return;
                         }
                         let target = Game.getObjectById(creep.memory.target);
-                        if(target == null){
+                        if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
                             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                                 if(s.structureType == STRUCTURE_CONTAINER ||
                                     s.structureType == STRUCTURE_STORAGE ||
@@ -194,6 +194,8 @@ module.exports.loop = () => {
                         if(target == null){
                             creep.say("waiting");
                             creep.memory.waitTo = Game.time+50;
+                            creep.memory.target = null;
+                            return;
                         }
                         creep.memory.target = target.id;
                         let status = creep.transfer(target, RESOURCE_ENERGY);
@@ -207,6 +209,7 @@ module.exports.loop = () => {
                     let target = creep.pos.findClosestByPath(creep.room.sources);
                     if(target == null){
                         creep.moveTo(new RoomPosition(0, 26, "E9N23"));
+                        return;
                     }
                     let status = creep.harvest(target);
                     if(status == ERR_FULL) creep.memory.todo = "transfer";
@@ -229,6 +232,8 @@ module.exports.loop = () => {
                         if(target == null){
                             creep.say("waiting");
                             creep.memory.waitTo = Game.time+200;
+                            creep.memory.target = null;
+                            return;
                         }
 
                         creep.memory.energy = target.id;
@@ -264,6 +269,8 @@ module.exports.loop = () => {
                         if(target == null){
                             creep.say("waiting");
                             creep.memory.waitTo = Game.time+200;
+                            creep.memory.target = null;
+                            return;
                         }
 
                         creep.memory.energy = target.id;
