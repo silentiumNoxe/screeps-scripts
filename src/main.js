@@ -110,7 +110,7 @@ function renew(creep){
     if(creep.spawn == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
     if(creep.ticksToLive < 500 && creep.spawn.store[RESOURCE_ENERGY] > 100){
         creep.moveTo(creep.spawn);
-        creep.spawn.renew(creep);
+        creep.spawn.renewCreep(creep);
         return false;//continue?
     }
 
