@@ -212,7 +212,7 @@ module.exports.loop = () => {
                         return;
                     }
                     let status = creep.harvest(target);
-                    if(status == ERR_FULL) creep.memory.todo = "transfer";
+                    if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "transfer";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                 }
             }else if(creep.hasRole("ucl")){
@@ -238,7 +238,7 @@ module.exports.loop = () => {
 
                         creep.memory.energy = target.id;
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
-                        if(status == ERR_FULL) creep.memory.todo = "upgrade";
+                        if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "upgrade";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                         else if(status == ERR_INVALID_TARGET) creep.memory.energy = null;
                     }
@@ -275,7 +275,7 @@ module.exports.loop = () => {
 
                         creep.memory.energy = target.id;
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
-                        if(status == ERR_FULL) creep.memory.todo = "repair";
+                        if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "repair";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                         else if(status == ERR_INVALID_TARGET) creep.memory.energy = null;
                     }
