@@ -128,7 +128,9 @@ function initMemory(){
 function renew(creep){
     if(creep.spawn == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
     if(creep.ticksToLive < 500){
-        creep.say("🤕", true);
+        creep.say("♻️", true);
+        if(creep.spawn.memory.renewQueue)
+
         if(creep.spawn.store[RESOURCE_ENERGY] > 100 && creep.spawn.room.name == creep.room.name){
             creep.moveTo(creep.spawn);
             creep.spawn.renewCreep(creep);
@@ -140,8 +142,6 @@ function renew(creep){
 }
 
 module.exports.loop = () => {
-    const startCpu = Game.cpu.getUsed();
-
     initMemory();
 
     const counter = {
@@ -177,6 +177,8 @@ module.exports.loop = () => {
                 return;
             }
 
+            if(creep.memory.spawning) return;
+
             if(!renew(creep)) return;
 
             if(creep.isWaiting){
@@ -205,6 +207,7 @@ module.exports.loop = () => {
                     let status = creep.transfer(target, RESOURCE_ENERGY);
                     if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status == OK) creep.say("👆", true);
                 }
 
                 if(creep.memory.todo == "harvest"){
@@ -238,6 +241,7 @@ module.exports.loop = () => {
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
                     if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "upgrade";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status = OK) creep.say("👇", true);
                 }
 
                 if(creep.memory.todo == "upgrade"){
@@ -270,6 +274,7 @@ module.exports.loop = () => {
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
                     if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "repair";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status = OK) creep.say("👇", true);
                 }
 
                 if(creep.memory.todo == "repair"){
@@ -282,6 +287,7 @@ module.exports.loop = () => {
                         }});
                     }
                     if(target != null){
+                        creep.say("️🔧", true);
                         creep.memory.target = target.id;
                         let status = creep.repair(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
@@ -298,6 +304,7 @@ module.exports.loop = () => {
                         target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
                     }
                     if(target != null){
+                        creep.say("🛠", true);
                         creep.memory.target = target.id;
                         let status = creep.build(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
@@ -316,19 +323,21 @@ module.exports.loop = () => {
         }
     }});
     if(counter.harvester < Memory.maxHarvesters){
+        Game.spawns.Spawn1.room.visual.text("harvester", 32, 19);
         Game.spawns.Spawn1.spawnCreep(Memory.bodyHarvester, "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", waitTo: 0, spawnName: "Spawn1"}});
     }else if(counter.ucl < Memory.maxUcls){
         if(containers.length > 0){
+            Game.spawns.Spawn1.room.visual.text("ucl", 32, 19);
             Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
         }
     }else if(counter.builder < Memory.maxBuilders){
-        if(containers.length > 0)
+        if(containers.length > 0){
+            Game.spawns.Spawn1.room.visual.text("builder", 32, 19);
             Game.spawns.Spawn1.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: "builder", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
+        }
     }
 
-    const endCpu = Game.cpu.getUsed();
-    const usedCpu = endCpu - startCpu;
-    if(usedCpu > Game.cpu.limit){
+    if(Game.cpu.getUsed() > Game.cpu.limit){
         Game.notify("Used "+usedCpu+" cpu. Limit: "+Game.cpu.limit+". Bucket: "+Game.cpu.bucket+"(creeps: "+Object.keys(Game.creeps).length+")");
     }
 }
