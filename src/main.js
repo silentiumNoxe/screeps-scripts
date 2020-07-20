@@ -166,14 +166,17 @@ module.exports.loop = () => {
                         }
                         let target = Game.getObjectById(creep.memory.target);
                         if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
+                            creep.say("👀", true);
                             target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
                         }
                         if(target == null){
+                            creep.say("👀", true);
                             if(creep.spawn != null && creep.spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
                                 target = creep.spawn;
                             }
                         }
                         if(target == null){
+                            creep.say("👀", true);
                             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                                 if(s.structureType == STRUCTURE_CONTAINER ||
                                     s.structureType == STRUCTURE_STORAGE ||
@@ -186,7 +189,6 @@ module.exports.loop = () => {
                             }});
                         }
                         if(target == null){
-                            creep.say("waiting");
                             creep.memory.waitTo = Game.time+50;
                             return;
                         }
@@ -216,6 +218,7 @@ module.exports.loop = () => {
                     if(creep.memory.todo == "energy"){
                         let target = Game.getObjectById(creep.memory.energy);
                         if(target == null || target.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY)){
+                            creep.say("👀", true);
                             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                                 if(s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE){
                                     return s.store[RESOURCE_ENERGY] > 0;
@@ -251,6 +254,7 @@ module.exports.loop = () => {
                     if(creep.memory.todo == "energy"){
                         let target = Game.getObjectById(creep.memory.energy);
                         if(target == null || target.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY)){
+                            creep.say("👀", true);
                             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                                 if(s.structureType == STRUCTURE_CONTAINER || s.structureType == STRUCTURE_STORAGE){
                                     return s.store[RESOURCE_ENERGY] > 0;
@@ -272,6 +276,7 @@ module.exports.loop = () => {
                     if(creep.memory.todo == "repair"){
                         let target = Game.getObjectById(creep.memory.target);
                         if(target == null || target.hits == target.hitsMax){
+                            creep.say("👀", true);
                             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                                 if(s.structureType == STRUCTURE_RAMPART) return s.hits < 1000000;
                                 return s.structureType != STRUCTURE_WALL && s.hits < s.hitsMax;
@@ -290,6 +295,7 @@ module.exports.loop = () => {
                     if(creep.memory.todo == "build"){
                         let target = Game.getObjectById(creep.memory.target);
                         if(target == null){
+                            creep.say("👀", true);
                             target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
                         }
                         if(target != null){
