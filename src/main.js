@@ -357,7 +357,7 @@ module.exports.loop = () => {
                 Game.spawns.Spawn1.spawnCreep(Memory.bodyHarvester, "H-"+Math.floor(Math.random()*100), {memory:{role: "harvester", todo: "harvest", waitTo: 0, spawnName: "Spawn1"}});
             }else if(spawn.counter("ucl").get() < Memory.maxUcls){
                 if(containers.length > 0){
-                    Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", waitTo: 0, spawnName: "Spawn1
+                    Game.spawns.Spawn1.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: "ucl", todo: "energy", waitTo: 0, spawnName: "Spawn1"}});
                 }
             }else if(spawn.counter("counter").get() < Memory.maxBuilders){
                 if(containers.length > 0)
