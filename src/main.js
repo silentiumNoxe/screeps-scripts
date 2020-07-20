@@ -169,6 +169,11 @@ module.exports.loop = () => {
                             target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
                         }
                         if(target == null){
+                            if(creep.spawn != null && creep.spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                                target = creep.spawn;
+                            }
+                        }
+                        if(target == null){
                             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                                 if(s.structureType == STRUCTURE_CONTAINER ||
                                     s.structureType == STRUCTURE_STORAGE ||
