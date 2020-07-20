@@ -197,7 +197,15 @@ module.exports.loop = () => {
                     let target = Game.getObjectById(creep.memory.target);
                     if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
                         creep.say("👀", true);
-                        target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
+                        target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                            if(s.structureType == STUCTURE_TOWER ||
+                                s.structureType == STRUCTURE_SPAWN ||
+                                s.structureType == STRUCTURE_EXTENSION ||
+                                s.structureType == STRUCTURE_CONTAINER ||
+                                s.structureType == STRUCTURE_STORAGE){
+                                    return s.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
+                                }
+                        }});
                     }
                     if(target == null){
                         creep.wait(50);
