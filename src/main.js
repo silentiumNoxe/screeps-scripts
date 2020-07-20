@@ -164,7 +164,10 @@ module.exports.loop = () => {
                             creep.moveTo(Game.spawns.Spawn1);
                             return;
                         }
-                        let target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
+                        let target = Game.getObjectById(creep.memory.target);
+                        if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
+                            target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
+                        }
                         if(target == null){
                             target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
                                 if(s.structureType == STRUCTURE_CONTAINER ||
@@ -180,7 +183,9 @@ module.exports.loop = () => {
                         if(target == null){
                             creep.say("waiting");
                             creep.memory.waitTo = Game.time+50;
+                            return;
                         }
+                        creep.memory.target = target.id;
                         let status = creep.transfer(target, RESOURCE_ENERGY);
                         if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
