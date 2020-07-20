@@ -195,6 +195,8 @@ module.exports.loop = () => {
                         if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }
+                }else{
+                    creep.say("😴");
                 }
 
                 if(creep.memory.todo == "harvest"){
@@ -221,7 +223,6 @@ module.exports.loop = () => {
                             }});
                         }
                         if(target == null){
-                            creep.say("waiting");
                             creep.memory.waitTo = Game.time+200;
                             return;
                         }
@@ -239,6 +240,8 @@ module.exports.loop = () => {
                         let status = creep.upgradeController(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                     }
+                }else{
+                    creep.say("😴");
                 }
             }else if(creep.hasRole("builder")){
                 counter.builder++;
@@ -256,7 +259,6 @@ module.exports.loop = () => {
                         }
 
                         if(target == null){
-                            creep.say("waiting");
                             creep.memory.waitTo = Game.time+200;
                             return;
                         }
@@ -300,6 +302,8 @@ module.exports.loop = () => {
                             creep.memory.todo = "repair";
                         }
                     }
+                }else{
+                    creep.say("😴");
                 }
             }//builder
         });//forEach
