@@ -223,6 +223,7 @@ module.exports.loop = () => {
                         if(target == null){
                             creep.say("waiting");
                             creep.memory.waitTo = Game.time+200;
+                            return;
                         }
 
                         creep.memory.energy = target.id;
@@ -257,6 +258,7 @@ module.exports.loop = () => {
                         if(target == null){
                             creep.say("waiting");
                             creep.memory.waitTo = Game.time+200;
+                            return;
                         }
 
                         creep.memory.energy = target.id;
