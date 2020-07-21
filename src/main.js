@@ -60,7 +60,7 @@ module.exports.loop = () => {
                         Game.notify("Tower ["+tower.room.name+"] can't attack because does not have energy", 5);
                     }
                 }
-            })
+            });
         });
 
     Object.keys(Game.creeps)
@@ -116,15 +116,7 @@ module.exports.loop = () => {
                     creep.memory.target = target.id;
                     let status = creep.transfer(target, RESOURCE_ENERGY);
                     if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {
-                        visualizePathStyle: {
-                            fill: 'transparent',
-                            stroke: '#fff',
-                            lineStyle: 'dashed',
-                            strokeWidth: .15,
-                            opacity: .1
-                        }
-                    });// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                     else if(status == OK) creep.say("👆", true);
                 }
 
@@ -135,15 +127,7 @@ module.exports.loop = () => {
                     }
                     let status = creep.harvest(target);
                     if(status == ERR_FULL) creep.memory.todo = "transfer";
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {
-                        visualizePathStyle: {
-                            fill: 'transparent',
-                            stroke: '#fff',
-                            lineStyle: 'dashed',
-                            strokeWidth: .15,
-                            opacity: .1
-                        }
-                    });// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                 }
             }else if(creep.hasRole(Creep.ROLE_UCL)){
                 counter.ucl++;
@@ -166,14 +150,14 @@ module.exports.loop = () => {
                     creep.memory.energy = target.id;
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
                     if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "upgrade";
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                     else if(status = OK) creep.say("👇", true);
                 }
 
                 if(creep.memory.todo == "upgrade"){
                     let target = creep.room.controller;
                     if(!creep.pos.isNearTo(target))
-                        creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                        creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                     let status = creep.upgradeController(target);
                     if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
                 }
@@ -199,7 +183,7 @@ module.exports.loop = () => {
                     creep.memory.energy = target.id;
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
                     if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "repair";
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                     else if(status = OK) creep.say("👇", true);
                 }
 
@@ -217,7 +201,7 @@ module.exports.loop = () => {
                         creep.memory.target = target.id;
                         let status = creep.repair(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
-                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                     }else{
                         creep.memory.todo = "build";
                     }
@@ -234,7 +218,7 @@ module.exports.loop = () => {
                         creep.memory.target = target.id;
                         let status = creep.build(target);
                         if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
-                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                         else if(status == ERR_INVALID_TARGET) creep.memory.target = null;
                     }else{
                         creep.memory.todo = "repair";
