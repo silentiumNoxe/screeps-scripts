@@ -127,7 +127,14 @@ module.exports.loop = () => {
                         creep.moveTo(new RoomPosition(0, 26, "E9N23"));
                     }
                     let status = creep.harvest(target);
-                    if(status == ERR_FULL) creep.memory.todo = "transfer";
+                    if(status == ERR_FULL){
+                        let containers = creep.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0);
+                        if(containers.length > 0){
+                            creep.transfer(containers[0], RESOURCE_ENERGY);
+                        }else{
+                            creep.memory.todo = "transfer";
+                        }
+                    }
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                 }
             }else if(creep.hasRole(Creep.ROLE_UCL)){
