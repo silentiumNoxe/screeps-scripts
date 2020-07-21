@@ -113,7 +113,8 @@ module.exports.loop = () => {
                         creep.wait(50);
                         return;
                     }
-                    creep.memory.target = target.id;
+                    if(target.structureType == STRUCTURE_STORAGE) creep.memory.target = null
+                    else creep.memory.target = target.id;
                     let status = creep.transfer(target, RESOURCE_ENERGY);
                     if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
