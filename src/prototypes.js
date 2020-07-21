@@ -107,7 +107,7 @@ if(Creep.prototype._moveTo == null){
     Creep.prototype._moveTo = Creep.prototype.moveTo;
     Creep.prototype.moveTo = function(firstArg, secondArg, thirdArg){
         let visualizePathStyle;
-        let reusePath = 20;
+        let reusePath = this.pos.getRangeTo(firstArg);
         if(Memory.debug && Memory.debug.path){
             visualizePathStyle = {opacity: .2};
         }
