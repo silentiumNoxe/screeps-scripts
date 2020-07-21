@@ -102,6 +102,28 @@ if(Creep.prototype.wait == null){
         this.memory.waitTo = Game.time + val;
     }
 }
+
+if(Creep.prototype._moveTo == null){
+    Creep.prototype._moveTo = Creep.prototype.moveTo;
+    Creep.prototype.moveTo = function(firstArg, secondArg, thirdArg){
+        let visualizePathStyle;
+        if(Memory.debug.path){
+            visualizePathStyle = {opacity: .2};
+        }
+
+        if(firstArg instanceof Object){
+            secondArg = Object.assign({}, secondArg, {
+                visualizePathStyle: visualizePathStyle
+            });
+            this._moveTo(firstArg, secondArg, thirdArg);
+        }else{
+            thirdArg = Object.assign({}, secondArg, {
+                visualizePathStyle: visualizePathStyle
+            });
+            this._moveTo(firstArg, secondArg, thirdArg);
+        }
+    }
+}
 //Structure-----------------------------------
 if(Structure.prototype.isBroken == null){//<-- not working. returned undefined (trace not showed)
     Object.defineProperty(Structure.prototype, "isBroken", {
