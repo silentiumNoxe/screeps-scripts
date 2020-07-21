@@ -107,18 +107,25 @@ if(Creep.prototype._moveTo == null){
     Creep.prototype._moveTo = Creep.prototype.moveTo;
     Creep.prototype.moveTo = function(firstArg, secondArg, thirdArg){
         let visualizePathStyle;
+        let reusePath = 20;
         if(Memory.debug && Memory.debug.path){
             visualizePathStyle = {opacity: .2};
         }
 
         if(firstArg instanceof Object){
+            if(Memory.debug && Memory.debug.path){
+                firstArg.room.visual.circle(firstArg, {strokeWidth: .2, opacity: .2});
+            }
+
             secondArg = Object.assign({}, secondArg, {
-                visualizePathStyle: visualizePathStyle
+                visualizePathStyle: visualizePathStyle,
+                reusePath: reusePath
             });
             this._moveTo(firstArg, secondArg, thirdArg);
         }else{
             thirdArg = Object.assign({}, secondArg, {
-                visualizePathStyle: visualizePathStyle
+                visualizePathStyle: visualizePathStyle,
+                reusePath: reusePath
             });
             this._moveTo(firstArg, secondArg, thirdArg);
         }
