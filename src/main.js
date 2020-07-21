@@ -15,12 +15,19 @@ function initMemory(){
 function renew(creep){
     if(creep.spawn == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
     if(creep.ticksToLive < 500){
-        creep.say("♻️", true);
-        if(creep.spawn.memory.renewQueue)
+        const spawn = creep.spawn;
+        if(spawn == null) return true;//continue?
+        if(spawn.memory.renew == null) spawn.memory.renew = creep.id;
+        if(creep.id != spawn.memory.renew) return true;//continue?
 
         if(creep.spawn.store[RESOURCE_ENERGY] > 100 && creep.spawn.room.name == creep.room.name){
-            creep.moveTo(creep.spawn);
-            creep.spawn.renewCreep(creep);
+            creep.say("♻️", true);
+            let status = creep.spawn.renewCreep(creep);
+            if(status == ERR_NOT_IN_RANGE){
+                creep.moveTo(creep.spawn);
+            }else if(status == ERR_FULL){
+                spawn.memory.renew = null;
+            }
             return false;//continue?
         }
     }
