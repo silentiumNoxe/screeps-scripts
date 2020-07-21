@@ -116,7 +116,15 @@ module.exports.loop = () => {
                     creep.memory.target = target.id;
                     let status = creep.transfer(target, RESOURCE_ENERGY);
                     if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {
+                        visualizePathStyle: {
+                            fill: 'transparent',
+                            stroke: '#fff',
+                            lineStyle: 'dashed',
+                            strokeWidth: .15,
+                            opacity: .1
+                        }
+                    });// OPTIMIZE: reusePath, ignoreCreeps
                     else if(status == OK) creep.say("👆", true);
                 }
 
@@ -127,7 +135,15 @@ module.exports.loop = () => {
                     }
                     let status = creep.harvest(target);
                     if(status == ERR_FULL) creep.memory.todo = "transfer";
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target, {
+                        visualizePathStyle: {
+                            fill: 'transparent',
+                            stroke: '#fff',
+                            lineStyle: 'dashed',
+                            strokeWidth: .15,
+                            opacity: .1
+                        }
+                    });// OPTIMIZE: reusePath, ignoreCreeps
                 }
             }else if(creep.hasRole(Creep.ROLE_UCL)){
                 counter.ucl++;
