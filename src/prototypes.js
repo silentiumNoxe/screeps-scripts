@@ -107,7 +107,7 @@ if(Creep.prototype._moveTo == null){
     Creep.prototype._moveTo = Creep.prototype.moveTo;
     Creep.prototype.moveTo = function(firstArg, secondArg, thirdArg){
         let visualizePathStyle;
-        if(Memory.debug.path){
+        if(Memory.debug && Memory.debug.path){
             visualizePathStyle = {opacity: .2};
         }
 
