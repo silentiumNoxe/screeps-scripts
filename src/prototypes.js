@@ -112,6 +112,10 @@ if(Creep.prototype._moveTo == null){
         }
 
         if(firstArg instanceof Object){
+            if(Memory.debug && Memory.debug.path){
+                firstArg.room.visual.circle(firstArg, {strokeWidth: .2, opacity: .2});
+            }
+
             secondArg = Object.assign({}, secondArg, {
                 visualizePathStyle: visualizePathStyle
             });
