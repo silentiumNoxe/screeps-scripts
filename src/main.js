@@ -13,18 +13,18 @@ function initMemory(){
 }
 
 function renew(creep){
-    if(creep.spawn == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
+    if(creep.spawner == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
     if(creep.ticksToLive < 500){
-        const spawn = creep.spawn;
+        const spawn = creep.spawner;
         if(spawn == null) return true;//continue?
         if(spawn.memory.renew == null) spawn.memory.renew = creep.id;
         if(creep.id != spawn.memory.renew) return true;//continue?
 
-        if(creep.spawn.store[RESOURCE_ENERGY] > 100 && creep.spawn.room.name == creep.room.name){
+        if(creep.spawner.store[RESOURCE_ENERGY] > 100 && creep.spawner.room.name == creep.room.name){
             creep.say("♻️", true);
-            let status = creep.spawn.renewCreep(creep);
+            let status = creep.spawner.renewCreep(creep);
             if(status == ERR_NOT_IN_RANGE){
-                creep.moveTo(creep.spawn);
+                creep.moveTo(creep.spawner);
             }else if(status == ERR_FULL){
                 spawn.memory.renew = null;
             }
@@ -121,7 +121,7 @@ module.exports.loop = () => {
                 return;
             }
 
-            creep.spawn.creepCounter.add(creep);
+            creep.spawner.creepCounter.add(creep);
 
             if(creep.memory.spawning) return;
 
@@ -145,8 +145,8 @@ module.exports.loop = () => {
                     }
                     if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
                         creep.say("👀", true);
-                        if(creep.spawn.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
-                            target = creep.spawn;
+                        if(creep.spawner.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                            target = creep.spawner;
                         }
                     }
                     if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
@@ -280,7 +280,7 @@ module.exports.loop = () => {
                 }
             }//builder
         });//forEach
-        
+
     Object.keys(Game.spawns)
         .forEach(name => {
             const spawn = Game.spawns[name];
