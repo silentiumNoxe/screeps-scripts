@@ -76,14 +76,14 @@ if(Creep.prototype._harvest == null){
     }
 }
 
-if(Creep.prototype.spawn == null){
+if(Creep.prototype.spawner == null){
     Object.defineProperty(Creep.prototype, "spawn", {
         get(){
-            if(this._spawn == null){
-                this._spawn = Game.spawns[this.memory.spawnName];
+            if(this._spawner == null){
+                this._spawner = Game.spawns[this.memory.spawnName];
             }
 
-            return this._spawn;
+            return this._spawner;
         }
     })
 }
