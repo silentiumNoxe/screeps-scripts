@@ -1,16 +1,5 @@
+require("memory_init");
 require("prototypes");
-
-function initMemory(){
-    if(Memory.maxHarvesters == null) Memory.maxHarvesters = 8;
-    if(Memory.maxUcls == null) Memory.maxUcls = 6;
-    if(Memory.maxBuilders == null) Memory.maxBuilders = 3;
-
-    if(Memory.bodyHarvester == null) Memory.bodyHarvester = [WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE];
-    if(Memory.bodyUcl == null) Memory.bodyUcl = [WORK, WORK, CARRY, MOVE];
-    if(Memory.bodyBuilder == null) Memory.bodyBuilder = [WORK, WORK, CARRY, CARRY, MOVE];
-
-    if(Memory.friends == null) Memory.friends = [];
-}
 
 function renew(creep){
     if(creep.spawner == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
@@ -35,59 +24,7 @@ function renew(creep){
     return true;//continue?
 }
 
-if(Game.creeps.role == null){
-    Object.defineProperty(Game.creeps, role, {enumerable: false, configurable: true});
-}
-
-
-if(Game.creeps.role[Creep.ROLE_HARVESTER] == null){
-    Object.defineProperty(Game.creeps.role, Creep.ROLE_HARVESTER, {
-        get(){
-            if(this._creeps == null){
-                this._creeps = Object.entries(Game.creeps).map(([key, value]) => {
-                    if(value.memory.role == Creep.ROLE_HARVESTER)
-                        return value;
-                });
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-}
-
-if(Game.creeps.role[Creep.ROLE_UCL] == null){
-    Object.defineProperty(Game.creeps.role, Creep.ROLE_UCL, {
-        get(){
-            if(this._creeps == null){
-                this._creeps = Object.entries(Game.creeps).map(([key, value]) => {
-                    if(value.memory.role == Creep.ROLE_UCL)
-                        return value;
-                });
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-}
-
-if(Game.creeps.role[Creep.ROLE_BUILDER] == null){
-    Object.defineProperty(Game.creeps.role, Creep.ROLE_BUILDER, {
-        get(){
-            if(this._creeps == null){
-                this._creeps = Object.entries(Game.creeps).map(([key, value]) => {
-                    if(value.memory.role == Creep.ROLE_BUILDER)
-                        return value;
-                });
-            }
-        },
-        enumerable: true,
-        configurable: true
-    });
-}
-
 module.exports.loop = () => {
-    initMemory();
-
     const counter = {
         harvester: 0,
         ucl: 0,
