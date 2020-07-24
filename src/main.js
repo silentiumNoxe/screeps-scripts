@@ -234,9 +234,11 @@ module.exports.loop = () => {
 
             if(counter[Creep.ROLE_HARVESTER] < Memory.harvester.max){
                 let a = Memory[Creep.ROLE_HARVESTER].bodies["min"];
-                for(cost in Memory[Creep.ROLE_HARVESTER].bodies){
-                    if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
-                        a = Memory[Creep.ROLE_HARVESTER].bodies[cost];
+                if(counter[Creep.ROLE_HARVESTER] > 0){
+                    for(cost in Memory[Creep.ROLE_HARVESTER].bodies){
+                        if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
+                            a = Memory[Creep.ROLE_HARVESTER].bodies[cost];
+                        }
                     }
                 }
 
