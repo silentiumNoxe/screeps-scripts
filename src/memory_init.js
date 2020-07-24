@@ -1,3 +1,5 @@
+if(Creep.ROLE_HARVESTER == null) require("prototypes");
+
 if(Memory.harvester == null){
     const bodies = [
         [WORK, CARRY, MOVE],
