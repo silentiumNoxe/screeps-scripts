@@ -115,15 +115,20 @@ module.exports.loop = () => {
                 }
 
                 if(creep.memory.todo == Creep.TODO_HARVEST){
+                    creep.say("👀", true);
                     let target = creep.pos.findClosestByPath(FIND_TOMBSTONES);
                     if(target != null){
+
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
                         if(status == ERR_FULL){
                             creep.memory.todo = Creep.TODO_TRANSFER;
                         }else if(status == ERR_NOT_IN_RANGE){
                             creep.moveTo(target);
+                        }else if(status == OK){
+                            creep.say("👇", true);
                         }
                     }else{
+                        creep.say("👀", true);
                         target = creep.pos.findClosestByPath(creep.room.sources);
                     }
                     if(target == null){
