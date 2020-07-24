@@ -8,7 +8,12 @@ if(Memory.harvester == null){
 
     Memory.harvester = {
         max: max,
-        bodies: {}
+        bodies: {},
+        memory: {
+            waitTo: 0,
+            role: Creep.ROLE_HARVESTER,
+            todo: "harvest"
+        }
     };
 
     bodies.forEach(body => {
@@ -18,6 +23,10 @@ if(Memory.harvester == null){
             cost: cost,
             length: body.length
         };
+
+        if(Memory.harvester.bodies["min"] == null || Memory.harvester.bodies["min"].cost < cost){
+            Memory.harvester.bodies["min"] = a;
+        }
 
         Memory.harvester.bodies[cost] = a;
     });
@@ -32,7 +41,12 @@ if(Memory.ucl == null){
 
      Memory.ucl = {
          max: max,
-         bodies: {}
+         bodies: {},
+         memory: {
+             waitTo: 0,
+             role: Creep.ROLE_UCL,
+             todo: "energy"
+         }
      };
 
      bodies.forEach(body => {
@@ -56,7 +70,12 @@ if(Memory.builder == null){
 
     Memory.builder = {
         max: max,
-        bodies: {}
+        bodies: {},
+        memory: {
+            waitTo: 0,
+            role: Creep.ROLE_BUILDER,
+            todo: "energy"
+        }
     };
 
     bodies.forEach(body => {

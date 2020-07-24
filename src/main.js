@@ -222,24 +222,31 @@ module.exports.loop = () => {
         .forEach(name => {
             const spawn = Game.spawns[name];
             if(spawn == null) return;
-            if(spawn.creepCounter.get(Creep.ROLE_HARVESTER) < Memory.maxHarvesters){
+            
+            if(spawn.creepCounter.get(Creep.ROLE_HARVESTER) < Memory.harvester.max){
                 Game.spawns.Spawn1.room.visual.text("<- "+Creep.ROLE_HARVESTER, spawn.pos.x+2, spawn.pos.y);
-                spawn.spawnCreep(Memory.bodyHarvester, "H-"+Math.floor(Math.random()*100), {memory:{role: Creep.ROLE_HARVESTER, todo: "harvest", waitTo: 0, spawnName: spawn.name}});
+                spawn.spawnCreep(Memory.harvester.bodies["min"], "H-"+rand(100), {memory: Object.assign(Memory.harvester.memory, {spawnName: spawn.name})});
                 return;
             }
-            if(spawn.creepCounter.get(Creep.ROLE_UCL) < Memory.maxUcls){
+            if(spawn.creepCounter.get(Creep.ROLE_UCL) < Memory.ucl.max){
                 Game.spawns.Spawn1.room.visual.text("<- "+Creep.ROLE_UCL, spawn.pos.x+2, spawn.pos.y);
-                spawn.spawnCreep(Memory.bodyUcl, "C-"+Math.floor(Math.random()*100), {memory:{role: Creep.ROLE_UCL, todo: "energy", waitTo: 0, spawnName: spawn.name}});
+                spawn.spawnCreep(Memory.ucl.bodies["min"], "C-"+rand(100), {memory: Object.assign(Memory.harvester.memory, {spawnName: spawn.name})});
                 return;
             }
-            if(spawn.creepCounter.get(Creep.ROLE_BUILDER) < Memory.maxBuilders){
+            if(spawn.creepCounter.get(Creep.ROLE_BUILDER) < Memory.builder.max){
                 Game.spawns.Spawn1.room.visual.text("<- "+Creep.ROLE_BUILDER, spawn.pos.x+2, spawn.pos.y);
-                spawn.spawnCreep(Memory.bodyBuilder, "B-"+Math.floor(Math.random()*100), {memory:{role: Creep.ROLE_BUILDER, todo: "energy", waitTo: 0, spawnName: spawn.name}});
+                spawn.spawnCreep(Memory.builder.bodies["min"], "B-"+rand(100), {memory: Object.assign(Memory.harvester.memory, {spawnName: spawn.name})});
                 return;
             }
-        })
+        });
+
+
 
     if(Game.cpu.getUsed() > Game.cpu.limit){
         Game.notify("Used "+usedCpu+" cpu. Limit: "+Game.cpu.limit+". Bucket: "+Game.cpu.bucket+"(creeps: "+Object.keys(Game.creeps).length+")");
     }
+}
+
+function rand(max){
+    return Math.floor(Math.random()*max);
 }
