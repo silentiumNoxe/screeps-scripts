@@ -39,7 +39,7 @@ if(Memory[Creep.ROLE_UCL] == null){
      ];
      const max = 6;
 
-     Memory[Creeo.ROLE_UCL] = {
+     Memory[Creep.ROLE_UCL] = {
          max: max,
          bodies: {},
          memory: {
