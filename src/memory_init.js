@@ -24,7 +24,7 @@ if(Memory.harvester == null){
             length: body.length
         };
 
-        if(Memory.harvester.bodies["min"] == null || Memory.harvester.bodies["min"].cost < cost){
+        if(Memory.harvester.bodies["min"] == null || cost < Memory.harvester.bodies["min"].cost){
             Memory.harvester.bodies["min"] = a;
         }
 
@@ -57,6 +57,10 @@ if(Memory.ucl == null){
              length: body.length
          };
 
+         if(Memory.harvester.bodies["min"] == null || cost < Memory.harvester.bodies["min"].cost){
+             Memory.harvester.bodies["min"] = a;
+         }
+
          Memory.ucl.bodies[cost] = a;
      });
 }
@@ -85,6 +89,10 @@ if(Memory.builder == null){
             cost: cost,
             length: body.length
         };
+
+        if(Memory.harvester.bodies["min"] == null || cost < Memory.harvester.bodies["min"].cost){
+            Memory.harvester.bodies["min"] = a;
+        }
 
         Memory.builder.bodies[cost] = a;
     });
