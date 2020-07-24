@@ -1,3 +1,4 @@
+require("constants");
 require("memory_init");
 require("prototypes");
 
@@ -75,7 +76,7 @@ module.exports.loop = () => {
             }
 
             if(creep.hasRole(Creep.ROLE_HARVESTER)){
-                if(creep.memory.todo == "transfer"){
+                if(creep.memory.todo == Creep.TODO_TRANSFER){
                     if(creep.room.name != Game.spawns.Spawn1.room.name){
                         creep.moveTo(Game.spawns.Spawn1);
                         return;
@@ -108,12 +109,12 @@ module.exports.loop = () => {
                     if(target.structureType == STRUCTURE_STORAGE) creep.memory.target = null
                     else creep.memory.target = target.id;
                     let status = creep.transfer(target, RESOURCE_ENERGY);
-                    if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = "harvest";
+                    if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = Creep.TODO_HARVEST;
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     else if(status == OK) creep.say("👆", true);
                 }
 
-                if(creep.memory.todo == "harvest"){
+                if(creep.memory.todo == Creep.TODO_HARVEST){
                     let target = creep.pos.findClosestByPath(creep.room.sources);
                     if(target == null){
                         creep.moveTo(new RoomPosition(0, 26, "E9N23"));
@@ -124,13 +125,13 @@ module.exports.loop = () => {
                         if(containers.length > 0){
                             creep.transfer(containers[0], RESOURCE_ENERGY);
                         }else{
-                            creep.memory.todo = "transfer";
+                            creep.memory.todo = Creep.TODO_TRANSFER;
                         }
                     }
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                 }
             }else if(creep.hasRole(Creep.ROLE_UCL)){
-                if(creep.memory.todo == "energy"){
+                if(creep.memory.todo == Creep.TODO_ENERGY){
                     let target = Game.getObjectById(creep.memory.energy);
                     if(target == null || target.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY)){
                         creep.say("👀", true);
@@ -147,20 +148,20 @@ module.exports.loop = () => {
 
                     creep.memory.energy = target.id;
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
-                    if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "upgrade";
+                    if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = Creep.TODO_UPGRADE;
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     else if(status = OK) creep.say("👇", true);
                 }
 
-                if(creep.memory.todo == "upgrade"){
+                if(creep.memory.todo == Creep.TODO_UPGRADE){
                     let target = creep.room.controller;
                     if(!creep.pos.isNearTo(target))
                         creep.moveTo(target, {visualizePathStyle: {}});// OPTIMIZE: reusePath, ignoreCreeps
                     let status = creep.upgradeController(target);
-                    if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
+                    if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = Creep.TODO_ENERGY;
                 }
             }else if(creep.hasRole(Creep.ROLE_BUILDER)){
-                if(creep.memory.todo == "energy"){
+                if(creep.memory.todo == Creep.TODO_ENERGY){
                     let target = Game.getObjectById(creep.memory.energy);
                     if(target == null || target.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY)){
                         creep.say("👀", true);
@@ -178,12 +179,12 @@ module.exports.loop = () => {
 
                     creep.memory.energy = target.id;
                     let status = creep.withdraw(target, RESOURCE_ENERGY);
-                    if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = "repair";
+                    if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = Creep.TODO_REPAIR;
                     else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     else if(status = OK) creep.say("👇", true);
                 }
 
-                if(creep.memory.todo == "repair"){
+                if(creep.memory.todo == Creep.TODO_REPAIR){
                     let target = Game.getObjectById(creep.memory.target);
                     if(target == null || target.hits == target.hitsMax){
                         creep.say("👀", true);
@@ -196,14 +197,14 @@ module.exports.loop = () => {
                         creep.say("️🔧", true);
                         creep.memory.target = target.id;
                         let status = creep.repair(target);
-                        if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
+                        if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = Creep.TODO_ENERGY;
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }else{
-                        creep.memory.todo = "build";
+                        creep.memory.todo = Creep.TODO_BUILD;
                     }
                 }
 
-                if(creep.memory.todo == "build"){
+                if(creep.memory.todo == Creep.TODO_BUILD){
                     let target = Game.getObjectById(creep.memory.target);
                     if(target == null){
                         creep.say("👀", true);
@@ -213,20 +214,23 @@ module.exports.loop = () => {
                         creep.say("🔨", true);
                         creep.memory.target = target.id;
                         let status = creep.build(target);
-                        if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = "energy";
+                        if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = Creep.TODO_ENERGY;
                         else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                         else if(status == ERR_INVALID_TARGET) creep.memory.target = null;
                     }else{
-                        creep.memory.todo = "repair";
+                        creep.memory.todo = Creep.TODO_REPAIR;
                     }
                 }
             }//builder
         });//forEach
 
-    Object.keys(Game.spawns)
+    Object.keys(Memory.spawns)
         .forEach(name => {
             const spawn = Game.spawns[name];
-            if(spawn == null) return;
+            if(spawn == null){
+                delete Memory.spawns[name];
+                return;
+            }
 
             if(counter[Creep.ROLE_HARVESTER] < Memory.harvester.max){
                 Game.spawns.Spawn1.room.visual.text(Creep.ROLE_HARVESTER, spawn.pos.x, spawn.pos.y-1);

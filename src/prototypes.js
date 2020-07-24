@@ -63,11 +63,6 @@ if(RoomPosition.prototype.findNearest == null){
     }
 }
 //Creep---------------------------------------
-Creep.ROLE_HARVESTER = "harvester";
-Creep.ROLE_UCL = "ucl";
-Creep.ROLE_BUILDER = "builder";
-Creep.ROLE_ATTACKER = "attacker";
-
 if(Creep.prototype.hasRole == null){
     Creep.prototype.hasRole = function(role){
         return this.memory.role == role;

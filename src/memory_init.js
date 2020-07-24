@@ -11,7 +11,7 @@ if(Memory.harvester == null){
         bodies: {},
         memory: {
             waitTo: 0,
-            role: "harvester",
+            role: Creep.ROLE_HARVESTER,
             todo: "harvest"
         }
     };
@@ -44,7 +44,7 @@ if(Memory.ucl == null){
          bodies: {},
          memory: {
              waitTo: 0,
-             role: "ucl",
+             role: Creep.ROLE_UCL,
              todo: "energy"
          }
      };
@@ -77,7 +77,7 @@ if(Memory.builder == null){
         bodies: {},
         memory: {
             waitTo: 0,
-            role: "builder",
+            role: Creep.ROLE_BUILDER,
             todo: "energy"
         }
     };
