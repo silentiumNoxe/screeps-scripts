@@ -1,5 +1,3 @@
-if(Creep.ROLE_HARVESTER == null) require("prototypes");
-
 if(Memory.harvester == null){
     const bodies = [
         [WORK, CARRY, MOVE],
@@ -13,7 +11,7 @@ if(Memory.harvester == null){
         bodies: {},
         memory: {
             waitTo: 0,
-            role: Creep.ROLE_HARVESTER,
+            role: "harvester",
             todo: "harvest"
         }
     };
@@ -46,7 +44,7 @@ if(Memory.ucl == null){
          bodies: {},
          memory: {
              waitTo: 0,
-             role: Creep.ROLE_UCL,
+             role: "ucl",
              todo: "energy"
          }
      };
@@ -79,7 +77,7 @@ if(Memory.builder == null){
         bodies: {},
         memory: {
             waitTo: 0,
-            role: Creep.ROLE_BUILDER,
+            role: "builder",
             todo: "energy"
         }
     };
