@@ -1,5 +1,5 @@
 require("memory_init");
-const proto_init = require("prototypes");
+require("prototypes");
 
 function renew(creep){
     if(creep.spawner == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
@@ -25,8 +25,6 @@ function renew(creep){
 }
 
 module.exports.loop = () => {
-    proto_init.run();
-    
     const counter = {
         harvester: 0,
         ucl: 0,
