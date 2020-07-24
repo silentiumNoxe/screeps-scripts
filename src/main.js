@@ -29,7 +29,12 @@ module.exports.loop = () => {
         harvester: 0,
         ucl: 0,
         builder: 0,
-        carry: 0
+        add(creep){
+            const role = creep.memory.role;
+            if(role == null) return;
+
+            this[role]++;
+        }
     }
 
     Object.keys(Game.rooms)
@@ -58,7 +63,8 @@ module.exports.loop = () => {
                 return;
             }
 
-            creep.spawner.creepCounter.add(creep);
+            // creep.spawner.creepCounter.add(creep);
+            counter.add(creep);
 
             if(creep.memory.spawning) return;
 
@@ -222,18 +228,18 @@ module.exports.loop = () => {
         .forEach(name => {
             const spawn = Game.spawns[name];
             if(spawn == null) return;
-            
-            if(spawn.creepCounter.get(Creep.ROLE_HARVESTER) < Memory.harvester.max){
+
+            if(counter[Creep.ROLE_HARVESTER] < Memory.harvester.max){
                 Game.spawns.Spawn1.room.visual.text("<- "+Creep.ROLE_HARVESTER, spawn.pos.x+2, spawn.pos.y);
                 spawn.spawnCreep(Memory.harvester.bodies["min"], "H-"+rand(100), {memory: Object.assign(Memory.harvester.memory, {spawnName: spawn.name})});
                 return;
             }
-            if(spawn.creepCounter.get(Creep.ROLE_UCL) < Memory.ucl.max){
+            if(counter[Creep.ROLE_UCL] < Memory.ucl.max){
                 Game.spawns.Spawn1.room.visual.text("<- "+Creep.ROLE_UCL, spawn.pos.x+2, spawn.pos.y);
                 spawn.spawnCreep(Memory.ucl.bodies["min"], "C-"+rand(100), {memory: Object.assign(Memory.harvester.memory, {spawnName: spawn.name})});
                 return;
             }
-            if(spawn.creepCounter.get(Creep.ROLE_BUILDER) < Memory.builder.max){
+            if(counter[Creep.ROLE_BUILDER] < Memory.builder.max){
                 Game.spawns.Spawn1.room.visual.text("<- "+Creep.ROLE_BUILDER, spawn.pos.x+2, spawn.pos.y);
                 spawn.spawnCreep(Memory.builder.bodies["min"], "B-"+rand(100), {memory: Object.assign(Memory.harvester.memory, {spawnName: spawn.name})});
                 return;

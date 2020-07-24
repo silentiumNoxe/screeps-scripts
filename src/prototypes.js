@@ -164,9 +164,9 @@ if(StructureSpawn.prototype.creepCounter == null){
 
             this.memory.creepCounter[role]++;
         },
-        get(role){
-            return this.memory.creepCounter[role];
-        },
+        // get(role){
+        //     return this.memory.creepCounter[role];
+        // },
         reset(){
             delete this.memory.creepCounter;
         }
