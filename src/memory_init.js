@@ -7,6 +7,7 @@ if(Memory[Creep.ROLE_HARVESTER] == null){
     const max = 8;
 
     Memory[Creep.ROLE_HARVESTER] = {
+        min: true,
         max: max,
         bodies: {},
         memory: {
@@ -40,6 +41,7 @@ if(Memory[Creep.ROLE_UCL] == null){
      const max = 6;
 
      Memory[Creep.ROLE_UCL] = {
+         min: true,
          max: max,
          bodies: {},
          memory: {
@@ -73,6 +75,7 @@ if(Memory[Creep.ROLE_BUILDER] == null){
     const max = 3;
 
     Memory[Creep.ROLE_BUILDER] = {
+        min: true,
         max: max,
         bodies: {},
         memory: {

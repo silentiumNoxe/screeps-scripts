@@ -233,18 +233,39 @@ module.exports.loop = () => {
             }
 
             if(counter[Creep.ROLE_HARVESTER] < Memory.harvester.max){
-                Game.spawns.Spawn1.room.visual.text(Creep.ROLE_HARVESTER, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(Memory.harvester.bodies["min"].value, "H-"+rand(100), {memory: Object.assign({}, Memory.harvester.memory, {spawnName: spawn.name})});
+                spawn.room.visual.text(Creep.ROLE_HARVESTER, spawn.pos.x, spawn.pos.y-1);
+                let a = Memory[Creep.ROLE_HARVESTER].bodies["min"];
+                for(cost in Memory[Creep.ROLE_HARVESTER].bodies){
+                    if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
+                        a = Memory[Creep.ROLE_HARVESTER].bodies[cost];
+                    }
+                }
+
+                spawn.spawnCreep(a.value, "H-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_HARVESTER].memory, {spawnName: spawn.name})});
                 return;
             }
             if(counter[Creep.ROLE_UCL] < Memory.ucl.max){
-                Game.spawns.Spawn1.room.visual.text(Creep.ROLE_UCL, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(Memory.ucl.bodies["min"].value, "C-"+rand(100), {memory: Object.assign({}, Memory.harvester.memory, {spawnName: spawn.name})});
+                spawn.room.visual.text(Creep.ROLE_UCL, spawn.pos.x, spawn.pos.y-1);
+                let a = Memory[Creep.ROLE_UCL].bodies["min"];
+                for(cost in Memory[Creep.ROLE_UCL].bodies){
+                    if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
+                        a = Memory[Creep.ROLE_UCL].bodies[cost];
+                    }
+                }
+
+                spawn.spawnCreep(a.value, "C-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_UCL].memory, {spawnName: spawn.name})});
                 return;
             }
             if(counter[Creep.ROLE_BUILDER] < Memory.builder.max){
-                Game.spawns.Spawn1.room.visual.text(Creep.ROLE_BUILDER, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(Memory.builder.bodies["min"].value, "B-"+rand(100), {memory: Object.assign({}, Memory.harvester.memory, {spawnName: spawn.name})});
+                spawn.room.visual.text(Creep.ROLE_BUILDER, spawn.pos.x, spawn.pos.y-1);
+                let a = Memory[Creep.ROLE_BUILDER].bodies["min"];
+                for(cost in Memory[Creep.ROLE_BUILDER].bodies){
+                    if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
+                        a = Memory[Creep.ROLE_BUILDER].bodies[cost];
+                    }
+                }
+
+                spawn.spawnCreep(Memory[Creep.ROLE_BUILDER].bodies["min"].value, "B-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_BUILDER].memory, {spawnName: spawn.name})});
                 return;
             }
         });
