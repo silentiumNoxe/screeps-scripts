@@ -268,7 +268,7 @@ module.exports.loop = () => {
 
                 if(Memory.debug.spawn)
                     spawn.room.visual.text(Creep.ROLE_BUILDER+" "+a.cost, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(Memory[Creep.ROLE_BUILDER].bodies["min"].value, "B-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_BUILDER].memory, {spawnName: spawn.name})});
+                spawn.spawnCreep(a.value, "B-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_BUILDER].memory, {spawnName: spawn.name})});
                 return;
             }
         });
