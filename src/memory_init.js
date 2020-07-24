@@ -36,7 +36,7 @@ if(Memory[Creep.ROLE_HARVESTER] == null){
 if(Memory[Creep.ROLE_UCL] == null){
      const bodies = [
          [WORK, CARRY, MOVE],
-         [WORK, WORK, CARRY, MOVE]
+         [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
      ];
      const max = 6;
 
@@ -70,7 +70,7 @@ if(Memory[Creep.ROLE_UCL] == null){
 if(Memory[Creep.ROLE_BUILDER] == null){
     const bodies = [
         [WORK, CARRY, MOVE],
-        [WORK, WORK, CARRY, MOVE]
+        [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE]
     ];
     const max = 3;
 
