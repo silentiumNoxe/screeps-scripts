@@ -55,7 +55,7 @@ module.exports.loop = () => {
             });
         });
 
-    Object.keys(Game.creeps)
+    Object.keys(Memory.creeps)
         .forEach(name => {
             const creep = Game.creeps[name];
             if(creep == null){
@@ -63,7 +63,6 @@ module.exports.loop = () => {
                 return;
             }
 
-            // creep.spawner.creepCounter.add(creep);
             counter.add(creep);
 
             if(creep.memory.spawning) return;
