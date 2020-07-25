@@ -127,6 +127,7 @@ module.exports.loop = () => {
                     }
 
                     if(target == null){
+                        creep.memory.source = null;
                         creep.moveTo(new RoomPosition(0, 26, "E9N23"));
                         return;
                     }
