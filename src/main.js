@@ -274,7 +274,7 @@ module.exports.loop = () => {
 
             if(counter[Creep.ROLE_HARVESTER] < Memory.harvester.max){
                 let a = Memory[Creep.ROLE_HARVESTER].bodies["min"];
-                if(counter[Creep.ROLE_HARVESTER] > 0){
+                if(counter[Creep.ROLE_HARVESTER] > 0 && !Memory.[Creep.ROLE_HARVESTER].min){
                     for(cost in Memory[Creep.ROLE_HARVESTER].bodies){
                         if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
                             a = Memory[Creep.ROLE_HARVESTER].bodies[cost];
@@ -289,9 +289,11 @@ module.exports.loop = () => {
             }
             if(counter[Creep.ROLE_UCL] < Memory.ucl.max){
                 let a = Memory[Creep.ROLE_UCL].bodies["min"];
-                for(cost in Memory[Creep.ROLE_UCL].bodies){
-                    if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
-                        a = Memory[Creep.ROLE_UCL].bodies[cost];
+                if(!Memory.[Creep.ROLE_HARVESTER].min){
+                    for(cost in Memory[Creep.ROLE_UCL].bodies){
+                        if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
+                            a = Memory[Creep.ROLE_UCL].bodies[cost];
+                        }
                     }
                 }
 
@@ -302,9 +304,11 @@ module.exports.loop = () => {
             }
             if(counter[Creep.ROLE_BUILDER] < Memory.builder.max){
                 let a = Memory[Creep.ROLE_BUILDER].bodies["min"];
-                for(cost in Memory[Creep.ROLE_BUILDER].bodies){
-                    if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
-                        a = Memory[Creep.ROLE_BUILDER].bodies[cost];
+                if(!Memory.[Creep.ROLE_HARVESTER].min){
+                    for(cost in Memory[Creep.ROLE_BUILDER].bodies){
+                        if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
+                            a = Memory[Creep.ROLE_BUILDER].bodies[cost];
+                        }
                     }
                 }
 

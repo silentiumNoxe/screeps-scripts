@@ -8,7 +8,7 @@ if(Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[Creep.ROLE_HARVES
 
     Memory[Creep.ROLE_HARVESTER] = {
         updated: Game.time,
-        min: true,
+        min: false,//spawn only min body
         max: max,
         bodies: {},
         memory: {
@@ -45,7 +45,7 @@ if(Memory[Creep.ROLE_UCL] == null || (Game.time - Memory[Creep.ROLE_UCL].updated
 
      Memory[Creep.ROLE_UCL] = {
          updated: Game.time,
-         min: true,
+         min: false,//spawn only min body
          max: max,
          bodies: {},
          memory: {
@@ -82,7 +82,7 @@ if(Memory[Creep.ROLE_BUILDER] == null || (Game.time - Memory[Creep.ROLE_BUILDER]
 
     Memory[Creep.ROLE_BUILDER] = {
         updated: Game.time,
-        min: true,
+        min: false,//spawn only min body
         max: max,
         bodies: {},
         memory: {
