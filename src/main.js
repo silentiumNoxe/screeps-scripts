@@ -116,7 +116,7 @@ module.exports.loop = () => {
 
                 if(creep.memory.todo == Creep.TODO_HARVEST){
                     creep.say("👀", true);
-                    let target = creep.pos.findClosestByPath(FIND_TOMBSTONES);
+                    let target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (t) => t.store[RESOURCE_ENERGY] > 0});
                     if(target != null){
 
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
@@ -138,6 +138,7 @@ module.exports.loop = () => {
                     if(status == ERR_FULL){
                         let containers = creep.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0);
                         if(containers.length > 0){
+                            creep.say("👆", true);
                             creep.transfer(containers[0], RESOURCE_ENERGY);
                         }else{
                             creep.memory.todo = Creep.TODO_TRANSFER;
