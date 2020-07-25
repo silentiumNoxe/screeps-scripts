@@ -118,7 +118,6 @@ module.exports.loop = () => {
                     creep.say("👀", true);
                     let target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (t) => t.store[RESOURCE_ENERGY] > 0});
                     if(target != null){
-
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
                         if(status == ERR_FULL){
                             creep.memory.todo = Creep.TODO_TRANSFER;
@@ -129,7 +128,7 @@ module.exports.loop = () => {
                         }
                     }else{
                         creep.say("👀", true);
-                        target = creep.pos.findClosestByPath(creep.room.sources);
+                        target = creep.pos.findClosestByPath(creep.room.sources, {filter: (s) => s.energy > 0});
                     }
                     if(target == null){
                         creep.moveTo(new RoomPosition(0, 26, "E9N23"));
