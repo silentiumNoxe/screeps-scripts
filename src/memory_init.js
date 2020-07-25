@@ -1,3 +1,16 @@
+if(Memory.clean == null){
+    Memory.clean = function(){
+        if(this.nextClean == null) this.nextClean = Game.time + 1000;
+
+        if(this.nextClean < Game.time){
+            delete this[Creep.ROLE_HARVESTER];
+            delete this[Creep.ROLE_UCL];
+            delete this[Creep.ROLE_BUILDER];
+            delete this.nextClean;
+        }
+    }
+}
+
 if(Memory[Creep.ROLE_HARVESTER] == null){
     const bodies = [
         [WORK, CARRY, MOVE],
