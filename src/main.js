@@ -315,8 +315,6 @@ module.exports.loop = () => {
             }
         });
 
-    Memory.clean();
-
     if(Game.cpu.getUsed() > Game.cpu.limit){
         Game.notify("Used "+Game.cpu.getUsed()+" cpu. Limit: "+Game.cpu.limit+". Bucket: "+Game.cpu.bucket+"(creeps: "+Object.keys(Game.creeps).length+")");
     }
