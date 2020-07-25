@@ -116,11 +116,21 @@ module.exports.loop = () => {
 
                 if(creep.memory.todo == Creep.TODO_HARVEST){
                     let dropped = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (t) => t.store[RESOURCE_ENERGY] > 0});
-                    if(dropped == null){
-                        dropped = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 0});
-                    }
                     if(dropped != null){
                         let status = creep.withdraw(dropped, RESOURCE_ENERGY);
+                        if(status == ERR_FULL){
+                            creep.memory.todo = Creep.TODO_TRANSFER;
+                        }else if(status == ERR_NOT_IN_RANGE){
+                            creep.moveTo(dropped);
+                        }else if(status == OK){
+                            creep.say("👇", true);
+                        }
+                        return;
+                    }
+
+                    dropped = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 0});
+                    if(dropped != null){
+                        let status = creep.pickup(dropped);
                         if(status == ERR_FULL){
                             creep.memory.todo = Creep.TODO_TRANSFER;
                         }else if(status == ERR_NOT_IN_RANGE){
