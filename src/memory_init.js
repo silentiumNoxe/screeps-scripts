@@ -4,14 +4,20 @@ if(Memory.clean == null){
 
         if(this.nextClean < Game.time){
             delete this[Creep.ROLE_HARVESTER];
+            initHarvester();
+
             delete this[Creep.ROLE_UCL];
+            initUCL();
+
             delete this[Creep.ROLE_BUILDER];
+            initBuilder();
+
             delete this.nextClean;
         }
     }
 }
 
-if(Memory[Creep.ROLE_HARVESTER] == null){
+function initHarvester(){
     const bodies = [
         [WORK, CARRY, MOVE],
         [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
@@ -46,41 +52,41 @@ if(Memory[Creep.ROLE_HARVESTER] == null){
     });
 }
 
-if(Memory[Creep.ROLE_UCL] == null){
-     const bodies = [
-         [WORK, CARRY, MOVE],
-         [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
-     ];
-     const max = 6;
+function initUCL(){
+    const bodies = [
+        [WORK, CARRY, MOVE],
+        [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
+    ];
+    const max = 6;
 
-     Memory[Creep.ROLE_UCL] = {
-         min: true,
-         max: max,
-         bodies: {},
-         memory: {
-             waitTo: 0,
-             role: Creep.ROLE_UCL,
-             todo: Creep.TODO_ENERGY
-         }
-     };
+    Memory[Creep.ROLE_UCL] = {
+        min: true,
+        max: max,
+        bodies: {},
+        memory: {
+            waitTo: 0,
+            role: Creep.ROLE_UCL,
+            todo: Creep.TODO_ENERGY
+        }
+    };
 
-     bodies.forEach(body => {
-         const cost = calcBody(body);
-         let a = {
-             value: body,
-             cost: cost,
-             length: body.length
-         };
+    bodies.forEach(body => {
+        const cost = calcBody(body);
+        let a = {
+            value: body,
+            cost: cost,
+            length: body.length
+        };
 
-         if(Memory[Creep.ROLE_UCL].bodies["min"] == null || cost < Memory[Creep.ROLE_UCL].bodies["min"].cost){
-             Memory[Creep.ROLE_UCL].bodies["min"] = a;
-         }
+        if(Memory[Creep.ROLE_UCL].bodies["min"] == null || cost < Memory[Creep.ROLE_UCL].bodies["min"].cost){
+            Memory[Creep.ROLE_UCL].bodies["min"] = a;
+        }
 
-         Memory[Creep.ROLE_UCL].bodies[cost] = a;
-     });
+        Memory[Creep.ROLE_UCL].bodies[cost] = a;
+    });
 }
 
-if(Memory[Creep.ROLE_BUILDER] == null){
+function initBuilder(){
     const bodies = [
         [WORK, CARRY, MOVE],
         [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE]
@@ -112,6 +118,18 @@ if(Memory[Creep.ROLE_BUILDER] == null){
 
         Memory[Creep.ROLE_BUILDER].bodies[cost] = a;
     });
+}
+
+if(Memory[Creep.ROLE_HARVESTER] == null){
+    initHarvester();
+}
+
+if(Memory[Creep.ROLE_UCL] == null){
+     initUCL();
+}
+
+if(Memory[Creep.ROLE_BUILDER] == null){
+    initBuilder();
 }
 
 if(Memory.friends == null) Memory.friends = [];
