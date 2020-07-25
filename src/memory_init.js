@@ -1,23 +1,4 @@
-if(Memory.clean == null){
-    Memory.clean = function(){
-        if(this.nextClean == null) this.nextClean = Game.time + 1000;
-
-        if(this.nextClean < Game.time){
-            delete this[Creep.ROLE_HARVESTER];
-            initHarvester();
-
-            delete this[Creep.ROLE_UCL];
-            initUCL();
-
-            delete this[Creep.ROLE_BUILDER];
-            initBuilder();
-
-            delete this.nextClean;
-        }
-    }
-}
-
-function initHarvester(){
+if(Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[ROLE_HARVESTER].updated) > 1000){
     const bodies = [
         [WORK, CARRY, MOVE],
         [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
@@ -26,6 +7,7 @@ function initHarvester(){
     const max = 8;
 
     Memory[Creep.ROLE_HARVESTER] = {
+        updated: Game.time,
         min: true,
         max: max,
         bodies: {},
@@ -50,43 +32,48 @@ function initHarvester(){
 
         Memory[Creep.ROLE_HARVESTER].bodies[cost] = a;
     });
+
+    console.log("Memory "+Creep.ROLE_HARVESTER+" was updated");
 }
 
-function initUCL(){
-    const bodies = [
-        [WORK, CARRY, MOVE],
-        [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
-    ];
-    const max = 6;
+if(Memory[Creep.ROLE_UCL] == null || (Game.time - Memory[ROLE_UCL].updated) > 1000){
+     const bodies = [
+         [WORK, CARRY, MOVE],
+         [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
+     ];
+     const max = 6;
 
-    Memory[Creep.ROLE_UCL] = {
-        min: true,
-        max: max,
-        bodies: {},
-        memory: {
-            waitTo: 0,
-            role: Creep.ROLE_UCL,
-            todo: Creep.TODO_ENERGY
-        }
-    };
+     Memory[Creep.ROLE_UCL] = {
+         updated: Game.time,
+         min: true,
+         max: max,
+         bodies: {},
+         memory: {
+             waitTo: 0,
+             role: Creep.ROLE_UCL,
+             todo: Creep.TODO_ENERGY
+         }
+     };
 
-    bodies.forEach(body => {
-        const cost = calcBody(body);
-        let a = {
-            value: body,
-            cost: cost,
-            length: body.length
-        };
+     bodies.forEach(body => {
+         const cost = calcBody(body);
+         let a = {
+             value: body,
+             cost: cost,
+             length: body.length
+         };
 
-        if(Memory[Creep.ROLE_UCL].bodies["min"] == null || cost < Memory[Creep.ROLE_UCL].bodies["min"].cost){
-            Memory[Creep.ROLE_UCL].bodies["min"] = a;
-        }
+         if(Memory[Creep.ROLE_UCL].bodies["min"] == null || cost < Memory[Creep.ROLE_UCL].bodies["min"].cost){
+             Memory[Creep.ROLE_UCL].bodies["min"] = a;
+         }
 
-        Memory[Creep.ROLE_UCL].bodies[cost] = a;
-    });
+         Memory[Creep.ROLE_UCL].bodies[cost] = a;
+     });
+
+     console.log("Memory "+Creep.ROLE_UCL+" was updated");
 }
 
-function initBuilder(){
+if(Memory[Creep.ROLE_BUILDER] == null || (Game.time - Memory[ROLE_BUILDER].updated) > 1000){
     const bodies = [
         [WORK, CARRY, MOVE],
         [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE]
@@ -94,6 +81,7 @@ function initBuilder(){
     const max = 3;
 
     Memory[Creep.ROLE_BUILDER] = {
+        updated: Game.time,
         min: true,
         max: max,
         bodies: {},
@@ -118,18 +106,8 @@ function initBuilder(){
 
         Memory[Creep.ROLE_BUILDER].bodies[cost] = a;
     });
-}
 
-if(Memory[Creep.ROLE_HARVESTER] == null){
-    initHarvester();
-}
-
-if(Memory[Creep.ROLE_UCL] == null){
-     initUCL();
-}
-
-if(Memory[Creep.ROLE_BUILDER] == null){
-    initBuilder();
+    console.log("Memory "+Creep.ROLE_BUILDER+" was updated");
 }
 
 if(Memory.friends == null) Memory.friends = [];
