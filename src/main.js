@@ -115,9 +115,23 @@ module.exports.loop = () => {
                 }
 
                 if(creep.memory.todo == Creep.TODO_HARVEST){
-                    creep.say("👀", true);
-                    let target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (t) => t.store[RESOURCE_ENERGY] > 0});
-                    if(target != null){
+                    let target = Game.getObjectById(creep.memory.source);
+                    if(target == null || target.energy == 0 || target.store[RESOURCE_ENERGY] == 0){
+                        creep.say("👀", true);
+                        target = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (t) => t.store[RESOURCE_ENERGY] > 0});
+                    }
+
+                    if(target == null){
+                        creep.say("👀", true);
+                        target = creep.pos.findClosestByPath(creep.room.sources, {filter: (s) => s.energy > 0});
+                    }
+
+                    if(target == null){
+                        creep.moveTo(new RoomPosition(0, 26, "E9N23"));
+                        return;
+                    }
+
+                    if(target.store != null){
                         let status = creep.withdraw(target, RESOURCE_ENERGY);
                         if(status == ERR_FULL){
                             creep.memory.todo = Creep.TODO_TRANSFER;
@@ -126,24 +140,23 @@ module.exports.loop = () => {
                         }else if(status == OK){
                             creep.say("👇", true);
                         }
-                    }else{
-                        creep.say("👀", true);
-                        target = creep.pos.findClosestByPath(creep.room.sources, {filter: (s) => s.energy > 0});
-                    }
-                    if(target == null){
-                        creep.moveTo(new RoomPosition(0, 26, "E9N23"));
-                    }
-                    let status = creep.harvest(target);
-                    if(status == ERR_FULL){
-                        let containers = creep.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0);
-                        if(containers.length > 0){
-                            creep.say("👆", true);
-                            creep.transfer(containers[0], RESOURCE_ENERGY);
-                        }else{
-                            creep.memory.todo = Creep.TODO_TRANSFER;
+                        return;
+                    }else if(target.energy != null){
+                        let status = creep.harvest(target);
+                        if(status == ERR_FULL){
+                            let containers = creep.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0);
+                            if(containers.length > 0){
+                                creep.transfer(containers[0], RESOURCE_ENERGY);
+                                creep.say("👆", true);
+                            }else{
+                                creep.memory.todo = Creep.TODO_TRANSFER;
+                            }
                         }
+                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
                     }
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+
+                    creep.memory.source = target.id;
+
                 }
             }else if(creep.hasRole(Creep.ROLE_UCL)){
                 if(creep.memory.todo == Creep.TODO_ENERGY){
