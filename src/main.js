@@ -231,8 +231,13 @@ module.exports.loop = () => {
                     if(target == null || target.hits == target.hitsMax){
                         creep.say("👀", true);
                         target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                            if(s.structureType == STRUCTURE_WALL){
+                                 return false;
+                            }
+
                             if(s.structureType == STRUCTURE_RAMPART) return s.hits < 1000000;
-                            return s.structureType != STRUCTURE_WALL && s.hits < s.hitsMax;
+
+                            if(s.hits < s.hitsMax - (s.hitsMax * 0.1)) return true;
                         }});
                     }
                     if(target != null){
