@@ -1,4 +1,12 @@
 function init(){
+    if(Memory.debug == null){
+        Memory.debug = {
+            path: false,
+            spawn: false,
+            target: false
+        }
+    }
+
     if(Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[Creep.ROLE_HARVESTER].updated) > 1000){
         const bodies = [
             [WORK, CARRY, MOVE],
@@ -26,7 +34,7 @@ function init(){
             };
 
             if(defaultData.bodies["min"] == null || cost < defaultData.bodies["min"].cost){
-                defaultData[Creep.ROLE_HARVESTER].bodies["min"] = a;
+                defaultData.bodies["min"] = a;
             }
 
             defaultData.bodies[cost] = a;

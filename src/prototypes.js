@@ -120,6 +120,10 @@ if(Creep.prototype._moveTo == null){
             visualizePathStyle = {opacity: .2};
         }
 
+        if(Memory.debug && Memory.debug.target){
+            this.room.visual.line(this.pos, firstArg.pos);
+        }
+
         if(firstArg instanceof Object){
             secondArg = Object.assign({}, secondArg, {
                 visualizePathStyle: visualizePathStyle,
