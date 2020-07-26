@@ -6,7 +6,7 @@ function init(){
             [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
         ];
 
-        const defaultRole = {
+        const defaultData = {
             min: false,
             max: 8,
             bodies: {},
@@ -25,14 +25,14 @@ function init(){
                 length: body.length
             };
 
-            if(defaultRole.bodies["min"] == null || cost < defaultRole.bodies["min"].cost){
-                defaultRole[Creep.ROLE_HARVESTER].bodies["min"] = a;
+            if(defaultData.bodies["min"] == null || cost < defaultData.bodies["min"].cost){
+                defaultData[Creep.ROLE_HARVESTER].bodies["min"] = a;
             }
 
-            defaultRole.bodies[cost] = a;
+            defaultData.bodies[cost] = a;
         });
 
-        let data = Object.assign({}, defaultRole, Memory[Creep.ROLE_HARVESTER]);
+        let data = Object.assign({}, defaultData, Memory[Creep.ROLE_HARVESTER]);
         data.updated = Game.time;
 
         Memory[Creep.ROLE_HARVESTER] = data;
@@ -45,7 +45,7 @@ function init(){
              [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
          ];
 
-         const defaultRole = {
+         const defaultData = {
              min: false,//spawn only min body
              max: 6,
              bodies: {},
@@ -64,14 +64,14 @@ function init(){
                  length: body.length
              };
 
-             if(defaultRole.bodies["min"] == null || cost < defaultRole.bodies["min"].cost){
-                 defaultRole.bodies["min"] = a;
+             if(defaultData.bodies["min"] == null || cost < defaultData.bodies["min"].cost){
+                 defaultData.bodies["min"] = a;
              }
 
-             defaultRole.bodies[cost] = a;
+             defaultData.bodies[cost] = a;
          });
 
-         let data = Object.assign({}, defaultRole, Memory[Creep.ROLE_UCL]);
+         let data = Object.assign({}, defaultData, Memory[Creep.ROLE_UCL]);
          data.updated = Game.time;
 
          Memory[Creep.ROLE_UCL] = data;
@@ -84,7 +84,7 @@ function init(){
             [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE]
         ];
 
-        const defaultRole = {
+        const defaultData = {
             min: false,//spawn only min body
             max: 3,
             bodies: {},
@@ -103,14 +103,14 @@ function init(){
                 length: body.length
             };
 
-            if(defaultRole.bodies["min"] == null || cost < defaultRole.bodies["min"].cost){
-                defaultRole.bodies["min"] = a;
+            if(defaultData.bodies["min"] == null || cost < defaultData.bodies["min"].cost){
+                defaultData.bodies["min"] = a;
             }
 
-            defaultRole.bodies[cost] = a;
+            defaultData.bodies[cost] = a;
         });
 
-        let data = Object.assign({}, defaultRole, Memory[Creep.ROLE_BUILDER]);
+        let data = Object.assign({}, defaultData, Memory[Creep.ROLE_BUILDER]);
         data.updated = Game.time;
 
         Memory[Creep.ROLE_BUILDER] = data;
