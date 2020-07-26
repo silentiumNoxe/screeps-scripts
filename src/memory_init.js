@@ -42,7 +42,8 @@ function init(){
     if(Memory[Creep.ROLE_UCL] == null || (Game.time - Memory[Creep.ROLE_UCL].updated) > 1000){
          const bodies = [
              [WORK, CARRY, MOVE],
-             [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
+             [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE],
+             [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE]
          ];
 
          const defaultData = {
