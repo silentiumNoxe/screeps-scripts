@@ -1,9 +1,9 @@
 require("constants");
-require("memory_init");
+const memInit = require("memory_init");
 require("prototypes");
 
 function renew(creep){
-    if(creep.spawner == null) creep.memory.spawnName = Object.keys[Game.spawns][0];
+    if(creep.spawner == null) creep.memory.spawnName = Object.keys(Game.spawns)[0];
     if(creep.ticksToLive < 500){
         const spawn = creep.spawner;
         if(spawn == null) return true;//continue?
@@ -26,6 +26,8 @@ function renew(creep){
 }
 
 module.exports.loop = () => {
+    memInit.init();
+    
     const counter = {
         harvester: 0,
         ucl: 0,
@@ -271,6 +273,8 @@ module.exports.loop = () => {
                 delete Memory.spawns[name];
                 return;
             }
+
+            spawn.room.visual.text(spawn.room.energyAvailable, spawn.pos.x+0.4, spawn.pos.y+1.3, {font: 0.5});
 
             if(counter[Creep.ROLE_HARVESTER] < Memory.harvester.max){
                 let a = Memory[Creep.ROLE_HARVESTER].bodies["min"];
