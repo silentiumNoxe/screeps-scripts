@@ -5,7 +5,7 @@ function init(){
             [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
             [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE],
         ];
-        const max = 8;
+        const max = Memory[Creep.ROLE_HARVESTER].max == null ? 8 : Memory[Creep.ROLE_HARVESTER].max;
 
         Memory[Creep.ROLE_HARVESTER] = {
             updated: Game.time,
@@ -42,7 +42,7 @@ function init(){
              [WORK, CARRY, MOVE],
              [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE]
          ];
-         const max = 6;
+         const max = Memory[Creep.ROLE_UCL].max == null ? 6 : Memory[Creep.ROLE_UCL].max;
 
          Memory[Creep.ROLE_UCL] = {
              updated: Game.time,
@@ -79,7 +79,7 @@ function init(){
             [WORK, CARRY, MOVE],
             [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE]
         ];
-        const max = 3;
+        const max = Memory[Creep.ROLE_BUILDER].max == null ? 3 : Memory[Creep.ROLE_BUILDER].max;
 
         Memory[Creep.ROLE_BUILDER] = {
             updated: Game.time,

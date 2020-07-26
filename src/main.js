@@ -27,7 +27,7 @@ function renew(creep){
 
 module.exports.loop = () => {
     memInit.init();
-    
+
     const counter = {
         harvester: 0,
         ucl: 0,
@@ -274,7 +274,7 @@ module.exports.loop = () => {
                 return;
             }
 
-            spawn.room.visual.text(spawn.room.energyAvailable, spawn.pos.x+0.4, spawn.pos.y+1.3, {font: 0.5});
+            spawn.room.visual.text(spawn.room.energyAvailable, spawn.pos.x+0.4, spawn.pos.y+1.3, {font: 0.5, color: "#f5ef42"});
 
             if(counter[Creep.ROLE_HARVESTER] < Memory.harvester.max){
                 let a = Memory[Creep.ROLE_HARVESTER].bodies["min"];
