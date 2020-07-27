@@ -6,8 +6,6 @@ function init(){
         role: false
     }, Memory.debug);
 
-    if(Memory.update == null) Memory.update = false;
-
     if(Memory.update || Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[Creep.ROLE_HARVESTER].updated) > 1000){
         const bodies = [
             [WORK, CARRY, MOVE],
@@ -170,6 +168,8 @@ function init(){
     }
 
     if(Memory.friends == null) Memory.friends = [];
+
+    Memory.update = false;
 }
 
 function calcBody(value){
