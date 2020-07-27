@@ -51,7 +51,8 @@ function init(){
          const bodies = [
              [WORK, CARRY, MOVE],
              [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE],
-             [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE]
+             [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE],
+             [WORK, WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE]
          ];
 
          const defaultData = {
@@ -124,6 +125,45 @@ function init(){
 
         Memory[Creep.ROLE_BUILDER] = data;
         console.log("Memory "+Creep.ROLE_BUILDER+" was updated");
+    }
+
+    if(Memory[Creep.ROLE_CLAIMER] == null || (Game.time - Memory[Creep.ROLE_CLAIMER].updated) > 1000){
+        const bodies = [
+            [CLAIM, MOVE],
+            [CLAIM, CLAIM, MOVE, MOVE]
+        ];
+
+        const defaultData = {
+            min: false,//spawn only min body
+            max: 1,
+            bodies: {},
+            memory: {
+                waitTo: 0,
+                role: Creep.ROLE_CLAIMER,
+                todo: Creep.TODO_CLAIM
+            }
+        }
+
+        bodies.forEach(body => {
+            const cost = calcBody(body);
+            let a = {
+                value: body,
+                cost: cost,
+                length: body.length
+            };
+
+            if(defaultData.bodies["min"] == null || cost < defaultData.bodies["min"].cost){
+                defaultData.bodies["min"] = a;
+            }
+
+            defaultData.bodies[cost] = a;
+        });
+
+        let data = Object.assign({}, defaultData, Memory[Creep.ROLE_CLAIMER]);
+        data.updated = Game.time;
+
+        Memory[Creep.ROLE_CLAIMER] = data;
+        console.log("Memory "+Creep.ROLE_CLAIMER+" was updated");
     }
 
     if(Memory.friends == null) Memory.friends = [];
