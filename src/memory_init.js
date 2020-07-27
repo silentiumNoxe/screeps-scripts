@@ -39,6 +39,8 @@ function init(){
             defaultData.bodies[cost] = a;
         });
 
+        delete Memory[Creep.ROLE_HARVESTER].bodies;
+
         let data = Object.assign({}, defaultData, Memory[Creep.ROLE_HARVESTER]);
         data.updated = Game.time;
 
@@ -79,6 +81,8 @@ function init(){
 
              defaultData.bodies[cost] = a;
          });
+
+         delete Memory[Creep.ROLE_UCL].bodies;
 
          let data = Object.assign({}, defaultData, Memory[Creep.ROLE_UCL]);
          data.updated = Game.time;
@@ -121,6 +125,8 @@ function init(){
             defaultData.bodies[cost] = a;
         });
 
+        delete Memory[Creep.ROLE_BUILDER].bodies;
+
         let data = Object.assign({}, defaultData, Memory[Creep.ROLE_BUILDER]);
         data.updated = Game.time;
 
@@ -159,6 +165,8 @@ function init(){
 
             defaultData.bodies[cost] = a;
         });
+
+        delete Memory[Creep.ROLE_CLAIMER].bodies;
 
         let data = Object.assign({}, defaultData, Memory[Creep.ROLE_CLAIMER]);
         data.updated = Game.time;
