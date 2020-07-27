@@ -64,6 +64,10 @@ module.exports.loop = () => {
                 return;
             }
 
+            if(Memory.debug.role){
+                creep.room.visual.text(creep.memory.role, creep.pos.x, creep.pos.y-1, {font: 0.7});
+            }
+
             counter.add(creep);
 
             if(creep.memory.spawning) return;

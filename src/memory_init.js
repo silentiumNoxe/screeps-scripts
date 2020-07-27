@@ -3,7 +3,8 @@ function init(){
         Memory.debug = {
             path: false,
             spawn: false,
-            target: false
+            target: false,
+            role: false
         }
     }
 
