@@ -65,7 +65,7 @@ module.exports.loop = () => {
             }
 
             if(Memory.debug.role){
-                creep.room.visual.text(creep.memory.role, creep.pos.x, creep.pos.y-1, {font: 0.7});
+                creep.room.visual.text(creep.memory.role, creep.pos.x, creep.pos.y-1, {font: 0.6});
             }
 
             counter.add(creep);

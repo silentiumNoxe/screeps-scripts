@@ -6,7 +6,9 @@ function init(){
         role: false
     }, Memory.debug);
 
-    if(Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[Creep.ROLE_HARVESTER].updated) > 1000){
+    if(Memory.update == null) Memory.update = false;
+
+    if(Memory.update || Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[Creep.ROLE_HARVESTER].updated) > 1000){
         const bodies = [
             [WORK, CARRY, MOVE],
             [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
@@ -46,7 +48,7 @@ function init(){
         console.log("Memory "+Creep.ROLE_HARVESTER+" was updated");
     }
 
-    if(Memory[Creep.ROLE_UCL] == null || (Game.time - Memory[Creep.ROLE_UCL].updated) > 1000){
+    if(Memory.update || Memory[Creep.ROLE_UCL] == null || (Game.time - Memory[Creep.ROLE_UCL].updated) > 1000){
          const bodies = [
              [WORK, CARRY, MOVE],
              [WORK, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, MOVE],
@@ -87,7 +89,7 @@ function init(){
          console.log("Memory "+Creep.ROLE_UCL+" was updated");
     }
 
-    if(Memory[Creep.ROLE_BUILDER] == null || (Game.time - Memory[Creep.ROLE_BUILDER].updated) > 1000){
+    if(Memory.update || Memory[Creep.ROLE_BUILDER] == null || (Game.time - Memory[Creep.ROLE_BUILDER].updated) > 1000){
         const bodies = [
             [WORK, CARRY, MOVE],
             [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE],
@@ -128,7 +130,7 @@ function init(){
         console.log("Memory "+Creep.ROLE_BUILDER+" was updated");
     }
 
-    if(Memory[Creep.ROLE_CLAIMER] == null || (Game.time - Memory[Creep.ROLE_CLAIMER].updated) > 1000){
+    if(Memory.update || Memory[Creep.ROLE_CLAIMER] == null || (Game.time - Memory[Creep.ROLE_CLAIMER].updated) > 1000){
         const bodies = [
             [CLAIM, MOVE],
             [CLAIM, CLAIM, MOVE, MOVE]
