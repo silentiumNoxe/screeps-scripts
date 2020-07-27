@@ -121,10 +121,17 @@ if(Creep.prototype._moveTo == null){
         }
 
         if(Memory.debug && Memory.debug.target){
-            if(firstArg instanceof RoomPosition && this.room.name == firstArg.roomName){
+            let room;
+            if(firstArg.room == null){
+                room = firstArg.roomName;
+            }else{
+                room = firstArg.room.name;
+            }
+
+            if(this.room.name == room){
                 this.room.visual.line(this.pos, firstArg);
-            }else if(firstArg.room.name == this.room.name){
-                this.room.visual.line(this.pos, firstArg.pos);
+            }else{
+                this.room.visual.text(room, this.pos.x+1, this.pos.y, {font: 0.5})
             }
         }
 
