@@ -1,12 +1,10 @@
 function init(){
-    if(Memory.debug == null){
-        Memory.debug = {
-            path: false,
-            spawn: false,
-            target: false,
-            role: false
-        }
-    }
+    Memory.debug = Object.assign({
+        path: false,
+        spawn: false,
+        target: false,
+        role: false
+    }, Memory.debug);
 
     if(Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[Creep.ROLE_HARVESTER].updated) > 1000){
         const bodies = [
