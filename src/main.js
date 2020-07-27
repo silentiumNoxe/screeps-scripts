@@ -145,11 +145,11 @@ module.exports.loop = () => {
                         return;
                     }
 
-                    let target = Game.getObjectById(creep.memory.source);
-                    if(target == null || target.energy == 0){
-                        creep.say("👀", true);
-                        target = creep.pos.findClosestByPath(creep.room.sources, {filter: (s) => s.energy > 0});
-                    }
+                    let target = creep.pos.findClosestByPath(creep.room.sources, {filter: (s) => s.energy > 0});
+                    // if(target == null || target.energy == 0){
+                    //     creep.say("👀", true);
+                    //     target =
+                    // }
 
                     if(target == null){
                         creep.memory.source = null;
