@@ -6,6 +6,8 @@ function renew(creep){
     if(creep.spawner == null) creep.spawner = Object.keys(Game.spawns)[0];
     const spawn = creep.spawner;
     if(spawn == null) return true;//continue?
+    if(spawn.memory.waitTo > Game.time) return true;//continue?
+
     if((spawn.memory.renew == null || Game.creeps[spawn.memory.renew] == null) && creep.ticksToLive < 500) spawn.memory.renew = creep.name;
     if(creep.name != spawn.memory.renew) return true;//continue?
 
@@ -17,6 +19,7 @@ function renew(creep){
         }else if(status == ERR_FULL){
             spawn.memory.renew = null;
         }else if(status == ERR_NOT_ENOUGH_ENERGY){
+            spawn.memory.waitTo = Game.time + 100;
             return true;//continue;
         }
         return false;//continue?
