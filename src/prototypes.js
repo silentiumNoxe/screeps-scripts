@@ -92,7 +92,7 @@ if(Creep.prototype.spawner == null){
             }
 
             return this._spawner;
-        }
+        },
         set(spawn){
             this.memory.spawnName = spawn.name;
         }

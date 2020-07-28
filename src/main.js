@@ -6,7 +6,7 @@ function renew(creep){
     if(creep.spawner == null) creep.spawner = Object.keys(Game.spawns)[0];
     const spawn = creep.spawner;
     if(spawn == null) return true;//continue?
-    if(spawn.memory.renew == null || Game.creeps[spawn.memory.renew] == null) spawn.memory.renew = creep.name;
+    if((spawn.memory.renew == null || Game.creeps[spawn.memory.renew] == null) && creep.ticksToLive < 500) spawn.memory.renew = creep.name;
     if(creep.name != spawn.memory.renew) return true;//continue?
 
     if(creep.spawner.store[RESOURCE_ENERGY] > 100 && creep.spawner.room.name == creep.room.name){
