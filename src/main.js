@@ -105,10 +105,7 @@ module.exports.loop = () => {
                 return;
             }
 
-            creep.hasRole(Creep.ROLE_HARVESTER)
-                .do((creep) => {
-                    require("role")[Creep.ROLE_HARVESTER]
-                });
+            creep.hasRole(Creep.ROLE_HARVESTER).do(require("role")[Creep.ROLE_HARVESTER]);
 
             if(creep.hasRole(Creep.ROLE_UCL)){
                 if(creep.memory.todo == Creep.TODO_ENERGY){
