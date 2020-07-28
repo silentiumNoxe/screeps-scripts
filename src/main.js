@@ -9,16 +9,20 @@ function renew(creep){
     if((spawn.memory.renew == null || Game.creeps[spawn.memory.renew] == null) && creep.ticksToLive < 500) spawn.memory.renew = creep.name;
     if(creep.name != spawn.memory.renew) return true;//continue?
 
-    if(creep.spawner.store[RESOURCE_ENERGY] > 100 && creep.spawner.room.name == creep.room.name){
+    if(creep.spawner.room.name == creep.room.name){
         creep.say("♻️", true);
         let status = creep.spawner.renewCreep(creep);
         if(status == ERR_NOT_IN_RANGE){
             creep.moveTo(creep.spawner);
         }else if(status == ERR_FULL){
             spawn.memory.renew = null;
+        }else if(status == ERR_NOT_ENOUGH_ENERGY){
+            return true;//continue;
         }
         return false;//continue?
     }
+
+    return true;//continue?
 }
 
 module.exports.loop = () => {
