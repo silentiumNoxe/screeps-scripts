@@ -72,11 +72,11 @@ function spawnLogic(spawnName){
     }
 
     let status = spawn.spawnRole(Creep.ROLE_HARVESTER, "H-");
-    if(status != OK)
+    if(status != OK && status != ERR_BUSY)
         status = spawn.spawnRole(Creep.ROLE_UCL, "UC-");
-    if(status != OK)
+    if(status != OK && status != ERR_BUSY)
         status = spawn.spawnRole(Creep.ROLE_BUILDER, "B-");
-    if(status != OK)
+    if(status != OK && status != ERR_BUSY)
         spawn.spawnRole(Creep.ROLE_CLAIMER, "CL-");
 }
 
