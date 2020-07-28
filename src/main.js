@@ -19,13 +19,49 @@ function renew(creep){
         }else if(status == ERR_FULL){
             spawn.memory.renew = null;
         }else if(status == ERR_NOT_ENOUGH_ENERGY){
-            spawn.memory.waitTo = Game.time + 100;
+            spawn.memory.waitTo = Game.time + 300;
             return true;//continue;
         }
         return false;//continue?
     }
 
     return true;//continue?
+}
+
+function defenceLogic(){
+    Object.keys(Game.rooms)
+        .forEach(name => {
+            const room = Game.rooms[name];
+            if(room == null) return;
+
+            let emptyTowers = 0;
+            room.towers.forEach(tower => {
+                if(!tower.my) return;
+
+                if(tower.room.enemies.length > 0){
+                    Game.notify("In the room "+tower.room.name+" tower found enemies", 20);
+                    let status = tower.attack(tower.pos.findNearest(tower.room.enemies));
+                    if(status == ERR_NOT_ENOUGH_ENERGY){
+                        emptyTowers++;
+                        Game.notify("Tower ["+tower.room.name+"] can't attack because does not have energy", 5);
+                    }
+                }
+            });
+
+            if(room.enemies.length > 0 && (room.towers.length > 0 && emptyTowers == room.towers.length)){
+                const creeps = Object.keys(Game.creeps).filter(name => {
+                    const creep = Game.creeps[name];
+                    return creep != null && creep.room.name == room.name && creep.hasRole(Creep.ROLE_ATTACKER);
+                }).length;
+
+                if(creeps == 0){
+                    if(room.controller.safeModeAvailable == 0){
+                        Game.notify("Room "+room.name+" does not have safe mode");
+                    }
+                    room.controller.activateSafeMode();
+                }
+            }
+        });
 }
 
 module.exports.loop = () => {
@@ -41,23 +77,7 @@ module.exports.loop = () => {
         }
     }
 
-    Object.keys(Game.rooms)
-        .forEach(name => {
-            const room = Game.rooms[name];
-            if(room == null) return;
-
-            room.towers.forEach(tower => {
-                if(!tower.my) return;
-
-                if(tower.room.enemies.length > 0){
-                    Game.notify("In the room "+tower.room.name+" tower found enemies", 20);
-                    let status = tower.attack(tower.pos.findNearest(tower.room.enemies));
-                    if(status == ERR_NOT_ENOUGH_ENERGY){
-                        Game.notify("Tower ["+tower.room.name+"] can't attack because does not have energy", 5);
-                    }
-                }
-            });
-        });
+    defenceLogic();
 
     Object.keys(Memory.creeps)
         .forEach(name => {
