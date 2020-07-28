@@ -71,8 +71,6 @@ function spawnLogic(spawnName){
         return;
     }
 
-    spawn.room.visual.text(spawn.room.energyAvailable, spawn.pos.x+0.4, spawn.pos.y+1.3, {font: 0.5, color: "#f5ef42"});
-
     spawn.spawnRole(Creep.ROLE_HARVESTER);
     spawn.spawnRole(Creep.ROLE_UCL);
     spawn.spawnRole(Creep.ROLE_BUILDER);
