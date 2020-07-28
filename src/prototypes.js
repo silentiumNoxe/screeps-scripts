@@ -172,28 +172,6 @@ if(Structure.prototype.isBroken == null){//<-- not working. returned undefined (
     })
 }
 //StructureSpawn------------------------------
-if(StructureSpawn.prototype.creepCounter == null){
-    Object.defineProperty(StructureSpawn.prototype, "creepCounter", {
-        add(creep){
-            const role = creep.memory.role;
-            if(role == null) return;
-
-            if(this.memory.creepCounter == null){
-                this.memory.creepCounter = {};
-                this.memory.creepCounter[role] = 0;
-            }
-
-            this.memory.creepCounter[role]++;
-        },
-        // get(role){
-        //     return this.memory.creepCounter[role];
-        // },
-        reset(){
-            delete this.memory.creepCounter;
-        }
-    })
-}
-
 if(StructureSpawn.prototype.spawnRole == null){
     StructureSpawn.prototype.spawnRole = function(role, prefix){
         if(Memory.counter[role] != null && Memory.counter[role] > Memory[role].max){
@@ -216,6 +194,6 @@ if(StructureSpawn.prototype.spawnRole == null){
         }
 
         delete Memory.counter[role];
-        return this.spawnCreep(body, prefix+Math.floor(Math.random() * 100), {memory: Object.assign({}, Memory[role].memory, {spawnName: this.name})});
+        return this.spawnCreep(body.value, prefix+Math.floor(Math.random() * 100), {memory: Object.assign({}, Memory[role].memory, {spawnName: this.name})});
     }
 }
