@@ -157,7 +157,8 @@ if(Creep.prototype._moveTo == null){
 
 if(Creep.prototype.count == null){
     Creep.prototype.count = function(){
-        Memory.counter[this.memory.role] += 1;
+        if(Memory.counter[this.memory.role] == null) Memory.counter[this.memory.role] = 0;
+        Memory.counter[this.memory.role]++;
     }
 }
 //Structure-----------------------------------
