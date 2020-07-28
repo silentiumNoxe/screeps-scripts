@@ -208,8 +208,10 @@ if(StructureSpawn.prototype.spawnRole == null){
             }
         }
 
-        if(Memory.debug.spawn)
+        if(Memory.debug.spawn){
+            this.room.visual.clear();
             this.room.visual.text(role+" "+body.cost, this.pos.x, this.pos.y-1);
+        }
 
         this.spawnCreep(body, prefix+Math.floor(Math.random() * 100), {memory: Object.assign({}, Memory[role].memory, {spawnName: this.name})});
         delete Memory.counter[role];
