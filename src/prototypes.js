@@ -65,7 +65,8 @@ if(RoomPosition.prototype.findNearest == null){
 //Creep---------------------------------------
 if(Creep.prototype.hasRole == null){
     Creep.prototype.hasRole = function(role){
-        return {do: function(callback){callback(this)}};
+        const creep = this;
+        return {do: function(callback){callback(creep)}};
     }
 }
 
