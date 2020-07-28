@@ -19,7 +19,7 @@ function renew(creep){
         }else if(status == ERR_FULL){
             spawn.memory.renew = null;
         }else if(status == ERR_NOT_ENOUGH_ENERGY){
-            spawn.memory.waitTo = Game.time + 300;
+            spawn.memory.waitTo = Game.time + 1000;
             return true;//continue;
         }
         return false;//continue?
@@ -357,7 +357,7 @@ module.exports.loop = () => {
 
             spawn.room.visual.text(spawn.room.energyAvailable, spawn.pos.x+0.4, spawn.pos.y+1.3, {font: 0.5, color: "#f5ef42"});
 
-            if(counter[Creep.ROLE_HARVESTER] < Memory[Creep.ROLE_HARVESTER].max){
+            if(counter[Creep.ROLE_HARVESTER] == null || [Creep.ROLE_HARVESTER] < Memory[Creep.ROLE_HARVESTER].max){
                 let a = Memory[Creep.ROLE_HARVESTER].bodies["min"];
                 if(counter[Creep.ROLE_HARVESTER] > 0 && !Memory[Creep.ROLE_HARVESTER].min){
                     for(cost in Memory[Creep.ROLE_HARVESTER].bodies){
@@ -372,7 +372,7 @@ module.exports.loop = () => {
                 spawn.spawnCreep(a.value, "H-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_HARVESTER].memory, {spawnName: spawn.name})});
                 return;
             }
-            if(counter[Creep.ROLE_UCL] < Memory[Creep.ROLE_UCL].max){
+            if(counter[Creep.ROLE_UCL] == null || counter[Creep.ROLE_UCL] < Memory[Creep.ROLE_UCL].max){
                 let a = Memory[Creep.ROLE_UCL].bodies["min"];
                 if(!Memory[Creep.ROLE_UCL].min){
                     for(cost in Memory[Creep.ROLE_UCL].bodies){
@@ -387,7 +387,7 @@ module.exports.loop = () => {
                 spawn.spawnCreep(a.value, "UC-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_UCL].memory, {spawnName: spawn.name})});
                 return;
             }
-            if(counter[Creep.ROLE_BUILDER] < Memory[Creep.ROLE_BUILDER].max){
+            if(counter[Creep.ROLE_BUILDER] == null || counter[Creep.ROLE_BUILDER] < Memory[Creep.ROLE_BUILDER].max){
                 let a = Memory[Creep.ROLE_BUILDER].bodies["min"];
                 if(!Memory[Creep.ROLE_BUILDER].min){
                     for(cost in Memory[Creep.ROLE_BUILDER].bodies){
@@ -402,7 +402,7 @@ module.exports.loop = () => {
                 spawn.spawnCreep(a.value, "B-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_BUILDER].memory, {spawnName: spawn.name})});
                 return;
             }
-            if(counter[Creep.ROLE_CLAIMER] < Memory[Creep.ROLE_CLAIMER].max){
+            if(counter[Creep.ROLE_CLAIMER] == null || counter[Creep.ROLE_CLAIMER] < Memory[Creep.ROLE_CLAIMER].max){
                 let a = Memory[Creep.ROLE_CLAIMER].bodies["min"];
                 if(!Memory[Creep.ROLE_CLAIMER].min){
                     for(cost in Memory[Creep.ROLE_CLAIMER].bodies){
