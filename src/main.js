@@ -71,10 +71,10 @@ function spawnLogic(spawnName){
         return;
     }
 
-    spawn.spawnRole(Creep.ROLE_HARVESTER);
-    spawn.spawnRole(Creep.ROLE_UCL);
-    spawn.spawnRole(Creep.ROLE_BUILDER);
-    spawn.spawnRole(Creep.ROLE_CLAIMER);
+    spawn.spawnRole(Creep.ROLE_HARVESTER, "H-");
+    spawn.spawnRole(Creep.ROLE_UCL, "UC-");
+    spawn.spawnRole(Creep.ROLE_BUILDER, "B-");
+    spawn.spawnRole(Creep.ROLE_CLAIMER, "CL-");
 }
 
 module.exports.loop = () => {
