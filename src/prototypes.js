@@ -196,7 +196,7 @@ if(StructureSpawn.prototype.creepCounter == null){
 
 if(StructureSpawn.prototype.spawnRole == null){
     StructureSpawn.prototype.spawnRole = function(role, prefix){
-        if(Memory.counter[role] > Memory[role].max){
+        if(Memory.counter[role] != null && Memory.counter[role] > Memory[role].max){
             return;
         }
 
