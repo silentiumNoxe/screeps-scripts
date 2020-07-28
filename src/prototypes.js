@@ -175,7 +175,7 @@ if(Structure.prototype.isBroken == null){//<-- not working. returned undefined (
 if(StructureSpawn.prototype.spawnRole == null){
     StructureSpawn.prototype.spawnRole = function(role, prefix){
         if(Memory.counter[role] != null && Memory.counter[role] > Memory[role].max){
-            return;
+            return true;//next
         }
 
         let body = Memory[role].bodies["min"];
@@ -194,6 +194,9 @@ if(StructureSpawn.prototype.spawnRole == null){
         }
 
         delete Memory.counter[role];
-        return this.spawnCreep(body.value, prefix+Math.floor(Math.random() * 100), {memory: Object.assign({}, Memory[role].memory, {spawnName: this.name})});
+        let status = this.spawnCreep(body.value, prefix+Math.floor(Math.random() * 100), {memory: Object.assign({}, Memory[role].memory, {spawnName: this.name})});
+        if(status == OK || status == ERR_NOT_ENOUGH_ENERGY || status == ERR_BUSY){
+            return false;//next
+        }
     }
 }
