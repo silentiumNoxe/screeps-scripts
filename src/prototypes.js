@@ -65,7 +65,7 @@ if(RoomPosition.prototype.findNearest == null){
 //Creep---------------------------------------
 if(Creep.prototype.hasRole == null){
     Creep.prototype.hasRole = function(role){
-        return this.memory.role == role;
+        return {do: function(callback){callback(this)}};
     }
 }
 
@@ -153,6 +153,12 @@ if(Creep.prototype._moveTo == null){
         }
     }
 }
+
+if(Creep.prototype.count == null){
+    Creep.prototype.count = function(){
+        Memory.counter[this.memory.role] += 1;
+    }
+}
 //Structure-----------------------------------
 if(Structure.prototype.isBroken == null){//<-- not working. returned undefined (trace not showed)
     Object.defineProperty(Structure.prototype, "isBroken", {
@@ -184,4 +190,27 @@ if(StructureSpawn.prototype.creepCounter == null){
             delete this.memory.creepCounter;
         }
     })
+}
+
+if(StructureSpawn.prototype.spawnRole == null){
+    StructureSpawn.prototype.spawnRole = function(role, prefix){
+        if(Memory.counter[role] > Memory[role].max){
+            return;
+        }
+
+        let body = Memory[role].bodies["min"];
+        if(Memory.counter[role] > 0 && !Memory[role].min){
+            for(cost in Memory[role].bodies){
+                if(body == null || (cost > body.cost && cost < this.room.energyCapacityAvailable)){
+                    body = Memory[role].bodies[cost];
+                }
+            }
+        }
+
+        if(Memory.debug.spawn)
+            this.room.visual.text(role+" "+body.cost, this.pos.x, this.pos.y-1);
+
+        this.spawnCreep(getBody(role), prefix+rand(100), {memory: Object.assign({}, this.memory[role].memory, {spawnName: this.name})});
+        delete Memory.counter[role];
+    }
 }

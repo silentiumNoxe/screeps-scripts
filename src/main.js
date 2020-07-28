@@ -64,18 +64,23 @@ function defenceLogic(){
         });
 }
 
+function spawnLogic(spawnName){
+    const spawn = Game.spawns[spawnName];
+    if(spawn == null){
+        delete Memory.spawns[spawnName];
+        return;
+    }
+
+    spawn.room.visual.text(spawn.room.energyAvailable, spawn.pos.x+0.4, spawn.pos.y+1.3, {font: 0.5, color: "#f5ef42"});
+
+    spawn.spawnRole(Creep.ROLE_HARVESTER);
+    spawn.spawnRole(Creep.ROLE_UCL);
+    spawn.spawnRole(Creep.ROLE_BUILDER);
+    spawn.spawnRole(Creep.ROLE_CLAIMER);
+}
+
 module.exports.loop = () => {
     memInit.init();
-
-    const counter = {
-        add(creep){
-            const role = creep.memory.role;
-            if(role == null) return;
-
-            if(this[role] == null) this[role] = 0;
-            this[role]++;
-        }
-    }
 
     defenceLogic();
 
@@ -87,117 +92,25 @@ module.exports.loop = () => {
                 return;
             }
 
+            creep.count();
+
             if(Memory.debug.role){
                 creep.room.visual.text(creep.memory.role, creep.pos.x, creep.pos.y-1, {font: 0.6});
             }
 
-            counter.add(creep);
-
             if(creep.memory.spawning) return;
-
             if(!renew(creep)) return;
-
             if(creep.isWaiting){
                 creep.say("😴", true);
                 return;
             }
 
-            if(creep.hasRole(Creep.ROLE_HARVESTER)){
-                if(creep.memory.todo == Creep.TODO_TRANSFER){
-                    if(creep.room.name != Game.spawns.Spawn1.room.name){
-                        creep.moveTo(Game.spawns.Spawn1);
-                        return;
-                    }
-                    let target = Game.getObjectById(creep.memory.target);
-                    if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
-                        creep.say("👀", true);
-                        target = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {filter: (s) => s.structureType == STRUCTURE_TOWER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0});
-                    }
-                    if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
-                        creep.say("👀", true);
-                        if(creep.spawner.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
-                            target = creep.spawner;
-                        }
-                    }
-                    if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
-                        creep.say("👀", true);
-                        target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
-                            if( s.structureType == STRUCTURE_EXTENSION ||
-                                s.structureType == STRUCTURE_CONTAINER ||
-                                s.structureType == STRUCTURE_STORAGE){
-                                    return s.store.getFreeCapacity(RESOURCE_ENERGY) > 0;
-                                }
-                        }});
-                    }
-                    if(target == null){
-                        creep.wait(50);
-                        return;
-                    }
-                    if(target.structureType == STRUCTURE_STORAGE) creep.memory.target = null
-                    else creep.memory.target = target.id;
-                    let status = creep.transfer(target, RESOURCE_ENERGY);
-                    if(status == ERR_NOT_ENOUGH_ENERGY) creep.memory.todo = Creep.TODO_HARVEST;
-                    else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
-                    else if(status == OK) creep.say("👆", true);
-                }
+            creep.hasRole(Creep.ROLE_HARVESTER)
+                .do((creep) => {
+                    require("role")[Creep.ROLE_HARVESTER]
+                });
 
-                if(creep.memory.todo == Creep.TODO_HARVEST){
-                    let dropped = creep.pos.findClosestByPath(FIND_TOMBSTONES, {filter: (t) => t.store[RESOURCE_ENERGY] > 0});
-                    if(dropped != null){
-                        let status = creep.withdraw(dropped, RESOURCE_ENERGY);
-                        if(status == ERR_FULL){
-                            creep.memory.todo = Creep.TODO_TRANSFER;
-                        }else if(status == ERR_NOT_IN_RANGE){
-                            creep.moveTo(dropped);
-                        }else if(status == OK){
-                            creep.say("👇", true);
-                        }
-                        return;
-                    }
-
-                    dropped = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {filter: (r) => r.amount > 0});
-                    if(dropped != null){
-                        let status = creep.pickup(dropped);
-                        if(status == ERR_FULL){
-                            creep.memory.todo = Creep.TODO_TRANSFER;
-                        }else if(status == ERR_NOT_IN_RANGE){
-                            creep.moveTo(dropped);
-                        }else if(status == OK){
-                            creep.say("👇", true);
-                        }
-                        return;
-                    }
-
-                    let target = creep.pos.findClosestByPath(creep.room.sources, {filter: (s) => s.energy > 0});
-                    // if(target == null || target.energy == 0){
-                    //     creep.say("👀", true);
-                    //     target =
-                    // }
-
-                    if(target == null){
-                        creep.memory.source = null;
-                        creep.moveTo(new RoomPosition(0, 26, "E9N23"));
-                        return;
-                    }
-
-                    creep.memory.source = target.id;
-                    if(target != null){
-                        let status = creep.harvest(target);
-                        if(status == ERR_FULL){
-                            let containers = creep.pos.lookFor(LOOK_STRUCTURES).filter(s => s.structureType == STRUCTURE_CONTAINER && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0);
-                            if(containers.length > 0){
-                                creep.transfer(containers[0], RESOURCE_ENERGY);
-                                creep.say("👆", true);
-                            }else{
-                                creep.memory.todo = Creep.TODO_TRANSFER;
-                            }
-                        }
-                        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
-                    }
-
-
-                }
-            }else if(creep.hasRole(Creep.ROLE_UCL)){
+            if(creep.hasRole(Creep.ROLE_UCL)){
                 if(creep.memory.todo == Creep.TODO_ENERGY){
                     let target = Game.getObjectById(creep.memory.energy);
                     if(target == null || target.store[RESOURCE_ENERGY] < creep.store.getCapacity(RESOURCE_ENERGY)){
@@ -347,77 +260,7 @@ module.exports.loop = () => {
             }
         });//forEach
 
-    Object.keys(Memory.spawns)
-        .forEach(name => {
-            const spawn = Game.spawns[name];
-            if(spawn == null){
-                delete Memory.spawns[name];
-                return;
-            }
-
-            spawn.room.visual.text(spawn.room.energyAvailable, spawn.pos.x+0.4, spawn.pos.y+1.3, {font: 0.5, color: "#f5ef42"});
-
-            if(counter[Creep.ROLE_HARVESTER] == null || [Creep.ROLE_HARVESTER] < Memory[Creep.ROLE_HARVESTER].max){
-                let a = Memory[Creep.ROLE_HARVESTER].bodies["min"];
-                if(counter[Creep.ROLE_HARVESTER] > 0 && !Memory[Creep.ROLE_HARVESTER].min){
-                    for(cost in Memory[Creep.ROLE_HARVESTER].bodies){
-                        if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
-                            a = Memory[Creep.ROLE_HARVESTER].bodies[cost];
-                        }
-                    }
-                }
-
-                if(Memory.debug.spawn)
-                    spawn.room.visual.text(Creep.ROLE_HARVESTER+" "+a.cost, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(a.value, "H-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_HARVESTER].memory, {spawnName: spawn.name})});
-                return;
-            }
-            if(counter[Creep.ROLE_UCL] == null || counter[Creep.ROLE_UCL] < Memory[Creep.ROLE_UCL].max){
-                let a = Memory[Creep.ROLE_UCL].bodies["min"];
-                if(!Memory[Creep.ROLE_UCL].min){
-                    for(cost in Memory[Creep.ROLE_UCL].bodies){
-                        if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
-                            a = Memory[Creep.ROLE_UCL].bodies[cost];
-                        }
-                    }
-                }
-
-                if(Memory.debug.spawn)
-                    spawn.room.visual.text(Creep.ROLE_UCL+" "+a.cost, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(a.value, "UC-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_UCL].memory, {spawnName: spawn.name})});
-                return;
-            }
-            if(counter[Creep.ROLE_BUILDER] == null || counter[Creep.ROLE_BUILDER] < Memory[Creep.ROLE_BUILDER].max){
-                let a = Memory[Creep.ROLE_BUILDER].bodies["min"];
-                if(!Memory[Creep.ROLE_BUILDER].min){
-                    for(cost in Memory[Creep.ROLE_BUILDER].bodies){
-                        if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
-                            a = Memory[Creep.ROLE_BUILDER].bodies[cost];
-                        }
-                    }
-                }
-
-                if(Memory.debug.spawn)
-                    spawn.room.visual.text(Creep.ROLE_BUILDER+" "+a.cost, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(a.value, "B-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_BUILDER].memory, {spawnName: spawn.name})});
-                return;
-            }
-            if(counter[Creep.ROLE_CLAIMER] == null || counter[Creep.ROLE_CLAIMER] < Memory[Creep.ROLE_CLAIMER].max){
-                let a = Memory[Creep.ROLE_CLAIMER].bodies["min"];
-                if(!Memory[Creep.ROLE_CLAIMER].min){
-                    for(cost in Memory[Creep.ROLE_CLAIMER].bodies){
-                        if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
-                            a = Memory[Creep.ROLE_CLAIMER].bodies[cost];
-                        }
-                    }
-                }
-
-                if(Memory.debug.spawn)
-                    spawn.room.visual.text(Creep.ROLE_CLAIMER+" "+a.cost, spawn.pos.x, spawn.pos.y-1);
-                spawn.spawnCreep(a.value, "CL-"+rand(100), {memory: Object.assign({}, Memory[Creep.ROLE_CLAIMER].memory, {spawnName: spawn.name})});
-                return;
-            }
-        });
+    Object.keys(Memory.spawns).forEach(spawnLogic);
 
     if(Game.cpu.getUsed() > Game.cpu.limit){
         Game.notify("Used "+Game.cpu.getUsed()+" cpu. Limit: "+Game.cpu.limit+". Bucket: "+Game.cpu.bucket+"(creeps: "+Object.keys(Game.creeps).length+")");

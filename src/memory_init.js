@@ -179,6 +179,7 @@ function init(){
     if(Memory.friends == null) Memory.friends = [];
 
     Memory.update = false;
+    Memory.counter = {};
 }
 
 function calcBody(value){
