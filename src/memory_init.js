@@ -3,7 +3,8 @@ function init(){
         path: false,
         spawn: false,
         target: false,
-        role: false
+        role: false,
+        creepsLength: false
     }, Memory.debug);
 
     if(Memory.update || Memory[Creep.ROLE_HARVESTER] == null || (Game.time - Memory[Creep.ROLE_HARVESTER].updated) > 1000){

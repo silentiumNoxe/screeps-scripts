@@ -109,6 +109,10 @@ module.exports.loop = () => {
             creep.hasRole(Creep.ROLE_CLAIMER).do(require("role")[Creep.ROLE_CLAIMER]);
         });
 
+    if(Memory.debug.creepsLength){
+        console.log(JSON.stringify(Memory.counter));
+    }
+
     Object.keys(Memory.spawns).forEach(spawnLogic);
 
     if(Game.cpu.getUsed() > Game.cpu.limit){
