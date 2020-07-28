@@ -351,7 +351,7 @@ module.exports.loop = () => {
             }
             if(counter[Creep.ROLE_UCL] < Memory[Creep.ROLE_UCL].max){
                 let a = Memory[Creep.ROLE_UCL].bodies["min"];
-                if(!Memory[Creep.ROLE_HARVESTER].min){
+                if(!Memory[Creep.ROLE_UCL].min){
                     for(cost in Memory[Creep.ROLE_UCL].bodies){
                         if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
                             a = Memory[Creep.ROLE_UCL].bodies[cost];
@@ -366,7 +366,7 @@ module.exports.loop = () => {
             }
             if(counter[Creep.ROLE_BUILDER] < Memory[Creep.ROLE_BUILDER].max){
                 let a = Memory[Creep.ROLE_BUILDER].bodies["min"];
-                if(!Memory[Creep.ROLE_HARVESTER].min){
+                if(!Memory[Creep.ROLE_BUILDER].min){
                     for(cost in Memory[Creep.ROLE_BUILDER].bodies){
                         if(a == null || (cost > a.cost && cost < spawn.room.energyCapacityAvailable)){
                             a = Memory[Creep.ROLE_BUILDER].bodies[cost];
