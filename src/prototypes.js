@@ -215,7 +215,7 @@ if(StructureSpawn.prototype.spawnRole == null){
             this.room.visual.text(this.room.energyAvailable, this.pos.x+0.4, this.pos.y+1.3, {font: 0.5, color: "#f5ef42"});
         }
 
-        this.spawnCreep(body, prefix+Math.floor(Math.random() * 100), {memory: Object.assign({}, Memory[role].memory, {spawnName: this.name})});
         delete Memory.counter[role];
+        return this.spawnCreep(body, prefix+Math.floor(Math.random() * 100), {memory: Object.assign({}, Memory[role].memory, {spawnName: this.name})});
     }
 }
