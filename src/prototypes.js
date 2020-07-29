@@ -163,6 +163,34 @@ if(Creep.prototype.count == null){
         Memory.counter[this.memory.role]++;
     }
 }
+
+/**
+@return {boolean} continue creep logic?
+*/
+Creep.prototype.renew = function(){
+    if(this.spawner == null) this.spawner = Object.keys(Game.spawns)[0];
+    const spawn = this.spawner;
+    if(spawn == null) return true;
+    if(spawn.memory.waitTo > Game.time) return true;
+
+    if((spawn.memory.renew == null || Game.creeps[spawn.memory.renew] == null) && this.ticksToLive < 500) spawn.memory.renew = this.name;
+    if(this.name != spawn.memory.renew) return true;
+
+    if(spawn.room.name == this.room.name){
+        creep.say("♻️", true);
+        let status = spawn.renewCreep(this);
+        if(status == ERR_NOT_IN_RANGE){
+            this.moveTo(spawn);
+        }else if(status == ERR_FULL){
+            spawn.memory.renew = null;
+        }else if(status == ERR_NOT_ENOUGH_ENERGY){
+            spawn.memory.waitTo = Game.time + 1000;
+            return true;
+        }
+        return false;
+    }
+    return true;
+}
 //Structure-----------------------------------
 if(Structure.prototype.isBroken == null){//<-- not working. returned undefined (trace not showed)
     Object.defineProperty(Structure.prototype, "isBroken", {
