@@ -4,19 +4,19 @@ require("prototypes");
 
 global.Debug = {
     path(){
-        Memory.debug.path = !Memory.debug.path;
+        return Memory.debug.path = !Memory.debug.path;
     },
     spawn(){
-        Memory.debug.spawn = !Memory.debug.spawn;
+        return Memory.debug.spawn = !Memory.debug.spawn;
     },
     target(){
-        Memory.debug.target = !Memory.debug.target;
+        return Memory.debug.target = !Memory.debug.target;
     },
     role(){
-        Memory.debug.role = !Memory.debug.role;
+        return Memory.debug.role = !Memory.debug.role;
     },
     creepsLength(){
-        Memory.debug.creepsLength = !Memory.debug.creepsLength;
+        return Memory.debug.creepsLength = !Memory.debug.creepsLength;
     }
 };
 
