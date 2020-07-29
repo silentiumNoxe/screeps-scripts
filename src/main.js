@@ -2,7 +2,7 @@ require("constants");
 const memInit = require("memory_init");
 require("prototypes");
 
-const Debug = {
+global.Debug = {
     path(){
         Memory.debug.path = !Memory.debug.path;
     },
