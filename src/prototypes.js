@@ -120,11 +120,11 @@ if(Creep.prototype._moveTo == null){
     Creep.prototype.moveTo = function(firstArg, secondArg, thirdArg){
         let visualizePathStyle;
         let reusePath = this.pos.getRangeTo(firstArg);
-        if(Memory.debug && Memory.debug.path){
+        if(Memory.debug.path){
             visualizePathStyle = {opacity: .2};
         }
 
-        if(Memory.debug && Memory.debug.target){
+        if(Memory.debug.target){
             let room;
             if(firstArg.room == null){
                 room = firstArg.roomName;
@@ -142,13 +142,15 @@ if(Creep.prototype._moveTo == null){
         if(firstArg instanceof Object){
             secondArg = Object.assign({}, secondArg, {
                 visualizePathStyle: visualizePathStyle,
-                reusePath: reusePath
+                reusePath: reusePath,
+                ignoreCreeps: false
             });
             this._moveTo(firstArg, secondArg, thirdArg);
         }else{
             thirdArg = Object.assign({}, secondArg, {
                 visualizePathStyle: visualizePathStyle,
-                reusePath: reusePath
+                reusePath: reusePath,
+                ignoreCreeps: false
             });
             this._moveTo(firstArg, secondArg, thirdArg);
         }
@@ -188,7 +190,6 @@ if(StructureSpawn.prototype.spawnRole == null){
         }
 
         if(Memory.debug.spawn){
-            this.room.visual.clear();
             this.room.visual.text(role+" "+body.cost, this.pos.x, this.pos.y-1);
             this.room.visual.text(this.room.energyAvailable, this.pos.x+0.4, this.pos.y+1.3, {font: 0.5, color: "#f5ef42"});
         }

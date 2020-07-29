@@ -11,7 +11,7 @@ module.exports[Creep.ROLE_HARVESTER] = function(creep){
         }
         if(target == null || target.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
             creep.say("👀", true);
-            if(creep.spawner.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+            if(creep.spawner != null && creep.spawner.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
                 target = creep.spawner;
             }
         }
@@ -140,7 +140,7 @@ module.exports[Creep.ROLE_BUILDER] = function(creep){
         creep.memory.energy = target.id;
         let status = creep.withdraw(target, RESOURCE_ENERGY);
         if(status == ERR_FULL || creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) creep.memory.todo = Creep.TODO_REPAIR;
-        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+        else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);
         else if(status = OK) creep.say("👇", true);
     }
 
@@ -163,7 +163,7 @@ module.exports[Creep.ROLE_BUILDER] = function(creep){
             creep.memory.target = target.id;
             let status = creep.repair(target);
             if(status == ERR_NOT_ENOUGH_RESOURCES) creep.memory.todo = Creep.TODO_ENERGY;
-            else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);// OPTIMIZE: reusePath, ignoreCreeps
+            else if(status == ERR_NOT_IN_RANGE) creep.moveTo(target);
         }else{
             creep.memory.todo = Creep.TODO_BUILD;
         }
@@ -191,22 +191,23 @@ module.exports[Creep.ROLE_BUILDER] = function(creep){
 module.exports[Creep.ROLE_CLAIMER] = function(creep){
     if(creep.memory.todo == Creep.TODO_FIND_TARGET){
         creep.say("👀", true);
-        let target = creep.findClosestByPath(Game.flags, {filter: (f) =>{
+        let target = creep.pos.findClosestByPath(Game.flags, {filter: (f) =>{
             if(f.name.startsWith("attack")){
                 return f.room.controller.pos.isEqualTo(f.pos);
             }
         }});
         let todo = Creep.TODO_ATTACK;
         if(target == null){
-            target = creep.findClosestByPath(Game.flags, {filter: (f) => f.name.startsWith("claim")});
+            target = creep.pos.findClosestByPath(Game.flags, {filter: (f) => f.name.startsWith("claim")});
             todo = Creep.TODO_CLAIM;
         }
 
         if(target == null){
-            target = creep.findClosestByPath(Game.flags, {filter: (f) =>{
+            target = creep.pos.findClosestByPath(Game.flags, {filter: (f) =>{
                 if(f.name.startsWith("reserve")){
-                    let ticksToEnd = f.reservation.ticksToEnd;
-                    return f.my == false || (ticksToEnd != null && ticksToEnd < (CONTROLLER_RESERVE_MAX * 0.5));
+                    const controller = f.room.controller;
+                    let ticksToEnd = controller.reservation.ticksToEnd;
+                    return controller.my == false || (ticksToEnd != null && ticksToEnd < (CONTROLLER_RESERVE_MAX * 0.5));
                 }
             }});
             todo = Creep.TODO_RESERVE;
