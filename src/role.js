@@ -204,15 +204,13 @@ module.exports[Creep.ROLE_CLAIMER] = function(creep){
 
         if(target == null){
             target = creep.pos.findClosestByPath(Game.flags, {filter: (f) =>{
-                if(f.name.startsWith("reserve")){
-                    const controller = f.room.controller;
-                    if(!controller.my) return true;
-                    
-                    let ticksToEnd = controller.reservation.ticksToEnd;
-                    return (ticksToEnd != null && ticksToEnd < (CONTROLLER_RESERVE_MAX * 0.5));
-                }
+                return f.name.startsWith("reserve");
             }});
             todo = Creep.TODO_RESERVE;
+        }
+
+        if(target == null){
+            Game.rooms
         }
 
         if(target == null){
@@ -220,7 +218,7 @@ module.exports[Creep.ROLE_CLAIMER] = function(creep){
             creep.wait(500);
         }
 
-        creep.memory.target = target.name;
+        creep.memory.target = target != null ? target.name : null;
         creep.memory.todo = todo;
     }
 
@@ -239,6 +237,7 @@ module.exports[Creep.ROLE_CLAIMER] = function(creep){
         }
 
         if(target.reservation.ticksToEnd == CONTROLLER_RESERVE_MAX){
+            Game.flags[creep.memory.target].remove();
             creep.memory.todo = Creep.TODO_FIND_TARGET;
         }
     }

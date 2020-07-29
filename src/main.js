@@ -2,6 +2,24 @@ require("constants");
 const memInit = require("memory_init");
 require("prototypes");
 
+const Debug = {
+    path(){
+        Memory.debug.path = !Memory.debug.path;
+    },
+    spawn(){
+        Memory.debug.spawn = !Memory.debug.spawn;
+    },
+    target(){
+        Memory.debug.target = !Memory.debug.target;
+    },
+    role(){
+        Memory.debug.role = !Memory.debug.role;
+    },
+    creepsLength(){
+        Memory.debug.creepsLength = !Memory.debug.creepsLength;
+    }
+};
+
 function renew(creep){
     if(creep.spawner == null) creep.spawner = Object.keys(Game.spawns)[0];
     const spawn = creep.spawner;
