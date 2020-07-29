@@ -206,8 +206,10 @@ module.exports[Creep.ROLE_CLAIMER] = function(creep){
             target = creep.pos.findClosestByPath(Game.flags, {filter: (f) =>{
                 if(f.name.startsWith("reserve")){
                     const controller = f.room.controller;
+                    if(!controller.my) return true;
+                    
                     let ticksToEnd = controller.reservation.ticksToEnd;
-                    return controller.my == false || (ticksToEnd != null && ticksToEnd < (CONTROLLER_RESERVE_MAX * 0.5));
+                    return (ticksToEnd != null && ticksToEnd < (CONTROLLER_RESERVE_MAX * 0.5));
                 }
             }});
             todo = Creep.TODO_RESERVE;
