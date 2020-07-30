@@ -62,18 +62,28 @@ if(RoomPosition.prototype.findNearest == null){
         return found;
     }
 }
-//Creep---------------------------------------
+//Creep---------------------------------------\
+
+
 if(Creep.prototype.hasRole == null){
     Creep.prototype.hasRole = function(role){
-        const creep = this;
-        return {do: function(callback){callback(creep)}};
+        if(this.memory.roles == null) this.memory.roles = [];
+        return this.memory.roles.indexOf(role) > -1;
     }
 }
 
 if(Creep.prototype._harvest == null){
     Creep.prototype._harvest = Creep.prototype.harvest;
     Creep.prototype.harvest = function(target){
+        if(!(this.hasRole(Creep.ROLE_HARVESTER))) return ERR_ROLE;
+        if(this.getActiveBodyparts(WORK) == 0) return ERR_NO_BODYPART;
         if(target == null) return ERR_INVALID_ARGS;
+
+        if(target.find != null){
+            target = this.pos.findClosestByPath(target.find, target.opts);
+        }
+
+        if(target == null) return ERR_NOT_FOUND;
 
         let resourceType;
         if(target.mineralType != null) resourceType = target.mineralType;
@@ -81,6 +91,8 @@ if(Creep.prototype._harvest == null){
         else resourceType = RESOURCE_ENERGY;
 
         if(this.store.getFreeCapacity(resourceType) == 0) return ERR_FULL;
+
+        if(!(this.pos.isNearTo(target))) this.moveTo(target);
         return this._harvest(target);
     }
 }
@@ -164,32 +176,50 @@ if(Creep.prototype.count == null){
     }
 }
 
-/**
-@return {boolean} continue creep logic?
-*/
-Creep.prototype.renew = function(){
-    if(this.spawner == null) this.spawner = Object.keys(Game.spawns)[0];
-    const spawn = this.spawner;
-    if(spawn == null) return true;
-    if(spawn.memory.waitTo > Game.time) return true;
+if(Creep.prototype.renew == null){
+    /**
+    @return {boolean} continue creep logic?
+    */
+    Creep.prototype.renew = function(){
+        if(this.spawner == null) this.spawner = Object.keys(Game.spawns)[0];
+        const spawn = this.spawner;
+        if(spawn == null) return true;
+        if(spawn.memory.waitTo > Game.time) return true;
 
-    if((spawn.memory.renew == null || Game.creeps[spawn.memory.renew] == null) && this.ticksToLive < 500) spawn.memory.renew = this.name;
-    if(this.name != spawn.memory.renew) return true;
+        if((spawn.memory.renew == null || Game.creeps[spawn.memory.renew] == null) && this.ticksToLive < 500) spawn.memory.renew = this.name;
+        if(this.name != spawn.memory.renew) return true;
 
-    if(spawn.room.name == this.room.name){
-        creep.say("♻️", true);
-        let status = spawn.renewCreep(this);
-        if(status == ERR_NOT_IN_RANGE){
-            this.moveTo(spawn);
-        }else if(status == ERR_FULL){
-            spawn.memory.renew = null;
-        }else if(status == ERR_NOT_ENOUGH_ENERGY){
-            spawn.memory.waitTo = Game.time + 1000;
-            return true;
+        if(spawn.room.name == this.room.name){
+            creep.say("♻️", true);
+            let status = spawn.renewCreep(this);
+            if(status == ERR_NOT_IN_RANGE){
+                this.moveTo(spawn);
+            }else if(status == ERR_FULL){
+                spawn.memory.renew = null;
+            }else if(status == ERR_NOT_ENOUGH_ENERGY){
+                spawn.memory.waitTo = Game.time + 1000;
+                return true;
+            }
+            return false;
         }
-        return false;
+        return true;
     }
-    return true;
+}
+
+if(Creep.prototype.todo == null){
+    Object.defineProperty(Creep.prototype, "todo", {
+        get(){
+            return this.memory.todo;
+        },
+        set(val){
+            this.memory.todo = val;
+        },
+        resolve(todo, callback){
+            if(this.todo.get() == todo){
+                return callback(this);
+            }
+        }
+    });
 }
 //Structure-----------------------------------
 if(Structure.prototype.isBroken == null){//<-- not working. returned undefined (trace not showed)

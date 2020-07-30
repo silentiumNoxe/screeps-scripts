@@ -1,4 +1,5 @@
 Creep.ROLE_HARVESTER = "harvester";
+Creep.ROLE_CARRY = "carry";
 Creep.ROLE_UCL = "ucl";
 Creep.ROLE_BUILDER = "builder";
 Creep.ROLE_ATTACKER = "attacker";
@@ -14,3 +15,5 @@ Creep.TODO_CLAIM = "claim";
 Creep.TODO_RESERVE = "reserve";
 Creep.TODO_FIND_TARGET = "search";
 Creep.TODO_ATTACK = "attack";
+
+global.ERR_ROLE = -100;

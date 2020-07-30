@@ -1,117 +1,112 @@
-require("constants");
-const memInit = require("memory_init");
-require("prototypes");
-
-global.Debug = {
-    path(){
-        return Memory.debug.path = !Memory.debug.path;
-    },
-    spawn(){
-        return Memory.debug.spawn = !Memory.debug.spawn;
-    },
-    target(){
-        return Memory.debug.target = !Memory.debug.target;
-    },
-    role(){
-        return Memory.debug.role = !Memory.debug.role;
-    },
-    creepsLength(){
-        return Memory.debug.creepsLength = !Memory.debug.creepsLength;
-    }
-};
-
-function defenceLogic(){
-    Object.keys(Game.rooms)
-        .forEach(name => {
-            const room = Game.rooms[name];
-            if(room == null) return;
-
-            let emptyTowers = 0;
-            room.towers.forEach(tower => {
-                if(!tower.my) return;
-
-                if(tower.room.enemies.length > 0){
-                    Game.notify("In the room "+tower.room.name+" tower found enemies", 20);
-                    let status = tower.attack(tower.pos.findNearest(tower.room.enemies));
-                    if(status == ERR_NOT_ENOUGH_ENERGY){
-                        emptyTowers++;
-                        Game.notify("Tower ["+tower.room.name+"] can't attack because does not have energy", 5);
-                    }
-                }
-            });
-
-            if(room.enemies.length > 0 && (room.towers.length > 0 && emptyTowers == room.towers.length)){
-                const creeps = Object.keys(Game.creeps).filter(name => {
-                    const creep = Game.creeps[name];
-                    return creep != null && creep.room.name == room.name && creep.hasRole(Creep.ROLE_ATTACKER);
-                }).length;
-
-                if(creeps == 0){
-                    if(room.controller.safeModeAvailable == 0){
-                        Game.notify("Room "+room.name+" does not have safe mode");
-                    }
-                    room.controller.activateSafeMode();
-                }
-            }
-        });
-}
-
-function spawnLogic(spawnName){
-    const spawn = Game.spawns[spawnName];
-    if(spawn == null){
-        delete Memory.spawns[spawnName];
-        return;
-    }
-
-    let next = spawn.spawnRole(Creep.ROLE_HARVESTER, "H-");
-    if(next) next = spawn.spawnRole(Creep.ROLE_UCL, "UC-");
-    if(next) next = spawn.spawnRole(Creep.ROLE_BUILDER, "B-");
-    if(next) spawn.spawnRole(Creep.ROLE_CLAIMER, "CL-");
-}
-
 module.exports.loop = () => {
-    memInit.init();
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h1");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h2");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h3");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h4");
 
-    defenceLogic();
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc1");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc2");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc3");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc4");
 
-    Object.keys(Memory.creeps)
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b1");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b2");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b3");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b4");
+
+    Object.keys(Game.creeps)
         .forEach(name => {
             const creep = Game.creeps[name];
-            if(creep == null){
-                delete Memory.creeps[name];
-                return;
+
+            if(creep.name.startsWith("h")){
+                if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
+                    let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
+                        return s.structureType == STRUCTURE_TOWER || s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_SPAWN;
+                    }});
+
+                    let status = creep.transfer(target, RESOURCE_ENERGY);
+                    if(status == ERR_NOT_IN_RANGE){
+                        creep.moveTo(target);
+                        return;
+                    }
+                }
+                let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+                let status = creep.harvest(source);
+                if(status == ERR_NOT_IN_RANGE){
+                    creep.moveTo(source);
+                }
             }
+        })
 
-            creep.count();
+    const uc1 = Game.creeps.uc1;
+    if(uc1 != null) updateController(uc1, "E9N23");
 
-            if(Memory.debug.role){
-                creep.room.visual.text(creep.memory.role, creep.pos.x, creep.pos.y-1, {font: 0.6});
-            }
+    const uc2 = Game.creeps.uc2;
+    if(uc2 != null) updateController(uc2, "E9N23");
 
-            if(creep.memory.spawning) return;
-            if(!creep.renew()) return;
-            if(creep.isWaiting){
-                creep.say("😴", true);
-                return;
-            }
+    const uc3 = Game.creeps.uc3;
+    if(uc3 != null) updateController(uc3, "E9N24");
 
-            creep.hasRole(Creep.ROLE_HARVESTER).do(require("role")[Creep.ROLE_HARVESTER]);
-            creep.hasRole(Creep.ROLE_UCL).do(require("role")[Creep.ROLE_UCL]);
-            creep.hasRole(Creep.ROLE_BUILDER).do(require("role")[Creep.ROLE_BUILDER]);
-            creep.hasRole(Creep.ROLE_CLAIMER).do(require("role")[Creep.ROLE_CLAIMER]);
-        });
+    const uc4 = Game.creeps.uc4;
+    if(uc4 != null) updateController(uc4, "E9N24");
 
-    if(Memory.debug.creepsLength){
-        console.log(JSON.stringify(Memory.counter));
-    }
 
-    Object.keys(Memory.spawns).forEach(spawnLogic);
+    const b1 = Game.creeps.b1;
+    if(b1 != null) repair(b1, "E9N23");
 
-    if(Game.cpu.getUsed() > Game.cpu.limit){
-        Game.notify("Used "+Game.cpu.getUsed()+" cpu. Limit: "+Game.cpu.limit+". Bucket: "+Game.cpu.bucket+"(creeps: "+Object.keys(Game.creeps).length+")");
+    const buildTarget = Game.getObjectById("5f230efc6059df09f191f0a2");
+
+    const b2 = Game.creeps.b2;
+    if(b2 != null) build(b2, buildTarget);
+
+    const b3 = Game.creeps.b3;
+    if(b3 != null) build(b3, buildTarget);
+
+    const b4 = Game.creeps.b4;
+    if(b4 != null) build(b4, buildTarget);
+}
+
+function build(creep, target){
+    if(creep.store[RESOURCE_ENERGY] == 0){
+        takeEnergy(Game.getObjectById("5f105add1c8a1702d6645705"));
+    }else{
+        let status = creep.build(target);
+        if(status == ERR_NOT_IN_RANGE){
+            creep.moveTo(target);
+        }
     }
 }
 
-function rand(max){
-    return Math.floor(Math.random()*max);
+function repair(creep, room){
+    if(creep.store[RESOURCE_ENERGY] == 0){
+        takeEnergy(Game.getObjectById("5f105add1c8a1702d6645705"));
+    }else{
+        let targets = Game.rooms[room].find(FIND_STRUCTURES, {filter: (s) => s.hits < s.hitsMax});
+        let target = creep.pos.findClosestByPath(targets);
+        if(target != null){
+            let status = creep.repair(target);
+            if(status == ERR_NOT_IN_RANGE){
+                creep.moveTo(target);
+            }
+        }
+    }
+}
+
+function updateController(creep, room){
+    if(creep.store[RESOURCE_ENERGY] == 0){
+        takeEnergy(Game.getObjectById("5f105add1c8a1702d6645705"));
+    }else{
+        let target = Game.rooms[room].controller;
+        let status = creep.updateController(target);
+        if(status == ERR_NOT_IN_RANGE){
+            creep.moveTo(target);
+        }
+    }
+}
+
+function takeEnergy(from){
+    let status = creep.withdraw(from, RESOURCE_ENERGY);
+    if(status == ERR_NOT_IN_RANGE){
+        creep.moveTo(target);
+    }
 }
