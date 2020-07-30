@@ -1,18 +1,18 @@
 module.exports.loop = () => {
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h1");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h2");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h3");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "h4");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b1");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b2");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b3");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b4");
 
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc1");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc2");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc3");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "uc4");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc1");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc2");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc3");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc4");
 
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b1");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b2");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b3");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], "b4");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h1");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h2");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h3");
+    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h4");
 
     Object.keys(Game.creeps)
         .forEach(name => {
@@ -50,11 +50,10 @@ module.exports.loop = () => {
     const uc4 = Game.creeps.uc4;
     if(uc4 != null) updateController(uc4, "E9N24");
 
+    const buildTarget = Game.getObjectById("5f230efc6059df09f191f0a2");
 
     const b1 = Game.creeps.b1;
-    if(b1 != null) repair(b1, "E9N23");
-
-    const buildTarget = Game.getObjectById("5f230efc6059df09f191f0a2");
+    if(b1 != null) build(b1, buildTarget);
 
     const b2 = Game.creeps.b2;
     if(b2 != null) build(b2, buildTarget);
