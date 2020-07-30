@@ -1,3 +1,32 @@
+global.query = function(task){
+    let taskObj = {};
+    const commands = task.split(" ");
+    let pointer = 0;
+    if(commands[pointer++] == "CREEP"){
+        taskObj.creep = {
+            name: commands[pointer++],
+            todo: {}
+        };
+
+        let creepTodo = commands[pointer++].toLowerCase();
+        taskObj.creep.todo[creepTodo] = {};
+
+        if(commands[pointer] == "FROM"){
+            if(commands[++pointer] == "ROOM"){
+                taskObj.creep.todo[creepTodo].target = {
+                    room: commands[++pointer]
+                }
+            }
+        }
+
+        if(commands[pointer] == "AND"){
+
+        }
+    }
+
+    console.log(JSON.stringify(taskObj));
+}
+
 module.exports.loop = () => {
     Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b1");
     Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b2");
@@ -21,7 +50,9 @@ module.exports.loop = () => {
             if(creep.name.startsWith("h")){
                 if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
                     let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
-                        return s.structureType == STRUCTURE_TOWER || s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_SPAWN;
+                        if(s.store != null && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                            return s.structureType == STRUCTURE_TOWER || s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_SPAWN;
+                        }
                     }});
 
                     let status = creep.transfer(target, RESOURCE_ENERGY);
