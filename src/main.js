@@ -17,14 +17,60 @@ global.query = function(task){
                     room: commands[++pointer]
                 }
             }
-        }
-
-        if(commands[pointer] == "AND"){
-
+        }else if(commands[pointer] == "TO"){
+            taskObj.creep.todo[creepTodo].target = commands[++pointer];
         }
     }
 
+    if(Memory.queries == null) Memory.queries = [];
+    Memory.queries.push(taskObj);
+
     console.log(JSON.stringify(taskObj));
+}
+
+module.exports.loop = function () {
+    for(let i = 0; i < Memory.queries.length; i++){
+        const q = Memory.queries[i];
+
+        if(q.creep != null){
+            const creep = Game.creeps[q.creep.name];
+            if(creep == null){
+                Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], q.creep.name);
+                return;
+            }
+
+
+            if(q.creep.todo.harvest != null){
+                if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
+                    Memory.queries.splice(i, 1);
+                }
+                let target;
+                if(q.creep.todo.harvest.target == null){
+                    target = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+                }
+
+                if(target != null){
+                    let status = creep.harvest(target);
+                    if(status == ERR_NOT_IN_RANGE){
+                        creep.moveTo(target);
+                    }
+
+                    continue;
+                }
+            }
+
+            if(q.creep.todo.transfer != null){
+                if(creep.store[RESOURCE_ENERGY] == 0){
+                    Memory.queries.splice(i, 1);
+                }
+                let target = Game.getObjectById(q.creep.todo.transfer.target);
+                let status = creep.transfer(target, RESOURCE_ENERGY);
+                if(status == ERR_NOT_IN_RANGE){
+                    creep.moveTo(target);
+                }
+            }
+        }
+    }
 }
 
 module.exports.loop = () => {
