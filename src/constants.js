@@ -17,3 +17,30 @@ Creep.TODO_FIND_TARGET = "search";
 Creep.TODO_ATTACK = "attack";
 
 global.ERR_ROLE = -100;
+
+global.KEYWORDS = [
+    //query types
+    "CREEP",
+    "SPAWNER",
+
+    //actions
+    "HARVEST",
+    "TRANSFER",
+    "SPAWN",
+
+    //creep bodies
+    "WORK",
+    "CARRY",
+    "MOVE",
+
+    //functions
+    "ROOM",
+    "POS",
+
+    //variables
+    "body",
+    "name",
+
+    //other
+    "INFINITY",
+]
