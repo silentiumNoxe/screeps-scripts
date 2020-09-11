@@ -142,8 +142,6 @@ function findCommands(string){
 
 function funcPos(val){
     if(!val.startsWith("ROOM(")) return null;
-
-
 }
 
 
@@ -212,6 +210,11 @@ global.query = function(task){
 }
 
 module.exports.loop = function () {
+    require("basic")();
+    sql();
+}
+
+function sql(){
     for(let i = 0; i < Memory.queries.length; i++){
         const q = Memory.queries[i];
 
@@ -254,75 +257,6 @@ module.exports.loop = function () {
             }
         }
     }
-}
-
-module.exports.loop = () => {
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b1");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b2");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b3");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "b4");
-
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc1");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc2");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc3");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE,], "uc4");
-
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h1");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h2");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h3");
-    Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE, MOVE], "h4");
-
-    Object.keys(Game.creeps)
-        .forEach(name => {
-            const creep = Game.creeps[name];
-
-            if(creep.name.startsWith("h")){
-                if(creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0){
-                    let target = creep.pos.findClosestByPath(FIND_STRUCTURES, {filter: (s) => {
-                        if(s.store != null && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0){
-                            return s.structureType == STRUCTURE_TOWER || s.structureType == STRUCTURE_STORAGE || s.structureType == STRUCTURE_SPAWN;
-                        }
-                    }});
-
-                    let status = creep.transfer(target, RESOURCE_ENERGY);
-                    if(status == ERR_NOT_IN_RANGE){
-                        creep.moveTo(target);
-                        return;
-                    }
-                }
-                let source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
-                let status = creep.harvest(source);
-                if(status == ERR_NOT_IN_RANGE){
-                    creep.moveTo(source);
-                }
-            }
-        })
-
-    const uc1 = Game.creeps.uc1;
-    if(uc1 != null) updateController(uc1, "E9N23");
-
-    const uc2 = Game.creeps.uc2;
-    if(uc2 != null) updateController(uc2, "E9N23");
-
-    const uc3 = Game.creeps.uc3;
-    if(uc3 != null) updateController(uc3, "E9N24");
-
-    const uc4 = Game.creeps.uc4;
-    if(uc4 != null) updateController(uc4, "E9N24");
-
-    const buildTarget = Game.getObjectById("5f230efc6059df09f191f0a2");
-
-    const b1 = Game.creeps.b1;
-    if(b1 != null) build(b1, buildTarget);
-
-    const b2 = Game.creeps.b2;
-    if(b2 != null) build(b2, buildTarget);
-
-    const b3 = Game.creeps.b3;
-    if(b3 != null) build(b3, buildTarget);
-
-    const b4 = Game.creeps.b4;
-    if(b4 != null) build(b4, buildTarget);
 }
 
 function build(creep, target){
