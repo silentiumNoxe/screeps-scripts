@@ -4,6 +4,7 @@ Creep.ROLE_UCL = "ucl";
 Creep.ROLE_BUILDER = "builder";
 Creep.ROLE_ATTACKER = "attacker";
 Creep.ROLE_CLAIMER = "claimer";
+Creep.ROLE_UPGRADER = "upgrader";
 
 Creep.TODO_HARVEST = "harvest";
 Creep.TODO_TRANSFER = "transfer";
@@ -15,5 +16,13 @@ Creep.TODO_CLAIM = "claim";
 Creep.TODO_RESERVE = "reserve";
 Creep.TODO_FIND_TARGET = "search";
 Creep.TODO_ATTACK = "attack";
+
+Creep.STATE_NOTHING = 0;
+Creep.STATE_MOVE = 1;
+Creep.STATE_HARVEST = 2;
+Creep.STATE_CARRY = 3;
+Creep.STATE_UPGRADE_CONTROLLER = 4;
+Creep.STATE_RENEW = 5;
+Creep.STATE_BUILD = 6;
 
 global.ERR_ROLE = -100;
