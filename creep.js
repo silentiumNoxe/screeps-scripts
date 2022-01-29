@@ -2,6 +2,15 @@ class ProxyCreep {
     constructor(creep) {
         this.creep = creep;
         this.creep.stateProcessors = {};
+
+        this.addStateProcessor(Creep.STATE_SLEEP, () => {
+            if (this.memory.sleep > 0) {
+                this.memory.sleep--;
+                return
+            }
+
+            this.state = this.prevState;
+        });
     }
 
     addStateProcessor(state, callback) {
@@ -60,6 +69,11 @@ class ProxyCreep {
 
     say(message) {
         this.creep.say(message);
+    }
+
+    sleep(ticks) {
+        this.state = Creep.STATE_SLEEP;
+        this.memory.sleep = ticks;
     }
 
     get id() {

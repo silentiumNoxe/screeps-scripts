@@ -1,16 +1,17 @@
-require("constants")
+require("constants");
 
-class Builder extends require("creep") {
+class Harvester extends require("creep") {
     constructor(creep) {
         super(creep);
 
         this.addStateProcessor(Creep.STATE_NOTHING, () => {
-            this.isShouldHarvest() ? this.state = Creep.STATE_HARVEST : this.state = Creep.STATE_BUILD;
+            this.state = Creep.STATE_HARVEST;
         });
 
         this.addStateProcessor(Creep.STATE_HARVEST, () => {
             if (this.isFull()) {
-                this.state = Creep.STATE_BUILD;
+                this.state = Creep.STATE_CARRY;
+                return;
             }
 
             if (!this.room.memory.energySources) {
@@ -38,7 +39,7 @@ class Builder extends require("creep") {
             }
         });
 
-        this.addStateProcessor(Creep.STATE_BUILD, () => {
+        this.addStateProcessor(Creep.STATE_CARRY, () => {
             if (this.isShouldHarvest()) {
                 this.state = Creep.STATE_HARVEST;
                 return;
@@ -49,12 +50,19 @@ class Builder extends require("creep") {
                 return;
             }
 
-            const code = this.creep.build(this.target);
-            if (code === ERR_NOT_IN_RANGE) {
-                this.targetMove = this.target.pos;
-                this.move()
-            } else if (code === ERR_NOT_ENOUGH_RESOURCES) {
-                this.state = Creep.STATE_HARVEST;
+            const code = this.transfer(this.target);
+            switch (code) {
+                case ERR_NOT_IN_RANGE:
+                    this.targetMove = this.target.pos;
+                    this.move();
+                    break;
+                case ERR_NOT_ENOUGH_RESOURCES:
+                    this.state = Creep.STATE_HARVEST;
+                    break;
+                case ERR_FULL:
+                    this.memory.targetContainer = null;
+                    console.log(`Err target ${this.target.id} - is full`);
+                    break;
             }
         });
     }
@@ -72,20 +80,31 @@ class Builder extends require("creep") {
     }
 
     get target() {
-        let construction;
-        if (this.memory.targetConstruction) {
-            construction = Game.getObjectById(this.memory.targetConstruction);
-            if (construction != null) {
-                return construction;
+        let container;
+        if (this.memory.targetContainer) {
+            container = Game.getObjectById(this.memory.targetContainer);
+            if (container != null && container.store.getFreeCapacity() > 0) {
+                return container;
             }
         }
 
-        construction = this.room.find(FIND_MY_CONSTRUCTION_SITES)[0];
-        if (construction == null) return null;
+        container = this.room.find(FIND_STRUCTURES, {
+            filter: obj => {
+                const type = obj.structureType === STRUCTURE_EXTENSION ||
+                    obj.structureType === STRUCTURE_CONTAINER ||
+                    obj.structureType === STRUCTURE_STORAGE ||
+                    obj.structureType === STRUCTURE_SPAWN;
+                const needEnergy = obj.getFreeCapacity() > 0;
+                return type && needEnergy;
+            }
+        })[0];
+        if (container == null) {
+            return null;
+        }
 
-        this.memory.targetConstruction = construction.id;
-        return construction;
+        this.memory.targetContainer = container.id;
+        return container;
     }
 }
 
-module.exports = Builder;
+module.exports = Harvester;

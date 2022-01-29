@@ -1,16 +1,24 @@
 require("constants")
 
-class Builder extends require("creep") {
+class Repairer extends require("creep") {
     constructor(creep) {
         super(creep);
 
         this.addStateProcessor(Creep.STATE_NOTHING, () => {
-            this.isShouldHarvest() ? this.state = Creep.STATE_HARVEST : this.state = Creep.STATE_BUILD;
+            this.isShouldHarvest() ? this.state = Creep.STATE_HARVEST : this.state = Creep.STATE_REPAIR;
+        });
+
+        this.addStateProcessor(Creep.STATE_SLEEP, () => {
+            const target = {x: 18, y: 21}
+            if (!this.pos.isNearTo(target)) {
+                this.targetMove = target;
+                this.move();
+            }
         });
 
         this.addStateProcessor(Creep.STATE_HARVEST, () => {
             if (this.isFull()) {
-                this.state = Creep.STATE_BUILD;
+                this.state = Creep.STATE_REPAIR;
             }
 
             if (!this.room.memory.energySources) {
@@ -38,7 +46,7 @@ class Builder extends require("creep") {
             }
         });
 
-        this.addStateProcessor(Creep.STATE_BUILD, () => {
+        this.addStateProcessor(Creep.STATE_REPAIR, () => {
             if (this.isShouldHarvest()) {
                 this.state = Creep.STATE_HARVEST;
                 return;
@@ -49,10 +57,10 @@ class Builder extends require("creep") {
                 return;
             }
 
-            const code = this.creep.build(this.target);
+            const code = this.creep.repair(this.target);
             if (code === ERR_NOT_IN_RANGE) {
                 this.targetMove = this.target.pos;
-                this.move()
+                this.move();
             } else if (code === ERR_NOT_ENOUGH_RESOURCES) {
                 this.state = Creep.STATE_HARVEST;
             }
@@ -73,19 +81,21 @@ class Builder extends require("creep") {
 
     get target() {
         let construction;
-        if (this.memory.targetConstruction) {
-            construction = Game.getObjectById(this.memory.targetConstruction);
-            if (construction != null) {
+        if (this.memory.targetStructure) {
+            construction = Game.getObjectById(this.memory.targetStructure);
+            if (construction != null && construction.hits < construction.hitsMax) {
                 return construction;
             }
         }
 
-        construction = this.room.find(FIND_MY_CONSTRUCTION_SITES)[0];
+        construction = this.room.find(FIND_STRUCTURES, {filter: obj => {
+            return obj.hits < obj.hitsMax && obj.structureType !== STRUCTURE_WALL;
+        }})[0];
         if (construction == null) return null;
 
-        this.memory.targetConstruction = construction.id;
+        this.memory.targetStructure = construction.id;
         return construction;
     }
 }
 
-module.exports = Builder;
+module.exports = Repairer;
